@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="512dp"
+    android:height="512dp"
+    android:viewportWidth="512"
+    android:viewportHeight="512">
+
+    <path
+        android:fillColor="#000000"
+        android:fillAlpha="0.996078431372549"
+        android:strokeColor="#000000"
+        android:strokeAlpha="0.996078431372549"
+        android:strokeWidth="1"
+        android:pathData="M 252.5 0 Q 267 -1 272 7.5 L 276 16.5 L 276 236 L 495.5 236 Q 503.8 237.7 508 243.5 Q 512.9 248.6 512 259.5 Q 510.3 267.8 504.5 272 L 495.5 276 L 276 276 L 276 495.5 Q 274.3 503.8 268.5 508 Q 263.4 512.9 252.5 512 Q 244.2 510.3 240 504.5 L 236 495.5 L 236 276 L 16.5 276 Q 8.2 274.3 4 268.5 Q -0.9 263.4 0 252.5 Q 1.7 244.2 7.5 240 L 16.5 236 L 236 236 L 236 16.5 Q 237.7 8.2 243.5 4 L 252.5 0 Z" />
+    <path
+        android:fillColor="#000000"
+        android:fillAlpha="0"
+        android:strokeColor="#000000"
+        android:strokeAlpha="0"
+        android:strokeWidth="1"
+        android:pathData="M 0 0 L 252 0.5 Q 243.7 1.7 240 7.5 L 236 16.5 L 236 236 L 16.5 236 Q 8.2 237.7 4 243.5 L 0.5 252 L 0 0 Z" />
+    <path
+        android:fillColor="#000000"
+        android:fillAlpha="0"
+        android:strokeColor="#000000"
+        android:strokeAlpha="0"
+        android:strokeWidth="1"
+        android:pathData="M 260.5 0 L 512 0 L 512 251.5 L 511 251.5 Q 510.4 243.1 504.5 240 L 495.5 236 L 276 236 L 276 16.5 Q 274.3 8.2 268.5 4 Q 266.6 0.4 260.5 1 L 260.5 0 Z" />
+    <path
+        android:fillColor="#000000"
+        android:fillAlpha="0"
+        android:strokeColor="#000000"
+        android:strokeAlpha="0"
+        android:strokeWidth="1"
+        android:pathData="M 0.5 260 Q 1.7 268.3 7.5 272 L 16.5 276 L 236 276 L 236 495.5 Q 237.7 503.8 243.5 508 L 252 511.5 L 0 512 L 0.5 260 Z" />
+    <path
+        android:fillColor="#000000"
+        android:fillAlpha="0"
+        android:strokeColor="#000000"
+        android:strokeAlpha="0"
+        android:strokeWidth="1"
+        android:pathData="M 511.5 260 L 512 512 L 260 511.5 Q 268.3 510.3 272 504.5 L 276 495.5 L 276 276 L 495.5 276 Q 503.8 274.3 508 268.5 L 511.5 260 Z" />
+</vector>

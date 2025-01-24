@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="default_margin_16">16dp</dimen>
+    <dimen name="btn_txt_size">18sp</dimen>
+    <dimen name="startingPage_CV_height">300dp</dimen>
+    <dimen name="BTN_height">60dp</dimen>
+    <dimen name="startingPage_margin_btn">85dp</dimen>
+    <dimen name="BTN_width">250dp</dimen>
+    <dimen name="startingPage_tittle_size">44sp</dimen>
+    <dimen name="BTN_cornerRadius">8dp</dimen>
+    <dimen name="default_padding_8">8dp</dimen>
+    <dimen name="startingPage_cornerRadius_CV">30dp</dimen>
+    <dimen name="startingPage_strokeWidth_reg_BTN">2dp</dimen>
+    <dimen name="template_header">200dp</dimen>
+    <dimen name="default_margin_8">8dp</dimen>
+    <dimen name="startingPage_IMG_size">160dp</dimen>
+    <dimen name="startingPage_margin_top">100dp</dimen>
+</resources>

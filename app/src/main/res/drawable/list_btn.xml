@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="utf-8"?>
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="512dp"
+    android:height="512dp"
+    android:viewportWidth="512"
+    android:viewportHeight="512">
+
+    <path
+        android:fillColor="#000000"
+        android:fillAlpha="0.984313725490196"
+        android:strokeColor="#000000"
+        android:strokeAlpha="0.984313725490196"
+        android:strokeWidth="1"
+        android:pathData="M 161.5 0 L 350.5 0 Q 361.6 2.4 367 10.5 Q 372.7 17.1 371 30 L 402.5 30 Q 403.7 32.3 408.5 31 Q 429 36.5 440 51.5 L 447 63.5 L 451 78.5 L 451 458.5 L 450 459.5 L 450 467.5 L 447 477.5 Q 441.5 490.5 431.5 499 L 419.5 507 L 402.5 512 L 109.5 512 Q 84.3 507.7 72 490.5 L 65 478.5 L 61 463.5 L 61 83.5 L 62 82.5 L 62 74.5 L 65 64.5 Q 70.5 51.5 80.5 43 Q 89.8 34.3 104.5 31 L 109.5 30 L 141 30 L 142 17.5 L 148.5 7 Q 153.3 1.8 161.5 0 Z M 171 30 L 171 60 L 172 60 L 341 60 L 341 31 L 341 30 L 171 30 Z M 112 60 L 103 64 L 95 72 L 91 84 L 91 462 L 96 473 Q 101 480 112 482 L 400 482 L 410 478 L 417 471 L 421 459 L 421 81 L 416 70 Q 411 62 401 60 L 371 60 Q 373 73 367 80 Q 362 88 351 90 L 162 90 L 156 88 L 148 83 L 142 73 L 141 68 L 141 61 L 141 60 L 112 60 Z" />
+    <path
+        android:fillColor="#000000"
+        android:fillAlpha="0.984313725490196"
+        android:strokeColor="#000000"
+        android:strokeAlpha="0.984313725490196"
+        android:strokeWidth="1"
+        android:pathData="M 203.5 140 L 211.5 140 L 220 145.5 L 223 152.5 L 223 157.5 L 221 162.5 L 170.5 213 Q 166.9 215.9 159.5 215 L 154.5 213 L 131 189.5 Q 128 185.5 129 177.5 L 133.5 170 L 141.5 166 L 146.5 166 L 151.5 168 L 161.5 178 L 163.5 178 L 199.5 142 L 203.5 140 Z" />
+    <path
+        android:fillColor="#000000"
+        android:fillAlpha="0.984313725490196"
+        android:strokeColor="#000000"
+        android:strokeAlpha="0.984313725490196"
+        android:strokeWidth="1"
+        android:pathData="M 257.5 170 L 370.5 170 Q 377.7 171.8 381 177.5 L 383 186.5 Q 381.6 194.6 375.5 198 L 370.5 200 L 257.5 200 L 250 196 L 246 187.5 L 246 182.5 L 250 174 L 257.5 170 Z" />
+    <path
+        android:fillColor="#000000"
+        android:fillAlpha="0.984313725490196"
+        android:strokeColor="#000000"
+        android:strokeAlpha="0.984313725490196"
+        android:strokeWidth="1"
+        android:pathData="M 207.5 247 Q 216.9 248.1 221 254.5 Q 223.9 258.1 223 265.5 L 220 271.5 L 171.5 320 L 161.5 323 L 152.5 319 L 132 298.5 L 129 292.5 L 129 285.5 Q 130.5 279 135.5 276 Q 139.5 273 147.5 274 L 153.5 277 L 163.5 286 L 200.5 249 L 207.5 247 Z" />
+    <path
+        android:fillColor="#000000"
+        android:fillAlpha="0.984313725490196"
+        android:strokeColor="#000000"
+        android:strokeAlpha="0.984313725490196"
+        android:strokeWidth="1"
+        android:pathData="M 257.5 270 L 370.5 270 Q 377.7 271.8 381 277.5 L 383 286.5 Q 381.6 294.6 375.5 298 L 370.5 300 L 257.5 300 L 250 296 L 246 287.5 L 246 282.5 L 250 274 L 257.5 270 Z" />
+    <path
+        android:fillColor="#000000"
+        android:fillAlpha="0.984313725490196"
+        android:strokeColor="#000000"
+        android:strokeAlpha="0.984313725490196"
+        android:strokeWidth="1"
+        android:pathData="M 207.5 347 Q 216.9 348.1 221 354.5 Q 223.9 358.1 223 365.5 L 220 371.5 L 171.5 420 L 161.5 423 L 152.5 419 L 132 398.5 L 129 392.5 L 129 385.5 Q 130.5 379 135.5 376 Q 139.5 373 147.5 374 L 153.5 377 L 163.5 386 L 200.5 349 L 207.5 347 Z" />
+    <path
+        android:fillColor="#000000"
+        android:fillAlpha="0.984313725490196"
+        android:strokeColor="#000000"
+        android:strokeAlpha="0.984313725490196"
+        android:strokeWidth="1"
+        android:pathData="M 257.5 370 L 371.5 370 L 380 375.5 Q 384.2 379.3 383 388.5 L 377.5 397 L 371.5 400 L 257.5 400 L 250 396 L 246 387.5 L 246 382.5 L 250 374 L 257.5 370 Z" />
+    <path
+        android:fillColor="#000000"
+        android:fillAlpha="0"
+        android:strokeColor="#000000"
+        android:strokeAlpha="0"
+        android:strokeWidth="1"
+        android:pathData="M 0 0 L 161 0.5 Q 151.6 2.1 147 8.5 L 142 17.5 L 141 30 L 109.5 30 L 100.5 32 Q 83.6 37.1 74 49.5 L 65 64.5 L 62 74.5 L 62 82.5 L 61 83.5 L 61 463.5 Q 65.3 488.7 82.5 501 Q 92.5 509.5 109 511.5 L 0 512 L 0 0 Z" />
+    <path
+        android:fillColor="#000000"
+        android:fillAlpha="0"
+        android:strokeColor="#000000"
+        android:strokeAlpha="0"
+        android:strokeWidth="1"
+        android:pathData="M 351.5 0 L 511.5 0 L 512 0.5 L 512 512 L 403 511.5 L 419.5 507 Q 430.4 501.4 438 492.5 L 447 477.5 L 450 467.5 L 450 459.5 L 451 458.5 L 451 78.5 Q 446.7 53.3 429.5 41 Q 420.8 34.2 408.5 31 Q 403.7 32.3 402.5 30 L 371 30 Q 372.5 10.9 360.5 4 L 354.5 1 L 351.5 1 L 351.5 0 Z" />
+    <path
+        android:fillColor="#000000"
+        android:fillAlpha="0"
+        android:strokeColor="#000000"
+        android:strokeAlpha="0"
+        android:strokeWidth="1"
+        android:pathData="M 171 30 L 340.5 30 L 341 30.5 L 341 60 L 171.5 60 L 171 59.5 L 171 30 Z" />
+    <path
+        android:fillColor="#000000"
+        android:fillAlpha="0"
+        android:strokeColor="#000000"
+        android:strokeAlpha="0"
+        android:strokeWidth="1"
+        android:pathData="M 111.5 60 L 140.5 60 L 141 60.5 L 141 67.5 L 142 72.5 L 148 83 L 155.5 88 L 161.5 90 L 350.5 90 Q 361.6 87.6 367 79.5 Q 372.7 72.9 371 60 L 400.5 60 Q 410.6 62.4 416 69.5 L 421 80.5 L 421 458.5 L 417 470.5 L 409.5 478 L 399.5 482 L 111.5 482 Q 101.4 479.6 96 472.5 L 91 461.5 L 91 83.5 L 95 71.5 L 102.5 64 L 111.5 60 Z M 204 140 L 200 142 L 164 178 L 162 178 L 152 168 L 147 166 L 142 166 L 134 170 L 129 178 Q 128 186 131 190 L 155 213 L 160 215 Q 167 216 171 213 L 221 163 L 223 158 L 223 153 L 220 146 L 212 140 L 204 140 Z M 258 170 L 250 174 L 246 183 L 246 188 L 250 196 L 258 200 L 371 200 L 376 198 Q 382 195 383 187 L 381 178 Q 378 172 371 170 L 258 170 Z M 208 247 L 201 249 L 164 286 L 154 277 L 148 274 Q 140 273 136 276 Q 131 279 129 286 L 129 293 L 132 299 L 153 319 L 162 323 L 172 320 L 220 272 L 223 266 Q 224 258 221 255 Q 217 248 208 247 Z M 258 270 L 250 274 L 246 283 L 246 288 L 250 296 L 258 300 L 371 300 L 376 298 Q 382 295 383 287 L 381 278 Q 378 272 371 270 L 258 270 Z M 208 347 L 201 349 L 164 386 L 154 377 L 148 374 Q 140 373 136 376 Q 131 379 129 386 L 129 393 L 132 399 L 153 419 L 162 423 L 172 420 L 220 372 L 223 366 Q 224 358 221 355 Q 217 348 208 347 Z M 258 370 L 250 374 L 246 383 L 246 388 L 250 396 L 258 400 L 372 400 L 378 397 L 383 389 Q 384 379 380 376 L 372 370 L 258 370 Z" />
+</vector>

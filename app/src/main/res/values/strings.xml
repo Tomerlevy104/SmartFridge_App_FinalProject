@@ -1,0 +1,34 @@
+<resources>
+    <string name="app_name">SmartFridge</string>
+    <string name="smart">Smart</string>
+    <string name="fridge">Fridge</string>
+    <string name="app_subtitle">Smart Management for Your Kitchen</string>
+    <string name="login">התחבר</string>
+    <string name="register">הירשם</string>
+    <string name="home_btn_txt">דף הבית</string>
+    <string name="add_product_btn_txt">הוספת מוצר</string>
+    <string name="shopping_list_btn_txt">רשימת קניות</string>
+    <string name="profile_btn_txt">פרופיל</string>
+    <string name="login_page_welcome_to_txt">ברוכים הבאים ל-</string>
+    <string name="forgot_password">שכחתי סיסמא</string>
+    <string name="for_registration_press_here">להרשמה לחץ כאן</string>
+    <string name="you_do_not_have_an_account">אין לך חשבון?</string>
+    <string name="first_name">שם פרטי</string>
+    <string name="last_name">שם משפחה</string>
+    <string name="email">אימייל</string>
+    <string name="user_name">שם משתמש</string>
+    <string name="password">סיסמא</string>
+    <string name="confirm_password">אימות סיסמא</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="welcome">ברוכים הבאים</string>
+    <string name="show_all_inventory">הצג הכל</string>
+    <string name="search_product_in_inventory">חיפוש מוצר במלאי הבית</string>
+    <string name="take_me_to_super_market">קח אותי לסופר</string>
+    <string name="inventory_btn">מלאי ביתי</string>
+    <string name="category_name">שם קטגוריה</string>
+    <string name="show_all">הצג הכל</string>
+    <string name="for_categories">לקטגוריות</string>
+
+
+</resources>

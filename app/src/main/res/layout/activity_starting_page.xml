@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/white">
+
+    <androidx.appcompat.widget.AppCompatImageView
+        android:id="@+id/appLogo"
+        android:layout_width="@dimen/startingPage_IMG_size"
+        android:layout_height="@dimen/startingPage_IMG_size"
+        android:layout_marginTop="@dimen/startingPage_margin_top"
+        android:src="@drawable/app_logo_no_background"
+        app:layout_constraintBottom_toTopOf="@+id/tittle_AppName_Smart"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/tittle_AppName_Smart"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/default_margin_16"
+        android:text="@string/smart"
+        android:textColor="@color/blue"
+        android:textSize="@dimen/startingPage_tittle_size"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/appLogo" />
+
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/tittle_AppName_fridge"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/fridge"
+        android:textColor="@color/blue"
+        android:textSize="@dimen/startingPage_tittle_size"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tittle_AppName_Smart" />
+
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/startingPage_subTittle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:text="@string/app_subtitle"
+        android:textColor="@color/navy_blue"
+        android:textSize="20sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tittle_AppName_fridge" />
+
+    <com.google.android.material.card.MaterialCardView
+        android:id="@+id/start_cardView_log_reg"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/startingPage_CV_height"
+        android:layout_marginTop="@dimen/default_margin_16"
+        android:backgroundTint="@color/navy_blue_starting_page"
+        app:cardCornerRadius="@dimen/startingPage_cornerRadius_CV"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/startingPage_subTittle">
+
+        <androidx.appcompat.widget.LinearLayoutCompat
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/startingPage_BTN_login"
+                android:layout_width="@dimen/BTN_width"
+                android:layout_height="@dimen/BTN_height"
+                android:layout_gravity="center"
+                android:layout_marginTop="@dimen/startingPage_margin_btn"
+                android:layout_marginBottom="@dimen/default_margin_16"
+                android:backgroundTint="@color/blue"
+                android:padding="@dimen/default_padding_8"
+                android:text="@string/login"
+                android:textColor="@color/black"
+                android:textSize="@dimen/btn_txt_size"
+                android:textStyle="bold"
+
+                app:cornerRadius="@dimen/BTN_cornerRadius" />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/startingPage_BTN_register"
+                android:layout_width="@dimen/BTN_width"
+                android:layout_height="@dimen/BTN_height"
+                android:layout_gravity="center"
+                android:layout_marginBottom="@dimen/startingPage_margin_btn"
+                android:backgroundTint="@color/navy_blue_starting_page"
+                android:padding="@dimen/default_padding_8"
+                android:text="@string/register"
+                android:textColor="@color/white"
+                android:textSize="@dimen/btn_txt_size"
+
+                android:textStyle="bold"
+                app:cornerRadius="@dimen/BTN_cornerRadius"
+                app:strokeColor="@color/blue"
+                app:strokeWidth="@dimen/startingPage_strokeWidth_reg_BTN" />
+
+        </androidx.appcompat.widget.LinearLayoutCompat>
+    </com.google.android.material.card.MaterialCardView>
+
+</androidx.constraintlayout.widget.ConstraintLayout>
