@@ -2,6 +2,7 @@
 <resources>
     <dimen name="default_margin_16">16dp</dimen>
     <dimen name="btn_txt_size">18sp</dimen>
+    <dimen name="product_txt_size">12sp</dimen>
     <dimen name="startingPage_CV_height">300dp</dimen>
     <dimen name="BTN_height">60dp</dimen>
     <dimen name="startingPage_margin_btn">85dp</dimen>
@@ -15,4 +16,5 @@
     <dimen name="default_margin_8">8dp</dimen>
     <dimen name="startingPage_IMG_size">160dp</dimen>
     <dimen name="startingPage_margin_top">100dp</dimen>
+    <dimen name="item_product_amount_width">40dp</dimen>
 </resources>

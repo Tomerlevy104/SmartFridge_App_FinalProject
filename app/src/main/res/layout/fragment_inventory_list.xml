@@ -83,6 +83,7 @@
             android:layout_marginEnd="@dimen/default_margin_16"
             android:layout_marginStart="@dimen/default_margin_16"
             android:layout_marginTop="@dimen/default_margin_8"
+            tools:listitem="@layout/item_product"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintTop_toBottomOf="@id/inventory_list_LLC_filters"/>
 

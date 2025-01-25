@@ -29,6 +29,11 @@
     <string name="category_name">שם קטגוריה</string>
     <string name="show_all">הצג הכל</string>
     <string name="for_categories">לקטגוריות</string>
+    <string name="remove_item">הסר מוצר</string>
+    <string name="expiration_date">תאריך תפוגה: </string>
+    <string name="product_name">שם מוצר</string>
+    <string name="amount">כמות:</string>
+    <string name="default_date">00.00.0000</string>
 
 
 </resources>
