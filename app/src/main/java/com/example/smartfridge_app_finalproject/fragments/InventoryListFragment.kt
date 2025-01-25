@@ -11,8 +11,6 @@ import com.example.smartfridge_app_finalproject.R
 import com.example.smartfridge_app_finalproject.adapters.InventoryAdapter
 import com.example.smartfridge_app_finalproject.utilities.Product
 
-
-
 class InventoryListFragment : Fragment() {
     private lateinit var adapter: InventoryAdapter
     private var products = mutableListOf<Product>()
@@ -26,7 +24,7 @@ class InventoryListFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         setupRecyclerView(view)
-        // כאן תוכל להוסיף קריאה לפונקציה שמביאה את המוצרים מהמסד נתונים
+        // להוסיף קריאה לפונקציה שמביאה את המוצרים מהמסד נתונים
 
 
         //manual adding product
@@ -108,7 +106,6 @@ class InventoryListFragment : Fragment() {
 
         recyclerView.layoutManager = LinearLayoutManager(context)
         recyclerView.adapter = adapter
-
 
     }
 
