@@ -5,16 +5,30 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.recyclerview.widget.RecyclerView
+import androidx.appcompat.widget.AppCompatButton
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
+import com.example.smartfridge_app_finalproject.MainActivity
 import com.example.smartfridge_app_finalproject.R
 import com.example.smartfridge_app_finalproject.adapters.InventoryAdapter
-import com.example.smartfridge_app_finalproject.utilities.Product
+import com.example.smartfridge_app_finalproject.data.model.Product
+import com.example.smartfridge_app_finalproject.interfaces.IProductRepository
+import com.example.smartfridge_app_finalproject.data.repository.ProductRepository
+import com.example.smartfridge_app_finalproject.utilities.Constants
 
 class InventoryListFragment : Fragment() {
     private lateinit var adapter: InventoryAdapter
     private var products = mutableListOf<Product>()
+    private lateinit var inventory_list_BTN_categories: AppCompatButton
+    private lateinit var inventory_list_BTN_all: AppCompatButton
+    private lateinit var productRepository: IProductRepository
+    private var selectedCategory: String? = null
 
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        selectedCategory = arguments?.getString("SELECTED_CATEGORY")
+        productRepository = ProductRepository()
+    }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.fragment_inventory_list, container, false)
@@ -22,70 +36,29 @@ class InventoryListFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
+        findViews(view)
         setupRecyclerView(view)
-        // להוסיף קריאה לפונקציה שמביאה את המוצרים מהמסד נתונים
+        setupClickListeners()
+        loadProducts()
+    }
 
+    private fun loadProducts() {
+        products.clear()
 
-        //manual adding product
-        products.add(Product(
-            barCode = "1",
-            name = "בננה",
-            category = "Fruits",
-            imageUrl = "",
-            quantity = 2,
-            expiryDate = "10/04/2025"))
-
-        products.add(Product(
-            barCode = "2",
-            name = "תפוז",
-            category = "Fruits",
-            imageUrl = "",
-            quantity = 2,
-            expiryDate = "10/04/2025"))
-
-        products.add(Product(
-            barCode = "3",
-            name = "תפוח",
-            category = "Fruits",
-            imageUrl = "",
-            quantity = 2,
-            expiryDate = "10/04/2025"))
-
-        products.add(Product(
-            barCode = "4",
-            name = "אבוקדו",
-            category = "Fruits",
-            imageUrl = "",
-            quantity = 2,
-            expiryDate = "10/04/2025"))
-
-        products.add(Product(
-            barCode = "5",
-            name = "רימון",
-            category = "Fruits",
-            imageUrl = "",
-            quantity = 2,
-            expiryDate = "10/04/2025"))
-
-        products.add(Product(
-            barCode = "6",
-            name = "נענע",
-            category = "Fruits",
-            imageUrl = "",
-            quantity = 2,
-            expiryDate = "10/04/2025"))
-
-        products.add(Product(
-            barCode = "7",
-            name = "בצל",
-            category = "Fruits",
-            imageUrl = "",
-            quantity = 2,
-            expiryDate = "10/04/2025"))
+        // אם נבחרה קטגוריה, טען רק את המוצרים מאותה קטגוריה
+        if (selectedCategory != null) {
+            products.addAll(productRepository.getProductsByCategory(selectedCategory!!))
+        } else {
+            // אחרת, טען את כל המוצרים
+            products.addAll(productRepository.getInitialProducts())
+        }
 
         adapter.notifyDataSetChanged()
+    }
 
+    private fun findViews(view: View) {
+        inventory_list_BTN_categories = view.findViewById(R.id.inventory_list_BTN_categories)
+        inventory_list_BTN_all = view.findViewById(R.id.inventory_list_BTN_all)
     }
 
     private fun setupRecyclerView(view: View) {
@@ -93,12 +66,10 @@ class InventoryListFragment : Fragment() {
         adapter = InventoryAdapter(
             products = products,
             onQuantityChanged = { product, newQuantity ->
-                // עדכון הכמות במסד הנתונים
                 product.quantity = newQuantity
                 adapter.notifyDataSetChanged()
             },
             onRemoveClicked = { product ->
-                // מחיקת המוצר מהמסד נתונים
                 products.remove(product)
                 adapter.notifyDataSetChanged()
             }
@@ -106,55 +77,18 @@ class InventoryListFragment : Fragment() {
 
         recyclerView.layoutManager = LinearLayoutManager(context)
         recyclerView.adapter = adapter
-
     }
 
+    private fun setupClickListeners() {
+        // כפתור הקטגוריות - חזרה למסך הקטגוריות
+        inventory_list_BTN_categories.setOnClickListener {
+            (activity as? MainActivity)?.transactionToAnotherFragment(Constants.Activities.HOMEPAGE)
+        }
 
+        // כפתור להצגת כל המוצרים
+        inventory_list_BTN_all.setOnClickListener {
+            selectedCategory = null
+            loadProducts()
+        }
+    }
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-////////////////////////////////////////////////////////////////////////////////////////////////////////
-//class InventoryListFragment : Fragment() {
-//
-//
-//
-//    override fun onCreate(savedInstanceState: Bundle?) {
-//        super.onCreate(savedInstanceState)
-//        arguments?.let {
-//
-//        }
-//    }
-//
-//    override fun onCreateView(
-//        inflater: LayoutInflater, container: ViewGroup?,
-//        savedInstanceState: Bundle?
-//    ): View? {
-//        // Inflate the layout for this fragment
-//        return inflater.inflate(R.layout.fragment_inventory_list, container, false)
-//    }
-//
-//    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-//        super.onViewCreated(view, savedInstanceState)
-//
-//
-//    }
-//
-//}

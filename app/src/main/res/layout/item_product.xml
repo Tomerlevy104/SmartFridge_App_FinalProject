@@ -4,8 +4,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layoutDirection="rtl"
     android:layout_margin="8dp"
+    android:layoutDirection="rtl"
     app:cardCornerRadius="8dp">
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -18,19 +18,20 @@
             android:layout_width="48dp"
             android:layout_height="48dp"
             android:padding="4dp"
+            android:layout_marginEnd="20dp"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            tools:src="@drawable/profile_man"/>
+            tools:src="@drawable/category_no_picture" />
 
         <androidx.appcompat.widget.AppCompatButton
             android:id="@+id/inventory_list_TV_remove"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:padding="@dimen/default_padding_8"
             android:text="@string/remove_item"
             android:textColor="@color/red"
-            android:padding="@dimen/default_padding_8"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="parent"/>
+            app:layout_constraintTop_toTopOf="parent" />
 
         <com.google.android.material.textview.MaterialTextView
             android:id="@+id/inventory_list_TV_name"
@@ -39,14 +40,26 @@
             android:textSize="16sp"
             app:layout_constraintStart_toEndOf="@id/inventory_list_IMG_product"
             app:layout_constraintTop_toTopOf="parent"
-            tools:text="@string/product_name"/>
+            tools:text="@string/product_name" />
+
+        <com.google.android.material.textview.MaterialTextView
+            android:id="@+id/inventory_list_TV_expiry_lbl"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/default_margin_16"
+            android:text="@string/Expired"
+            android:textColor="@color/red"
+            android:textSize="16sp"
+            android:visibility="invisible"
+            app:layout_constraintStart_toEndOf="@id/inventory_list_TV_name"
+            app:layout_constraintTop_toTopOf="parent" />
 
         <androidx.appcompat.widget.LinearLayoutCompat
             android:id="@+id/quantity_container"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
             android:layout_marginTop="4dp"
+            android:orientation="horizontal"
             app:layout_constraintStart_toEndOf="@id/inventory_list_IMG_product"
             app:layout_constraintTop_toBottomOf="@id/inventory_list_TV_name">
 
@@ -54,17 +67,17 @@
                 android:id="@+id/inventory_list_TV_quantity_label"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textSize="@dimen/product_txt_size"
-                android:text="@string/amount"/>
+                android:text="@string/amount"
+                android:textSize="@dimen/product_txt_size" />
 
             <com.google.android.material.textview.MaterialTextView
                 android:id="@+id/inventory_list_TV_quantity"
                 android:layout_width="@dimen/item_product_amount_width"
                 android:layout_height="wrap_content"
-                android:maxLength="4"
                 android:layout_marginStart="4dp"
+                android:maxLength="4"
                 android:textSize="@dimen/product_txt_size"
-                tools:text="0"/>
+                tools:text="0" />
 
             <androidx.appcompat.widget.AppCompatImageView
                 android:id="@+id/inventory_list_BTN_decrease"
@@ -73,7 +86,7 @@
                 android:layout_marginStart="16dp"
                 android:layout_marginEnd="16dp"
                 android:clickable="true"
-                android:src="@drawable/minus_button"/>
+                android:src="@drawable/minus_button" />
 
             <androidx.appcompat.widget.AppCompatImageView
                 android:id="@+id/inventory_list_BTN_increase"
@@ -81,28 +94,28 @@
                 android:layout_height="26dp"
                 android:layout_marginStart="8dp"
                 android:clickable="true"
-                android:src="@drawable/plus_button"/>
+                android:src="@drawable/plus_button" />
         </androidx.appcompat.widget.LinearLayoutCompat>
 
         <com.google.android.material.textview.MaterialTextView
             android:id="@+id/inventory_list_TV_expiry"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textSize="@dimen/product_txt_size"
             android:layout_marginTop="4dp"
+            android:textSize="@dimen/product_txt_size"
             app:layout_constraintStart_toEndOf="@id/inventory_list_IMG_product"
             app:layout_constraintTop_toBottomOf="@id/quantity_container"
-            tools:text="@string/expiration_date"/>
+            tools:text="@string/expiration_date" />
 
         <com.google.android.material.textview.MaterialTextView
             android:id="@+id/inventory_list_TV_date"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textSize="@dimen/product_txt_size"
             android:layout_marginStart="4dp"
+            android:textSize="@dimen/product_txt_size"
             app:layout_constraintStart_toEndOf="@id/inventory_list_TV_expiry"
             app:layout_constraintTop_toTopOf="@id/inventory_list_TV_expiry"
-            tools:text="@string/default_date"/>
+            tools:text="@string/default_date" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

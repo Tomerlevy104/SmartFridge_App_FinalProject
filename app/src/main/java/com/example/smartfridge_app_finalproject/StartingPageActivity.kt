@@ -2,9 +2,7 @@ package com.example.smartfridge_app_finalproject
 
 import android.content.Intent
 import android.os.Bundle
-import android.widget.RadioGroup
 import androidx.appcompat.app.AppCompatActivity
-import androidx.appcompat.widget.AppCompatEditText
 import com.google.android.material.button.MaterialButton
 
 class StartingPageActivity : AppCompatActivity() {

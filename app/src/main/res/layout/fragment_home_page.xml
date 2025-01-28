@@ -32,16 +32,17 @@
                     android:layout_margin="@dimen/default_margin_16"
                     android:text="@string/take_me_to_super_market"
                     android:textColor="@color/black"
-                    android:textSize="16sp" />
+                    android:textSize="@dimen/homePage_super_txt_size" />
 
-                <androidx.appcompat.widget.AppCompatImageView
+                <androidx.appcompat.widget.AppCompatImageButton
                     android:id="@+id/homepage_IV_location"
                     android:layout_width="48dp"
                     android:layout_height="48dp"
                     android:layout_gravity="center"
-                    android:clickable="true"
-                    android:focusable="true"
-                    android:src="@drawable/supermarket_location_icon" />
+                    android:background="?attr/selectableItemBackgroundBorderless"
+                    android:src="@drawable/supermarket_location_icon"
+                    android:scaleType="fitCenter"/>
+
             </androidx.appcompat.widget.LinearLayoutCompat>
 
             <androidx.appcompat.widget.LinearLayoutCompat
@@ -88,7 +89,7 @@
                 android:layout_height="50dp"
                 android:layout_gravity="bottom"
                 android:layout_marginHorizontal="@dimen/default_margin_16"
-                android:layout_marginBottom="8dp"
+                android:layout_marginBottom="@dimen/default_margin_8"
                 app:cardCornerRadius="@dimen/BTN_cornerRadius">
 
                 <androidx.appcompat.widget.AppCompatEditText
@@ -103,27 +104,41 @@
         </com.google.android.material.card.MaterialCardView>
 
         <!-- Categories Section -->
-        <com.google.android.material.textview.MaterialTextView
-            android:id="@+id/homepage_TV_show_all"
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/homepage_BTN_show_all"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_margin="@dimen/default_margin_16"
+            android:layout_margin="@dimen/default_margin_8"
             android:text="@string/show_all_inventory"
             android:textColor="@color/black"
+            android:textSize="@dimen/btn_txt_size"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toBottomOf="@id/login_CV_headerCard" />
 
-        <GridLayout
-            android:id="@+id/homepage_GL_categories"
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/homePage_RV_categories"
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            android:layout_margin="@dimen/default_margin_16"
-            android:columnCount="3"
-            android:rowCount="4"
+            android:layout_marginHorizontal="@dimen/default_margin_16"
+            android:clipToPadding="false"
+            android:padding="@dimen/default_margin_8"
+            app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/homepage_TV_show_all">
+            app:layout_constraintTop_toBottomOf="@id/homepage_BTN_show_all"
+            app:spanCount="3"
+            tools:listitem="@layout/item_category" />
 
-        </GridLayout>
+        <!--        <GridLayout-->
+        <!--            android:id="@+id/homepage_GL_categories"-->
+        <!--            android:layout_width="match_parent"-->
+        <!--            android:layout_height="0dp"-->
+        <!--            android:layout_margin="@dimen/default_margin_16"-->
+        <!--            android:columnCount="3"-->
+        <!--            android:rowCount="4"-->
+        <!--            app:layout_constraintBottom_toBottomOf="parent"-->
+        <!--            app:layout_constraintTop_toBottomOf="@id/homepage_TV_show_all">-->
+
+        <!--        </GridLayout>-->
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </FrameLayout>

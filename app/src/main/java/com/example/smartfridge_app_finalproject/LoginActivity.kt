@@ -25,13 +25,6 @@ class LoginActivity : AppCompatActivity() {
 
         findViews()
         //initViews()
-        // מכניס את תוכן דף ההתחברות לתוך ה-contentContainer
-        //val loginContent = layoutInflater.inflate(R.layout.activity_login, null)
-        //findViewById<FrameLayout>(R.id.contentContainer).addView(loginContent)
-
-        // מסתיר את סרגל הניווט התחתון בדף ההתחברות
-        //findViewById<BottomNavigationView>(R.id.bottomNavigation).visibility = View.GONE
-
     }
 
     private fun initViews() {

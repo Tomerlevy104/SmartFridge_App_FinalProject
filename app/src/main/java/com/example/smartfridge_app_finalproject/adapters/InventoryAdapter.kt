@@ -7,7 +7,7 @@ import android.widget.TextView
 import androidx.appcompat.widget.AppCompatImageView
 import androidx.recyclerview.widget.RecyclerView
 import com.example.smartfridge_app_finalproject.R
-import com.example.smartfridge_app_finalproject.utilities.Product
+import com.example.smartfridge_app_finalproject.data.model.Product
 import com.google.android.material.textview.MaterialTextView
 
 class InventoryAdapter(

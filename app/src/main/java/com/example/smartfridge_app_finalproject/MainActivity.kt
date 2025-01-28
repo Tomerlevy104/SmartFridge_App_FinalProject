@@ -1,7 +1,7 @@
 package com.example.smartfridge_app_finalproject
 
-import android.content.Intent
 import android.os.Bundle
+import android.view.WindowManager
 import androidx.appcompat.app.AppCompatActivity
 import com.example.smartfridge_app_finalproject.fragments.HomePageFragment
 import com.example.smartfridge_app_finalproject.fragments.InventoryListFragment
@@ -17,6 +17,12 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
         findViews()
         initViews()
+        //window.setFlags(WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS,WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS)
+
+        // אם אין פרגמנט פעיל, נציג את דף הפתיחה
+        if (savedInstanceState == null) {
+            transactionToAnotherFragment(Constants.Activities.STARTINGPAGE)
+        }
     }
 
     private fun initViews() {
@@ -32,22 +38,36 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    private fun transactionToAnotherFragment(fragmentName: String) {
+    fun transactionToAnotherFragment(fragmentName: String, args: Bundle? = null) {
         val targetFragment = when (fragmentName) {
-            Constants.Activities.HOMEPAGE -> HomePageFragment()
-            Constants.Activities.INVENTORYLIST-> InventoryListFragment()
-
-//            Constants.Activities.ADDPRODUCTSCANBARCODE -> Intent(this, AddProductScanBarCodeFragment::class.java)
-//            Constants.Activities.CREATESHOPINGLIST -> Intent(this, CreateShoppingListFragment::class.java)
-//            Constants.Activities.PROFILE -> Intent(this, ProfileFragment::class.java)
-//            Constants.Activities.LOGIN-> Intent(this,LoginActivity::class.java)
-//            Constants.Activities.STARTINGPAGE-> Intent(this,StartingPageActivity::class.java)
-//            Constants.Activities.ADDPRODUCTSCANBARCODE-> Intent(this,AddProductScanBarCodeActivity::class.java)
-//            Constants.Activities.ADDPRODUCTMANUAL-> Intent(this,AddProductManualActivity::class.java)
-//            Constants.Activities.CREATESHOPINGLIST-> Intent(this,CreateShoppingListActivity::class.java)
-//            Constants.Activities.PROFILE-> Intent(this,ProfileActivity::class.java)
-//            Constants.Activities.SUPERMARKETLOCATION-> Intent(this,SuperMarketLoactionActivity::class.java)
-//            Constants.Activities.REGISTER-> Intent(this,RegisterActivity::class.java)
+            Constants.Activities.HOMEPAGE -> {
+                val fragment = HomePageFragment()
+                args?.let { fragment.arguments = it }
+                fragment
+            }
+            Constants.Activities.INVENTORYLIST -> {
+                val fragment = InventoryListFragment()
+                args?.let { fragment.arguments = it }
+                fragment
+            }
+            Constants.Activities.ADDPRODUCTSCANBARCODE -> {
+                // val fragment = AddProductScanBarCodeFragment()
+                // args?.let { fragment.arguments = it }
+                // fragment
+                null
+            }
+            Constants.Activities.CREATESHOPINGLIST -> {
+                // val fragment = CreateShoppingListFragment()
+                // args?.let { fragment.arguments = it }
+                // fragment
+                null
+            }
+            Constants.Activities.PROFILE -> {
+                // val fragment = ProfileFragment()
+                // args?.let { fragment.arguments = it }
+                // fragment
+                null
+            }
             else -> null
         }
 
@@ -55,22 +75,21 @@ class MainActivity : AppCompatActivity() {
             supportFragmentManager
                 .beginTransaction()
                 .replace(R.id.contentContainer, it)
+                .addToBackStack(null)  // מאפשר חזרה לפרגמנט הקודם
                 .commit()
         }
     }
-
-
-
-
-
-
-
-
-
-
 
     private fun findViews() {
         bottomNavigation = findViewById(R.id.main_activity_bottomNavigation)
     }
 
+    override fun onBackPressed() {
+        // אם יש יותר מפרגמנט אחד במחסנית, נחזור לפרגמנט הקודם
+        if (supportFragmentManager.backStackEntryCount > 1) {
+            supportFragmentManager.popBackStack()
+        } else {
+            super.onBackPressed()
+        }
+    }
 }
