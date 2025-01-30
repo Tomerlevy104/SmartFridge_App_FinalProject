@@ -22,4 +22,6 @@
     <dimen name="homePage_super_txt_size">16sp</dimen>
     <dimen name="products_list_page_tittle_width">120dp</dimen>
     <dimen name="products_list_page_tittle_height">120dp</dimen>
+    <dimen name="products_list_page_image_size">150dp</dimen>
+    <dimen name="small_IMG_size">48dp</dimen>
 </resources>

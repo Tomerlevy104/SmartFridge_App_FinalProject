@@ -25,9 +25,8 @@ class ProductsListFragment : Fragment() {
     private var theProductsListInInventory = mutableListOf<Product>() //Products List
     private val inventoryManager: IInventoryManager = InventoryManager() //Inventory manager
     private lateinit var inventory_list_BTN_categories: AppCompatButton
-    private lateinit var inventory_list_BTN_all: AppCompatButton
-    private lateinit var inventory_list_TV_title: MaterialTextView
-    private lateinit var inventory_list_IMG_category: AppCompatImageView
+    private lateinit var products_list_TV_categoryName: MaterialTextView
+    private lateinit var products_list_IMG_category: AppCompatImageView
     private var selectedCategory: String? = null
     private var selectedCategoryImage: Int? = null
 
@@ -55,16 +54,15 @@ class ProductsListFragment : Fragment() {
 
     private fun findViews(view: View) {
         inventory_list_BTN_categories = view.findViewById(R.id.inventory_list_BTN_categories)
-        inventory_list_BTN_all = view.findViewById(R.id.inventory_list_BTN_all)
-        inventory_list_TV_title = view.findViewById(R.id.inventory_list_TV_title)
-        inventory_list_IMG_category = view.findViewById(R.id.inventory_list_IMG_category)
+        products_list_TV_categoryName = view.findViewById(R.id.products_list_TV_categoryName)
+        products_list_IMG_category = view.findViewById(R.id.products_list_IMG_category)
     }
 
     private fun loadProducts() {
         theProductsListInInventory.clear()
-        inventory_list_TV_title.text = selectedCategory //Set tittel of chosen category
+        products_list_TV_categoryName.text = selectedCategory //Set tittel of chosen category
         selectedCategoryImage?.let { //Set image of chosen category
-            inventory_list_IMG_category.setImageResource(it)
+            products_list_IMG_category.setImageResource(it)
         }
 
         //If category selected - show all products in this category
@@ -105,11 +103,6 @@ class ProductsListFragment : Fragment() {
         //Categories button click
         inventory_list_BTN_categories.setOnClickListener {
             (activity as? MainActivity)?.transactionToAnotherFragment(Constants.Fragment.HOMEPAGE)
-        }
-        //Show all button click
-        inventory_list_BTN_all.setOnClickListener {
-            selectedCategory = null
-            loadProducts()
         }
     }
 }

@@ -1,3 +1,4 @@
+<?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
@@ -11,31 +12,135 @@
         android:layout_height="match_parent">
 
         <com.google.android.material.card.MaterialCardView
-            android:id="@+id/login_CV_headerCard"
+            android:id="@+id/products_list_CV_headerCard"
             android:layout_width="match_parent"
             android:layout_height="@dimen/template_header"
             app:cardBackgroundColor="@color/blue"
-            app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent">
 
-            <com.google.android.material.textview.MaterialTextView
-                android:id="@+id/inventory_list_TV_title"
+            <androidx.appcompat.widget.LinearLayoutCompat
+                android:id="@+id/ll_location"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_margin="@dimen/default_margin_16"
-                android:textColor="@color/black"
-                android:textSize="@dimen/startingPage_tittle_size"
-                tools:text="@string/category_name" />
-
-            <androidx.appcompat.widget.AppCompatImageView
-                android:id="@+id/inventory_list_IMG_category"
-                android:layout_width="120dp"
-                android:layout_height="120dp"
                 android:layout_gravity="end"
-                android:layout_margin="@dimen/default_margin_16"
-                tools:src="@drawable/category_no_picture" />
+                android:orientation="vertical">
+
+                <com.google.android.material.textview.MaterialTextView
+                    android:id="@+id/products_list__TV_location"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="@dimen/default_margin_16"
+                    android:text="@string/take_me_to_super_market"
+                    android:textColor="@color/black"
+                    android:textSize="@dimen/homePage_super_txt_size" />
+
+                <androidx.appcompat.widget.AppCompatImageButton
+                    android:id="@+id/products_list_IV_location"
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
+                    android:layout_gravity="center"
+                    android:background="?attr/selectableItemBackgroundBorderless"
+                    android:scaleType="fitCenter"
+                    android:src="@drawable/supermarket_location_icon" />
+
+            </androidx.appcompat.widget.LinearLayoutCompat>
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+                <androidx.appcompat.widget.LinearLayoutCompat
+                    android:id="@+id/products_list_all_ll_profile"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="@dimen/default_margin_16"
+                    android:orientation="horizontal"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent">
+
+                    <com.google.android.material.imageview.ShapeableImageView
+                        android:id="@+id/products_list_IMG_profile"
+                        android:layout_width="@dimen/small_IMG_size"
+                        android:layout_height="@dimen/small_IMG_size"
+                        android:src="@drawable/profile_man"
+                        app:cornerSize="50%"
+                        app:shapeAppearance="@style/ShapeAppearance.Material3.Corner.ExtraLarge" />
+
+                    <androidx.appcompat.widget.LinearLayoutCompat
+                        android:id="@+id/products_list_ll_profile"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="@dimen/default_margin_16"
+                        android:orientation="vertical">
+
+                        <com.google.android.material.textview.MaterialTextView
+                            android:id="@+id/products_list_TV_welcome"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/welcome"
+                            android:textColor="@color/black"
+                            android:textSize="20sp" />
+
+                        <com.google.android.material.textview.MaterialTextView
+                            android:id="@+id/products_list__TV_name"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/first_name"
+                            android:textColor="@color/black" />
+                    </androidx.appcompat.widget.LinearLayoutCompat>
+                </androidx.appcompat.widget.LinearLayoutCompat>
 
 
+                <androidx.appcompat.widget.LinearLayoutCompat
+                    android:id="@+id/products_list_ll_category"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginHorizontal="@dimen/default_margin_16"
+                    android:layout_marginTop="@dimen/default_margin_16"
+                    android:orientation="horizontal"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/products_list_all_ll_profile">
+
+                    <com.google.android.material.imageview.ShapeableImageView
+                        android:id="@+id/products_list_IMG_category"
+                        android:layout_width="@dimen/small_IMG_size"
+                        android:layout_height="@dimen/small_IMG_size"
+                        android:src="@drawable/category_no_picture"
+                        app:cornerSize="50%"
+                        app:shapeAppearance="@style/ShapeAppearance.Material3.Corner.ExtraLarge" />
+
+                    <com.google.android.material.textview.MaterialTextView
+                        android:id="@+id/products_list_TV_categoryName"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="@dimen/default_margin_16"
+                        android:layout_marginTop="@dimen/default_margin_8"
+                        android:textColor="@color/black"
+                        android:textSize="20sp"
+                        tools:text="@string/category_name" />
+
+                </androidx.appcompat.widget.LinearLayoutCompat>
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+            <com.google.android.material.card.MaterialCardView
+                android:id="@+id/homepage_CV_search"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:layout_gravity="bottom"
+                android:layout_marginHorizontal="@dimen/default_margin_16"
+                android:layout_marginBottom="@dimen/default_margin_8"
+                app:cardCornerRadius="@dimen/BTN_cornerRadius">
+
+                <androidx.appcompat.widget.AppCompatEditText
+                    android:id="@+id/homepage_ET_search"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:background="@null"
+                    android:hint="@string/search_product_in_inventory"
+                    android:padding="@dimen/default_padding_8" />
+
+            </com.google.android.material.card.MaterialCardView>
         </com.google.android.material.card.MaterialCardView>
 
         <androidx.appcompat.widget.LinearLayoutCompat
@@ -47,18 +152,18 @@
             android:orientation="horizontal"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/login_CV_headerCard">
+            app:layout_constraintTop_toBottomOf="@+id/products_list_CV_headerCard">
 
-            <androidx.appcompat.widget.AppCompatButton
-                android:id="@+id/inventory_list_BTN_all"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginEnd="8dp"
-                android:gravity="center"
-                android:padding="@dimen/default_padding_8"
-                android:text="@string/show_all"
-                android:textColor="@color/black"
-                android:textSize="@dimen/btn_txt_size" />
+            <!--            <androidx.appcompat.widget.AppCompatButton-->
+            <!--                android:id="@+id/inventory_list_BTN_all"-->
+            <!--                android:layout_width="wrap_content"-->
+            <!--                android:layout_height="wrap_content"-->
+            <!--                android:layout_marginEnd="8dp"-->
+            <!--                android:gravity="center"-->
+            <!--                android:padding="@dimen/default_padding_8"-->
+            <!--                android:text="@string/show_all"-->
+            <!--                android:textColor="@color/black"-->
+            <!--                android:textSize="@dimen/btn_txt_size" />-->
 
             <Space
                 android:layout_width="0dp"

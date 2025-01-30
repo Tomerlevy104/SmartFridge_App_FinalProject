@@ -17,7 +17,7 @@ class ProductsListAdapter(
 ) : RecyclerView.Adapter<ProductsListAdapter.ProductViewHolder>() {
 
     inner class ProductViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        private val imageProduct: AppCompatImageView = itemView.findViewById(R.id.inventory_list_IMG_category)
+        private val imageProduct: AppCompatImageView = itemView.findViewById(R.id.products_list_IMG_product)
         private val tvName: MaterialTextView = itemView.findViewById(R.id.inventory_list_TV_name)
         private val tvQuantity: MaterialTextView = itemView.findViewById(R.id.inventory_list_TV_quantity)
         private val tvDate: MaterialTextView = itemView.findViewById(R.id.inventory_list_TV_date)
