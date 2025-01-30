@@ -20,4 +20,6 @@
     <dimen name="margin4">4dp</dimen>
     <dimen name="category_size">64dp</dimen>
     <dimen name="homePage_super_txt_size">16sp</dimen>
+    <dimen name="products_list_page_tittle_width">120dp</dimen>
+    <dimen name="products_list_page_tittle_height">120dp</dimen>
 </resources>

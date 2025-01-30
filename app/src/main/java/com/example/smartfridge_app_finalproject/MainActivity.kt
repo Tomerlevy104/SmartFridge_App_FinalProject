@@ -1,10 +1,9 @@
 package com.example.smartfridge_app_finalproject
 
 import android.os.Bundle
-import android.view.WindowManager
 import androidx.appcompat.app.AppCompatActivity
 import com.example.smartfridge_app_finalproject.fragments.HomePageFragment
-import com.example.smartfridge_app_finalproject.fragments.InventoryListFragment
+import com.example.smartfridge_app_finalproject.fragments.ProductsListFragment
 import com.example.smartfridge_app_finalproject.utilities.Constants
 import com.google.android.material.bottomnavigation.BottomNavigationView
 
@@ -19,7 +18,7 @@ class MainActivity : AppCompatActivity() {
         initViews()
         //window.setFlags(WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS,WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS)
 
-        // אם אין פרגמנט פעיל, נציג את דף הפתיחה
+        //If no active fragment, move to "StartingPage"
         if (savedInstanceState == null) {
             transactionToAnotherFragment(Constants.Activities.STARTINGPAGE)
         }
@@ -28,8 +27,8 @@ class MainActivity : AppCompatActivity() {
     private fun initViews() {
         bottomNavigation.setOnItemSelectedListener { item ->
             when (item.itemId) {
-                R.id.nav_home -> transactionToAnotherFragment(Constants.Activities.HOMEPAGE)
-                R.id.nav_inventory -> transactionToAnotherFragment(Constants.Activities.INVENTORYLIST)
+                R.id.nav_home -> transactionToAnotherFragment(Constants.Fragment.HOMEPAGE)
+                R.id.nav_inventory -> transactionToAnotherFragment(Constants.Fragment.PRODUCTSLIST)
 //                R.id.nav_add_product -> transactionToAnotherFragment(Constants.Activities.ADDPRODUCTSCANBARCODE)
 //                R.id.nav_shopping_list -> transactionToAnotherFragment(Constants.Activities.CREATESHOPINGLIST)
 //                R.id.nav_profile -> transactionToAnotherFragment(Constants.Activities.PROFILE)
@@ -40,29 +39,29 @@ class MainActivity : AppCompatActivity() {
 
     fun transactionToAnotherFragment(fragmentName: String, args: Bundle? = null) {
         val targetFragment = when (fragmentName) {
-            Constants.Activities.HOMEPAGE -> {
+            Constants.Fragment.HOMEPAGE -> {
                 val fragment = HomePageFragment()
                 args?.let { fragment.arguments = it }
                 fragment
             }
-            Constants.Activities.INVENTORYLIST -> {
-                val fragment = InventoryListFragment()
+            Constants.Fragment.PRODUCTSLIST -> {
+                val fragment = ProductsListFragment()
                 args?.let { fragment.arguments = it }
                 fragment
             }
-            Constants.Activities.ADDPRODUCTSCANBARCODE -> {
+            Constants.Fragment.ADDPRODUCTSCANBARCODE -> {
                 // val fragment = AddProductScanBarCodeFragment()
                 // args?.let { fragment.arguments = it }
                 // fragment
                 null
             }
-            Constants.Activities.CREATESHOPINGLIST -> {
+            Constants.Fragment.CREATESHOPINGLIST -> {
                 // val fragment = CreateShoppingListFragment()
                 // args?.let { fragment.arguments = it }
                 // fragment
                 null
             }
-            Constants.Activities.PROFILE -> {
+            Constants.Fragment.PROFILE -> {
                 // val fragment = ProfileFragment()
                 // args?.let { fragment.arguments = it }
                 // fragment

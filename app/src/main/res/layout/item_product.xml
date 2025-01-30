@@ -14,7 +14,7 @@
         android:padding="8dp">
 
         <androidx.appcompat.widget.AppCompatImageView
-            android:id="@+id/inventory_list_IMG_product"
+            android:id="@+id/inventory_list_IMG_category"
             android:layout_width="48dp"
             android:layout_height="48dp"
             android:padding="4dp"
@@ -38,7 +38,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textSize="16sp"
-            app:layout_constraintStart_toEndOf="@id/inventory_list_IMG_product"
+            app:layout_constraintStart_toEndOf="@id/inventory_list_IMG_category"
             app:layout_constraintTop_toTopOf="parent"
             tools:text="@string/product_name" />
 
@@ -60,7 +60,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="4dp"
             android:orientation="horizontal"
-            app:layout_constraintStart_toEndOf="@id/inventory_list_IMG_product"
+            app:layout_constraintStart_toEndOf="@id/inventory_list_IMG_category"
             app:layout_constraintTop_toBottomOf="@id/inventory_list_TV_name">
 
             <com.google.android.material.textview.MaterialTextView
@@ -103,7 +103,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="4dp"
             android:textSize="@dimen/product_txt_size"
-            app:layout_constraintStart_toEndOf="@id/inventory_list_IMG_product"
+            app:layout_constraintStart_toEndOf="@id/inventory_list_IMG_category"
             app:layout_constraintTop_toBottomOf="@id/quantity_container"
             tools:text="@string/expiration_date" />
 

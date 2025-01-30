@@ -1,14 +1,14 @@
 package com.example.smartfridge_app_finalproject.data.repository
 
 import com.example.smartfridge_app_finalproject.data.model.Product
-import com.example.smartfridge_app_finalproject.interfaces.IProductRepository
 import com.example.smartfridge_app_finalproject.utilities.Constants
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 
-class ProductRepository : IProductRepository {
-    //הפונקציה מחזירה רשימה של מוצרים. היא קוראת לכל הפונקציות שמחזירות מוצרים לפי הקטגוריה שלהן, וכל פונקציה כזאת מחזירה רשימה של מוצרים. הכוכבית פורס את כל המערכים לרשימה אחת גדולה
-    override fun getInitialProducts(): List<Product> = listOf(
+class ProductRepository {
+
+    //Initial repository
+    fun getInitialProducts(): List<Product> = listOf(
         *getFruitsAndVegetables().toTypedArray(),
         *getDrinks().toTypedArray(),
         *getMeatAndFish().toTypedArray(),
@@ -23,36 +23,19 @@ class ProductRepository : IProductRepository {
         *getFrozen().toTypedArray()
     )
 
-    override fun getProductsByCategory(category: String): List<Product> {
-        return when (category) {
-            Constants.Category.FRUITS_AND_VEGETABLES -> getFruitsAndVegetables()
-            Constants.Category.DRINKS -> getDrinks()
-            Constants.Category.MEAT -> getMeatAndFish()
-            Constants.Category.ORGANICANDHEALTH -> getOrganicAndHealth()
-            Constants.Category.SNACKS -> getSnacks()
-            Constants.Category.BREADS -> getBreads()
-            Constants.Category.CLEANING -> getCleaning()
-            Constants.Category.COOKINGBAKING -> getCookingAndBaking()
-            Constants.Category.ANIMALS -> getPetProducts()
-            Constants.Category.DAIRY -> getDairy()
-            Constants.Category.BABYS -> getBabyProducts()
-            Constants.Category.FROZEN -> getFrozen()
-            else -> emptyList()
-        }
-    }
-
+    //Function that set an default expiry date for product and return this expiry date
     private fun getDefaultExpiryDate(): String {
         val twoWeeksFromNow = LocalDate.now().plusWeeks(2)
         return twoWeeksFromNow.format(DateTimeFormatter.ofPattern("dd/MM/yyyy"))
     }
 
-    private fun getFruitsAndVegetables() = listOf(
+    fun getFruitsAndVegetables() = listOf(
         Product(
             barCode = "FV001",
             name = "תפוח עץ",
             category = Constants.Category.FRUITS_AND_VEGETABLES,
             imageUrl = "",
-            quantity = 1,
+            quantity = 4,
             expiryDate = getDefaultExpiryDate()
         ),
         Product(
@@ -68,7 +51,7 @@ class ProductRepository : IProductRepository {
             name = "עגבנייה",
             category = Constants.Category.FRUITS_AND_VEGETABLES,
             imageUrl = "",
-            quantity = 1,
+            quantity = 5,
             expiryDate = getDefaultExpiryDate()
         ),
         Product(
@@ -84,18 +67,18 @@ class ProductRepository : IProductRepository {
             name = "גזר",
             category = Constants.Category.FRUITS_AND_VEGETABLES,
             imageUrl = "",
-            quantity = 1,
+            quantity = 3,
             expiryDate = getDefaultExpiryDate()
         )
     )
 
-    private fun getDrinks() = listOf(
+    fun getDrinks() = listOf(
         Product(
             barCode = "DR001",
             name = "מים מינרלים",
             category = Constants.Category.DRINKS,
             imageUrl = "",
-            quantity = 1,
+            quantity = 2,
             expiryDate = getDefaultExpiryDate()
         ),
         Product(
@@ -103,7 +86,7 @@ class ProductRepository : IProductRepository {
             name = "קולה",
             category = Constants.Category.DRINKS,
             imageUrl = "",
-            quantity = 1,
+            quantity = 3,
             expiryDate = getDefaultExpiryDate()
         ),
         Product(
@@ -119,12 +102,12 @@ class ProductRepository : IProductRepository {
             name = "ספרייט",
             category = Constants.Category.DRINKS,
             imageUrl = "",
-            quantity = 1,
+            quantity = 2,
             expiryDate = getDefaultExpiryDate()
         )
     )
 
-    private fun getMeatAndFish() = listOf(
+    fun getMeatAndFish() = listOf(
         Product(
             barCode = "MF001",
             name = "חזה עוף",
@@ -159,7 +142,7 @@ class ProductRepository : IProductRepository {
         )
     )
 
-    private fun getOrganicAndHealth() = listOf(
+    fun getOrganicAndHealth() = listOf(
         Product(
             barCode = "OH001",
             name = "קינואה אורגנית",
@@ -186,7 +169,7 @@ class ProductRepository : IProductRepository {
         )
     )
 
-    private fun getSnacks() = listOf(
+    fun getSnacks() = listOf(
         Product(
             barCode = "SN001",
             name = "במבה",
@@ -213,7 +196,7 @@ class ProductRepository : IProductRepository {
         )
     )
 
-    private fun getBreads() = listOf(
+    fun getBreads() = listOf(
         Product(
             barCode = "BR001",
             name = "לחם אחיד",
@@ -240,7 +223,7 @@ class ProductRepository : IProductRepository {
         )
     )
 
-    private fun getCleaning() = listOf(
+    fun getCleaning() = listOf(
         Product(
             barCode = "CL001",
             name = "אקונומיקה",
@@ -267,7 +250,7 @@ class ProductRepository : IProductRepository {
         )
     )
 
-    private fun getCookingAndBaking() = listOf(
+    fun getCookingAndBaking() = listOf(
         Product(
             barCode = "CB001",
             name = "קמח",
@@ -294,7 +277,7 @@ class ProductRepository : IProductRepository {
         )
     )
 
-    private fun getPetProducts() = listOf(
+    fun getPetProducts() = listOf(
         Product(
             barCode = "PT001",
             name = "מזון לחתולים",
@@ -321,7 +304,7 @@ class ProductRepository : IProductRepository {
         )
     )
 
-    private fun getDairy() = listOf(
+    fun getDairy() = listOf(
         Product(
             barCode = "DA001",
             name = "חלב",
@@ -348,7 +331,7 @@ class ProductRepository : IProductRepository {
         )
     )
 
-    private fun getBabyProducts() = listOf(
+    fun getBabyProducts() = listOf(
         Product(
             barCode = "BP001",
             name = "חיתולים",
@@ -375,7 +358,7 @@ class ProductRepository : IProductRepository {
         )
     )
 
-    private fun getFrozen() = listOf(
+    fun getFrozen() = listOf(
         Product(
             barCode = "FR001",
             name = "פיצה קפואה",

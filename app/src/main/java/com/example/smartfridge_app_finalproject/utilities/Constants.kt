@@ -5,16 +5,20 @@ class Constants {
         const val STARTINGPAGE = "STARTINGPAGE"
         const val REGISTER = "REGISTER"
         const val LOGIN = "LOGIN"
+
+    }
+
+    object Fragment {
         const val HOMEPAGE = "HOMEPAGE"
-        const val INVENTORYLIST = "INVENTORYLIST"
+        const val PRODUCTSLIST = "PRODUCTSLIST"
         const val ADDPRODUCTSCANBARCODE = "ADDPRODUCTSCANBARCODE"
         const val ADDPRODUCTMANUAL = "ADDPRODUCTMANUAL"
         const val CREATESHOPINGLIST = "CREATESHOPINGLIST"
         const val SHOPINGLIST = "SHOPINGLIST"
         const val PROFILE = "PROFILE"
         const val SUPERMARKETLOCATION = "SUPERMARKETLOCATION"
-
     }
+
     object Category{
         const val FRUITS_AND_VEGETABLES = "פירות וירקות"
         const val DRINKS = "משקאות"

@@ -10,14 +10,14 @@ import com.example.smartfridge_app_finalproject.R
 import com.example.smartfridge_app_finalproject.data.model.Product
 import com.google.android.material.textview.MaterialTextView
 
-class InventoryAdapter(
+class ProductsListAdapter(
     private var products: List<Product>,
     private val onQuantityChanged: (Product, Int) -> Unit,
     private val onRemoveClicked: (Product) -> Unit
-) : RecyclerView.Adapter<InventoryAdapter.ProductViewHolder>() {
+) : RecyclerView.Adapter<ProductsListAdapter.ProductViewHolder>() {
 
     inner class ProductViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        private val imageProduct: AppCompatImageView = itemView.findViewById(R.id.inventory_list_IMG_product)
+        private val imageProduct: AppCompatImageView = itemView.findViewById(R.id.inventory_list_IMG_category)
         private val tvName: MaterialTextView = itemView.findViewById(R.id.inventory_list_TV_name)
         private val tvQuantity: MaterialTextView = itemView.findViewById(R.id.inventory_list_TV_quantity)
         private val tvDate: MaterialTextView = itemView.findViewById(R.id.inventory_list_TV_date)

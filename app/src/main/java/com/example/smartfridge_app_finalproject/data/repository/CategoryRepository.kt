@@ -2,12 +2,11 @@ package com.example.smartfridge_app_finalproject.data.repository
 
 import com.example.smartfridge_app_finalproject.R
 import com.example.smartfridge_app_finalproject.data.model.Category
-import com.example.smartfridge_app_finalproject.interfaces.ICategoryRepository
 import com.example.smartfridge_app_finalproject.utilities.Constants
 
-class CategoryRepository : ICategoryRepository {
+class CategoryRepository {
 
-    override fun getAllCategories(): List<Category> = listOf(
+    fun getInitialCategories(): List<Category> = listOf(
         Category(
             id = "CAT_001",
             name = Constants.Category.FRUITS_AND_VEGETABLES,
@@ -75,12 +74,8 @@ class CategoryRepository : ICategoryRepository {
         )
     )
 
-    override fun getCategoryById(id: String): Category? {
-        return getAllCategories().find { it.id == id }
-    }
-
     companion object {
-        // מיפוי בין קוד קטגוריה לשם תמונה
+        //Mapping between category code to category image
         val CATEGORY_IMAGE_MAP = mapOf(
             Constants.Category.FRUITS_AND_VEGETABLES to R.drawable.category_fruits_veg,
             Constants.Category.DRINKS to R.drawable.category__wine_drinks,

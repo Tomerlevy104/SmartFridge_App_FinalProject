@@ -3,12 +3,18 @@ package com.example.smartfridge_app_finalproject.interfaces
 import com.example.smartfridge_app_finalproject.data.model.Product
 import kotlinx.coroutines.flow.Flow
 
-interface IProductRepository {
-    fun getInitialProducts(): List<Product>
+interface IInventoryManager {
+
+    fun getAllProducts(): Flow<List<Product>>
     fun getProductsByCategory(category: String): List<Product>
 
+    //fun getInitialProducts(): List<Product>
+//    fun addNewProduct(product: Product): Boolean
+//    fun removeProduct(barCode: String): Boolean
+//    fun updateProductQuantity(barCode: String, newQuantity: Int): Boolean
+//    fun getProductByBarcode(barCode: String): Product?
+//    fun getAllProducts(): List<Product>
 //     fun addProduct(product: Product)
-//     fun getAllProducts(): Flow<List<Product>>
 //     fun updateProductAmount(product: Product)
 //     fun deleteProduct(productId: String)
 //     fun getExpiringProducts(): Flow<List<Product>>

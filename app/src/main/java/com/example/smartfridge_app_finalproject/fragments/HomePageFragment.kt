@@ -13,16 +13,16 @@ import com.example.smartfridge_app_finalproject.MainActivity
 import com.example.smartfridge_app_finalproject.R
 import com.example.smartfridge_app_finalproject.adapters.CategoryAdapter
 import com.example.smartfridge_app_finalproject.data.model.Category
-import com.example.smartfridge_app_finalproject.data.repository.CategoryRepository
-import com.example.smartfridge_app_finalproject.interfaces.ICategoryRepository
+import com.example.smartfridge_app_finalproject.managers.CategoryManager
 import com.example.smartfridge_app_finalproject.utilities.Constants
 
 class HomePageFragment : Fragment() {
-    private lateinit var homePage_RV_categories: RecyclerView
+
+    private lateinit var categoryManager: CategoryManager
+    private val categoriesList = MutableLiveData<List<Category>>()
     private lateinit var categoryAdapter: CategoryAdapter
+    private lateinit var homePage_RV_categories: RecyclerView
     private lateinit var homepage_BTN_show_all: AppCompatButton
-    private lateinit var categoryRepository: ICategoryRepository
-    private val categories = MutableLiveData<List<Category>>()
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -34,16 +34,12 @@ class HomePageFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        initializeRepository()
+        categoryManager = CategoryManager(activity as MainActivity)
         findViews(view)
+        setupClickListeners()
         setupRecyclerView()
         loadCategories()
         observeCategories()
-        setupClickListeners()
-    }
-
-    private fun initializeRepository() {
-        categoryRepository = CategoryRepository()
     }
 
     private fun findViews(view: View) {
@@ -53,7 +49,7 @@ class HomePageFragment : Fragment() {
 
     private fun setupRecyclerView() {
         categoryAdapter = CategoryAdapter { category ->
-            handleCategoryClick(category)
+            categoryManager.handleCategoryClick(category) //Click on category
         }
 
         homePage_RV_categories.apply {
@@ -63,31 +59,19 @@ class HomePageFragment : Fragment() {
     }
 
     private fun loadCategories() {
-        //Using the repository to get categories
-        categories.value = categoryRepository.getAllCategories()
+        categoriesList.value = categoryManager.getAllCategories()
     }
 
     private fun observeCategories() {
-        categories.observe(viewLifecycleOwner) { categoryList ->
+        categoriesList.observe(viewLifecycleOwner) { categoryList ->
             categoryAdapter.updateCategories(categoryList)
         }
     }
 
     private fun setupClickListeners() {
         homepage_BTN_show_all.setOnClickListener {
-            // כשלוחצים על "הצג הכל" אין צורך להעביר Bundle
-            (activity as? MainActivity)?.transactionToAnotherFragment(Constants.Activities.INVENTORYLIST)
+            //Show all button click
+            (activity as? MainActivity)?.transactionToAnotherFragment(Constants.Fragment.PRODUCTSLIST)
         }
-    }
-
-    private fun handleCategoryClick(category: Category) {
-        val bundle = Bundle().apply {
-            putString("SELECTED_CATEGORY", category.name)
-        }
-
-        (activity as? MainActivity)?.transactionToAnotherFragment(
-            Constants.Activities.INVENTORYLIST,
-            bundle
-        )
     }
 }
