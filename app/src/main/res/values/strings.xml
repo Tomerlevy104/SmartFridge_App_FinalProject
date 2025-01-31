@@ -35,6 +35,7 @@
     <string name="amount">כמות:</string>
     <string name="default_date">00.00.0000</string>
     <string name="Expired">פג תוקף</string>
-
+    <string name="add_product_manually">ידנית</string>
+    <string name="add_product_barcode">בר קוד</string>
 
 </resources>
