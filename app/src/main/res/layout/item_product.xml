@@ -67,7 +67,7 @@
                 android:id="@+id/inventory_list_TV_quantity_label"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/amount"
+                android:text="@string/quantity"
                 android:textSize="@dimen/product_txt_size" />
 
             <com.google.android.material.textview.MaterialTextView

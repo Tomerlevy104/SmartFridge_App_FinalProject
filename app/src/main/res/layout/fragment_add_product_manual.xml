@@ -40,7 +40,7 @@
                     android:id="@+id/add_product_manual_TV_title"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="מלא פרטים להוספת המוצר"
+                    android:text="@string/fill_details_to_add_product"
                     android:textColor="@color/black"
                     android:textSize="20sp"
                     android:textStyle="bold"
@@ -66,15 +66,32 @@
                 android:layout_height="wrap_content"
                 android:padding="@dimen/default_margin_16">
 
+                <!-- Barcode Field -->
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/add_product_manual_TIL_barcode"
+                    style="@style/Widget.Material3.TextInputLayout.OutlinedBox"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/default_margin_8"
+                    android:hint="@string/barcode"
+                    app:layout_constraintTop_toTopOf="parent">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/add_product_manual_EDT_barcode"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:inputType="number" />
+                </com.google.android.material.textfield.TextInputLayout>
+
                 <!-- Product Name Field -->
                 <com.google.android.material.textfield.TextInputLayout
                     android:id="@+id/add_product_manual_TIL_name"
                     style="@style/Widget.Material3.TextInputLayout.OutlinedBox"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="16dp"
-                    android:hint="שם"
-                    app:layout_constraintTop_toTopOf="parent">
+                    android:layout_marginTop="@dimen/default_margin_8"
+                    android:hint="@string/product_name"
+                    app:layout_constraintTop_toBottomOf="@id/add_product_manual_TIL_barcode">
 
                     <com.google.android.material.textfield.TextInputEditText
                         android:id="@+id/add_product_manual_EDT_name"
@@ -83,14 +100,14 @@
                         android:inputType="text" />
                 </com.google.android.material.textfield.TextInputLayout>
 
-                <!-- Category Dropdown -->
+                <!-- Rest of the fields remain the same -->
                 <com.google.android.material.textfield.TextInputLayout
                     android:id="@+id/add_product_manual_TIL_category"
                     style="@style/Widget.Material3.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="16dp"
-                    android:hint="קטגוריה"
+                    android:layout_marginTop="@dimen/default_margin_8"
+                    android:hint="@string/category"
                     app:layout_constraintTop_toBottomOf="@id/add_product_manual_TIL_name">
 
                     <AutoCompleteTextView
@@ -100,14 +117,13 @@
                         android:inputType="none" />
                 </com.google.android.material.textfield.TextInputLayout>
 
-                <!-- Quantity Field -->
                 <com.google.android.material.textfield.TextInputLayout
                     android:id="@+id/add_product_manual_TIL_quantity"
                     style="@style/Widget.Material3.TextInputLayout.OutlinedBox"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="16dp"
-                    android:hint="כמות"
+                    android:layout_marginTop="@dimen/default_margin_8"
+                    android:hint="@string/quantity"
                     app:layout_constraintTop_toBottomOf="@id/add_product_manual_TIL_category">
 
                     <com.google.android.material.textfield.TextInputEditText
@@ -117,13 +133,12 @@
                         android:inputType="number" />
                 </com.google.android.material.textfield.TextInputLayout>
 
-                <!-- Expiration Date Field -->
                 <com.google.android.material.textfield.TextInputLayout
                     android:id="@+id/add_product_manual_TIL_expiry"
                     style="@style/Widget.Material3.TextInputLayout.OutlinedBox"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="16dp"
+                    android:layout_marginTop="@dimen/default_margin_8"
                     android:hint="@string/expiration_date"
                     app:layout_constraintTop_toBottomOf="@id/add_product_manual_TIL_quantity">
 
@@ -135,15 +150,13 @@
                         android:inputType="date" />
                 </com.google.android.material.textfield.TextInputLayout>
 
-                <!-- Add Product Button -->
                 <com.google.android.material.button.MaterialButton
                     android:id="@+id/add_product_manual_BTN_add"
                     android:layout_width="@dimen/BTN_width"
                     android:layout_height="@dimen/BTN_height"
-                    android:layout_marginTop="32dp"
+                    android:layout_marginTop="@dimen/default_margin_16"
                     android:text="@string/add_product"
                     android:backgroundTint="@color/blue"
-
                     android:textSize="@dimen/btn_txt_size"
                     android:textColor="@color/black"
                     android:padding="@dimen/default_padding_8"

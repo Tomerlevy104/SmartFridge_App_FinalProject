@@ -5,7 +5,7 @@ import com.example.smartfridge_app_finalproject.data.model.User
 
 class UsersRepository {
 
-    // רשימה התחלתית של משתמשים
+    // רשימה התחלתית של משתמשים לטעון מהפייר בייס?
     fun getInitialUsers() = listOf(
         User(
             firstName = "תומר",

@@ -19,7 +19,7 @@ class Constants {
         const val SUPERMARKETLOCATION = "SUPERMARKETLOCATION"
     }
 
-    object Category{
+    object Category {
         const val FRUITS_AND_VEGETABLES = "פירות וירקות"
         const val DRINKS = "משקאות"
         const val MEAT = "בשר ודגים"
@@ -35,9 +35,9 @@ class Constants {
         const val OTHER = "אחר"
     }
 
-
-
-
-
-
+    object ValidInput {
+        const val MIN_PASSWORD_LENGTH = 6
+        const val MAX_PRODUCT_NAME_LENGTH = 50
+        const val MAX_QUANTITY = 999
+    }
 }

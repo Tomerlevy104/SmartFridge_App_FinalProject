@@ -4,22 +4,20 @@ import com.example.smartfridge_app_finalproject.data.model.User
 import com.example.smartfridge_app_finalproject.data.repository.UsersRepository
 
 class UsersManager private constructor() {
-    //Users repository
-    private var usersRepository = UsersRepository()
+
+    private var usersRepository = UsersRepository() //Users repository
     private val users = mutableListOf<User>()
 
     private var currentUser: User? = null
 
 
     init {
-        // Initialize users list with all users from repository
+        //Initialize users list with all users from repository
         usersRepository.getInitialUsers().forEach { user ->
             addUser(user)
         }
     }
 
-
-    // פונקציות לניהול משתמשים
     fun addUser(user: User): Boolean {
         //Checking id user exist
         if (users.any { it.Email == user.Email || it.userName == user.userName }) {

@@ -34,8 +34,6 @@ class ManageProfileFragment : Fragment() {
         setupRecyclerView()
         //Call with specific username
         loadInitialUsers("benny_l")
-
-
     }
 
     private fun setupRecyclerView() {

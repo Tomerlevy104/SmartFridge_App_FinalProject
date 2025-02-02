@@ -7,6 +7,7 @@ interface IInventoryManager {
 
     fun getAllProducts(): Flow<List<Product>>
     fun getProductsByCategory(category: String): List<Product>
+    fun addProduct(product: Product): Boolean
 
     //fun getInitialProducts(): List<Product>
 //    fun addNewProduct(product: Product): Boolean
