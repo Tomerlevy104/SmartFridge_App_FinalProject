@@ -1,0 +1,159 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:background="@color/white"
+    android:layoutDirection="rtl"
+    tools:context=".fragments.AddProductManualFragment">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <com.google.android.material.card.MaterialCardView
+            android:id="@+id/add_product_manual_CV_headerCard"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/template_header"
+            app:cardBackgroundColor="@color/blue"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:padding="@dimen/default_margin_16">
+
+                <!-- App Logo -->
+                <androidx.appcompat.widget.AppCompatImageView
+                    android:id="@+id/add_product_manual_IMG_logo"
+                    android:layout_width="80dp"
+                    android:layout_height="80dp"
+                    android:src="@drawable/app_logo_no_background"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintBottom_toTopOf="@id/add_product_manual_TV_title" />
+
+                <!-- Title -->
+                <com.google.android.material.textview.MaterialTextView
+                    android:id="@+id/add_product_manual_TV_title"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="מלא פרטים להוספת המוצר"
+                    android:textColor="@color/black"
+                    android:textSize="20sp"
+                    android:textStyle="bold"
+                    android:layout_marginTop="8dp"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/add_product_manual_IMG_logo"
+                    app:layout_constraintBottom_toBottomOf="parent" />
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+        </com.google.android.material.card.MaterialCardView>
+
+        <ScrollView
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:fillViewport="true"
+            app:layout_constraintTop_toBottomOf="@id/add_product_manual_CV_headerCard"
+            app:layout_constraintBottom_toBottomOf="parent">
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:padding="@dimen/default_margin_16">
+
+                <!-- Product Name Field -->
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/add_product_manual_TIL_name"
+                    style="@style/Widget.Material3.TextInputLayout.OutlinedBox"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="16dp"
+                    android:hint="שם"
+                    app:layout_constraintTop_toTopOf="parent">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/add_product_manual_EDT_name"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:inputType="text" />
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <!-- Category Dropdown -->
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/add_product_manual_TIL_category"
+                    style="@style/Widget.Material3.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="16dp"
+                    android:hint="קטגוריה"
+                    app:layout_constraintTop_toBottomOf="@id/add_product_manual_TIL_name">
+
+                    <AutoCompleteTextView
+                        android:id="@+id/add_product_manual_ACTV_category"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:inputType="none" />
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <!-- Quantity Field -->
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/add_product_manual_TIL_quantity"
+                    style="@style/Widget.Material3.TextInputLayout.OutlinedBox"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="16dp"
+                    android:hint="כמות"
+                    app:layout_constraintTop_toBottomOf="@id/add_product_manual_TIL_category">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/add_product_manual_EDT_quantity"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:inputType="number" />
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <!-- Expiration Date Field -->
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/add_product_manual_TIL_expiry"
+                    style="@style/Widget.Material3.TextInputLayout.OutlinedBox"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="16dp"
+                    android:hint="@string/expiration_date"
+                    app:layout_constraintTop_toBottomOf="@id/add_product_manual_TIL_quantity">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/add_product_manual_EDT_expiry"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:focusable="false"
+                        android:inputType="date" />
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <!-- Add Product Button -->
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/add_product_manual_BTN_add"
+                    android:layout_width="@dimen/BTN_width"
+                    android:layout_height="@dimen/BTN_height"
+                    android:layout_marginTop="32dp"
+                    android:text="@string/add_product"
+                    android:backgroundTint="@color/blue"
+
+                    android:textSize="@dimen/btn_txt_size"
+                    android:textColor="@color/black"
+                    android:padding="@dimen/default_padding_8"
+                    app:cornerRadius="@dimen/BTN_cornerRadius"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/add_product_manual_TIL_expiry" />
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+        </ScrollView>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</FrameLayout>

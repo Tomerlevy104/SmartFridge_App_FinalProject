@@ -106,6 +106,7 @@
                         android:layout_width="@dimen/small_IMG_size"
                         android:layout_height="@dimen/small_IMG_size"
                         android:src="@drawable/category_no_picture"
+                        android:visibility="invisible"
                         app:cornerSize="50%"
                         app:shapeAppearance="@style/ShapeAppearance.Material3.Corner.ExtraLarge" />
 

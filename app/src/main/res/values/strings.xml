@@ -19,7 +19,6 @@
     <string name="user_name">שם משתמש</string>
     <string name="password">סיסמא</string>
     <string name="confirm_password">אימות סיסמא</string>
-    <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="welcome">ברוכים הבאים</string>
     <string name="show_all_inventory">הצג הכל</string>
@@ -37,5 +36,8 @@
     <string name="Expired">פג תוקף</string>
     <string name="add_product_manually">ידנית</string>
     <string name="add_product_barcode">בר קוד</string>
+    <string name="manage_user">ניהול משתמשים</string>
+    <string name="add_user">הוספת משתמש למאגר</string>
+    <string name="add_product">הוסף מוצר</string>
 
 </resources>

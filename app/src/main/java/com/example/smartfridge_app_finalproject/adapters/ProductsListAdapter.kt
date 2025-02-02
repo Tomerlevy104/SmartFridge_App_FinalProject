@@ -31,13 +31,23 @@ class ProductsListAdapter(
             tvQuantity.text = product.quantity.toString()
             tvDate.text = product.expiryDate
 
+
             // Load image using your preferred image loading library
+
             // Example with Glide:
             // Glide.with(itemView.context).load(product.imageUrl).into(imageProduct)
+
+            if (product.imageUrl != 0) {  //Check if there is a picture
+                imageProduct.setImageResource(product.imageUrl)
+            } else {
+                //If photo not exist - default picture
+                imageProduct.setImageResource(R.drawable.category_no_picture)
+            }
 
             //Increase product amount
             btnIncrease.setOnClickListener {
                 onQuantityChanged(product, product.quantity + 1)
+                //פה קורה לפונקציה שמעלה את כמות המוצר
             }
 
             //Decrease product amount

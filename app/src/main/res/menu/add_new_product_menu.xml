@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android" >
+    <item
+        android:id="@+id/manual_add"
+        android:icon="@drawable/add_manually"
+        android:title="@string/add_product_manually"/>
+    <item
+        android:id="@+id/barcode_add"
+        android:icon="@drawable/add_barcode"
+        android:title="@string/add_product_barcode" />
+</menu>

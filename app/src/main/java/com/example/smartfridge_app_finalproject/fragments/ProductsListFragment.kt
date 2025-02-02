@@ -61,8 +61,13 @@ class ProductsListFragment : Fragment() {
     private fun loadProducts() {
         theProductsListInInventory.clear()
         products_list_TV_categoryName.text = selectedCategory //Set tittel of chosen category
-        selectedCategoryImage?.let { //Set image of chosen category
-            products_list_IMG_category.setImageResource(it)
+
+
+        if (selectedCategoryImage != null) {
+            products_list_IMG_category.visibility = View.VISIBLE
+            products_list_IMG_category.setImageResource(selectedCategoryImage!!) //Set image of chosen category
+        } else {
+            products_list_IMG_category.visibility = View.GONE
         }
 
         //If category selected - show all products in this category

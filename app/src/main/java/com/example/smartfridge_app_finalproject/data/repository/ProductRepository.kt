@@ -1,5 +1,6 @@
 package com.example.smartfridge_app_finalproject.data.repository
 
+import com.example.smartfridge_app_finalproject.R
 import com.example.smartfridge_app_finalproject.data.model.Product
 import com.example.smartfridge_app_finalproject.utilities.Constants
 import java.time.LocalDate
@@ -34,7 +35,7 @@ class ProductRepository {
             barCode = "FV001",
             name = "תפוח עץ",
             category = Constants.Category.FRUITS_AND_VEGETABLES,
-            imageUrl = "",
+            imageUrl = R.drawable.pro_apple,
             quantity = 4,
             expiryDate = getDefaultExpiryDate()
         ),
@@ -42,7 +43,7 @@ class ProductRepository {
             barCode = "FV002",
             name = "בננה",
             category = Constants.Category.FRUITS_AND_VEGETABLES,
-            imageUrl = "",
+            imageUrl = R.drawable.pro_banana,
             quantity = 1,
             expiryDate = getDefaultExpiryDate()
         ),
@@ -50,7 +51,7 @@ class ProductRepository {
             barCode = "FV003",
             name = "עגבנייה",
             category = Constants.Category.FRUITS_AND_VEGETABLES,
-            imageUrl = "",
+            imageUrl = R.drawable.pro_tomato,
             quantity = 5,
             expiryDate = getDefaultExpiryDate()
         ),
@@ -58,7 +59,7 @@ class ProductRepository {
             barCode = "FV004",
             name = "מלפפון",
             category = Constants.Category.FRUITS_AND_VEGETABLES,
-            imageUrl = "",
+            imageUrl = R.drawable.pro_cucamber,
             quantity = 1,
             expiryDate = getDefaultExpiryDate()
         ),
@@ -66,7 +67,7 @@ class ProductRepository {
             barCode = "FV005",
             name = "גזר",
             category = Constants.Category.FRUITS_AND_VEGETABLES,
-            imageUrl = "",
+            imageUrl = R.drawable.pro_carrot,
             quantity = 3,
             expiryDate = getDefaultExpiryDate()
         )
@@ -77,7 +78,7 @@ class ProductRepository {
             barCode = "DR001",
             name = "מים מינרלים",
             category = Constants.Category.DRINKS,
-            imageUrl = "",
+            imageUrl = 0,
             quantity = 2,
             expiryDate = getDefaultExpiryDate()
         ),
@@ -85,7 +86,7 @@ class ProductRepository {
             barCode = "DR002",
             name = "קולה",
             category = Constants.Category.DRINKS,
-            imageUrl = "",
+            imageUrl = 0,
             quantity = 3,
             expiryDate = getDefaultExpiryDate()
         ),
@@ -93,7 +94,7 @@ class ProductRepository {
             barCode = "DR003",
             name = "מיץ תפוזים",
             category = Constants.Category.DRINKS,
-            imageUrl = "",
+            imageUrl = 0,
             quantity = 1,
             expiryDate = getDefaultExpiryDate()
         ),
@@ -101,7 +102,7 @@ class ProductRepository {
             barCode = "DR004",
             name = "ספרייט",
             category = Constants.Category.DRINKS,
-            imageUrl = "",
+            imageUrl = 0,
             quantity = 2,
             expiryDate = getDefaultExpiryDate()
         )
@@ -112,7 +113,7 @@ class ProductRepository {
             barCode = "MF001",
             name = "חזה עוף",
             category = Constants.Category.MEAT,
-            imageUrl = "",
+            imageUrl = 0,
             quantity = 1,
             expiryDate = getDefaultExpiryDate()
         ),
@@ -120,7 +121,7 @@ class ProductRepository {
             barCode = "MF002",
             name = "סלמון",
             category = Constants.Category.MEAT,
-            imageUrl = "",
+            imageUrl = 0,
             quantity = 1,
             expiryDate = getDefaultExpiryDate()
         ),
@@ -128,7 +129,7 @@ class ProductRepository {
             barCode = "MF003",
             name = "בשר טחון",
             category = Constants.Category.MEAT,
-            imageUrl = "",
+            imageUrl = 0,
             quantity = 1,
             expiryDate = getDefaultExpiryDate()
         ),
@@ -136,7 +137,7 @@ class ProductRepository {
             barCode = "MF004",
             name = "כרעי עוף",
             category = Constants.Category.MEAT,
-            imageUrl = "",
+            imageUrl = 0,
             quantity = 1,
             expiryDate = getDefaultExpiryDate()
         )
@@ -147,7 +148,7 @@ class ProductRepository {
             barCode = "OH001",
             name = "קינואה אורגנית",
             category = Constants.Category.ORGANICANDHEALTH,
-            imageUrl = "",
+            imageUrl = 0,
             quantity = 1,
             expiryDate = getDefaultExpiryDate()
         ),
@@ -155,7 +156,7 @@ class ProductRepository {
             barCode = "OH002",
             name = "טחינה אורגנית",
             category = Constants.Category.ORGANICANDHEALTH,
-            imageUrl = "",
+            imageUrl = 0,
             quantity = 1,
             expiryDate = getDefaultExpiryDate()
         ),
@@ -163,7 +164,7 @@ class ProductRepository {
             barCode = "OH003",
             name = "חלב שקדים",
             category = Constants.Category.ORGANICANDHEALTH,
-            imageUrl = "",
+            imageUrl = 0,
             quantity = 1,
             expiryDate = getDefaultExpiryDate()
         )
@@ -174,7 +175,7 @@ class ProductRepository {
             barCode = "SN001",
             name = "במבה",
             category = Constants.Category.SNACKS,
-            imageUrl = "",
+            imageUrl = 0,
             quantity = 1,
             expiryDate = getDefaultExpiryDate()
         ),
@@ -182,7 +183,7 @@ class ProductRepository {
             barCode = "SN002",
             name = "ביסלי",
             category = Constants.Category.SNACKS,
-            imageUrl = "",
+            imageUrl = 0,
             quantity = 1,
             expiryDate = getDefaultExpiryDate()
         ),
@@ -190,7 +191,7 @@ class ProductRepository {
             barCode = "SN003",
             name = "צ׳יפס",
             category = Constants.Category.SNACKS,
-            imageUrl = "",
+            imageUrl = 0,
             quantity = 1,
             expiryDate = getDefaultExpiryDate()
         )
@@ -201,7 +202,7 @@ class ProductRepository {
             barCode = "BR001",
             name = "לחם אחיד",
             category = Constants.Category.BREADS,
-            imageUrl = "",
+            imageUrl = 0,
             quantity = 1,
             expiryDate = getDefaultExpiryDate()
         ),
@@ -209,7 +210,7 @@ class ProductRepository {
             barCode = "BR002",
             name = "פיתות",
             category = Constants.Category.BREADS,
-            imageUrl = "",
+            imageUrl = 0,
             quantity = 1,
             expiryDate = getDefaultExpiryDate()
         ),
@@ -217,7 +218,7 @@ class ProductRepository {
             barCode = "BR003",
             name = "לחמניות",
             category = Constants.Category.BREADS,
-            imageUrl = "",
+            imageUrl = 0,
             quantity = 1,
             expiryDate = getDefaultExpiryDate()
         )
@@ -228,7 +229,7 @@ class ProductRepository {
             barCode = "CL001",
             name = "אקונומיקה",
             category = Constants.Category.CLEANING,
-            imageUrl = "",
+            imageUrl = 0,
             quantity = 1,
             expiryDate = getDefaultExpiryDate()
         ),
@@ -236,7 +237,7 @@ class ProductRepository {
             barCode = "CL002",
             name = "סבון כלים",
             category = Constants.Category.CLEANING,
-            imageUrl = "",
+            imageUrl = 0,
             quantity = 1,
             expiryDate = getDefaultExpiryDate()
         ),
@@ -244,7 +245,7 @@ class ProductRepository {
             barCode = "CL003",
             name = "נייר טואלט",
             category = Constants.Category.CLEANING,
-            imageUrl = "",
+            imageUrl = 0,
             quantity = 1,
             expiryDate = getDefaultExpiryDate()
         )
@@ -255,7 +256,7 @@ class ProductRepository {
             barCode = "CB001",
             name = "קמח",
             category = Constants.Category.COOKINGBAKING,
-            imageUrl = "",
+            imageUrl = 0,
             quantity = 1,
             expiryDate = getDefaultExpiryDate()
         ),
@@ -263,7 +264,7 @@ class ProductRepository {
             barCode = "CB002",
             name = "סוכר",
             category = Constants.Category.COOKINGBAKING,
-            imageUrl = "",
+            imageUrl = 0,
             quantity = 1,
             expiryDate = getDefaultExpiryDate()
         ),
@@ -271,7 +272,7 @@ class ProductRepository {
             barCode = "CB003",
             name = "שמן",
             category = Constants.Category.COOKINGBAKING,
-            imageUrl = "",
+            imageUrl = 0,
             quantity = 1,
             expiryDate = getDefaultExpiryDate()
         )
@@ -282,7 +283,7 @@ class ProductRepository {
             barCode = "PT001",
             name = "מזון לחתולים",
             category = Constants.Category.ANIMALS,
-            imageUrl = "",
+            imageUrl = 0,
             quantity = 1,
             expiryDate = getDefaultExpiryDate()
         ),
@@ -290,7 +291,7 @@ class ProductRepository {
             barCode = "PT002",
             name = "מזון לכלבים",
             category = Constants.Category.ANIMALS,
-            imageUrl = "",
+            imageUrl = 0,
             quantity = 1,
             expiryDate = getDefaultExpiryDate()
         ),
@@ -298,7 +299,7 @@ class ProductRepository {
             barCode = "PT003",
             name = "חול לחתולים",
             category = Constants.Category.ANIMALS,
-            imageUrl = "",
+            imageUrl = 0,
             quantity = 1,
             expiryDate = getDefaultExpiryDate()
         )
@@ -309,7 +310,7 @@ class ProductRepository {
             barCode = "DA001",
             name = "חלב",
             category = Constants.Category.DAIRY,
-            imageUrl = "",
+            imageUrl = 0,
             quantity = 1,
             expiryDate = getDefaultExpiryDate()
         ),
@@ -317,7 +318,7 @@ class ProductRepository {
             barCode = "DA002",
             name = "גבינה צהובה",
             category = Constants.Category.DAIRY,
-            imageUrl = "",
+            imageUrl = 0,
             quantity = 1,
             expiryDate = getDefaultExpiryDate()
         ),
@@ -325,7 +326,7 @@ class ProductRepository {
             barCode = "DA003",
             name = "יוגורט",
             category = Constants.Category.DAIRY,
-            imageUrl = "",
+            imageUrl = 0,
             quantity = 1,
             expiryDate = getDefaultExpiryDate()
         )
@@ -336,7 +337,7 @@ class ProductRepository {
             barCode = "BP001",
             name = "חיתולים",
             category = Constants.Category.BABYS,
-            imageUrl = "",
+            imageUrl = 0,
             quantity = 1,
             expiryDate = getDefaultExpiryDate()
         ),
@@ -344,7 +345,7 @@ class ProductRepository {
             barCode = "BP002",
             name = "מטרנה",
             category = Constants.Category.BABYS,
-            imageUrl = "",
+            imageUrl = 0,
             quantity = 1,
             expiryDate = getDefaultExpiryDate()
         ),
@@ -352,7 +353,7 @@ class ProductRepository {
             barCode = "BP003",
             name = "מגבונים",
             category = Constants.Category.BABYS,
-            imageUrl = "",
+            imageUrl = 0,
             quantity = 1,
             expiryDate = getDefaultExpiryDate()
         )
@@ -363,7 +364,7 @@ class ProductRepository {
             barCode = "FR001",
             name = "פיצה קפואה",
             category = Constants.Category.FROZEN,
-            imageUrl = "",
+            imageUrl = 0,
             quantity = 1,
             expiryDate = getDefaultExpiryDate()
         ),
@@ -371,7 +372,7 @@ class ProductRepository {
             barCode = "FR002",
             name = "ירקות קפואים",
             category = Constants.Category.FROZEN,
-            imageUrl = "",
+            imageUrl = 0,
             quantity = 1,
             expiryDate = getDefaultExpiryDate()
         ),
@@ -379,7 +380,7 @@ class ProductRepository {
             barCode = "FR003",
             name = "גלידה",
             category = Constants.Category.FROZEN,
-            imageUrl = "",
+            imageUrl = 0,
             quantity = 1,
             expiryDate = getDefaultExpiryDate()
         )
