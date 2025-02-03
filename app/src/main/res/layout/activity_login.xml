@@ -106,7 +106,7 @@
         android:layout_marginTop="@dimen/default_margin_8"
         android:layout_marginEnd="24dp"
         android:text="@string/forgot_password"
-        android:textColor="@color/blue"
+        android:textColor="@color/simple_blue"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@id/login_TIL_password" />
 
@@ -150,7 +150,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/for_registration_press_here"
-            android:textColor="@color/blue" />
+            android:textColor="@color/simple_blue" />
 
     </androidx.appcompat.widget.LinearLayoutCompat>
 

@@ -19,7 +19,7 @@
             app:layout_constraintTop_toTopOf="parent">
 
             <androidx.appcompat.widget.LinearLayoutCompat
-                android:id="@+id/ll_location"
+                android:id="@+id/products_list_ll_location"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="end"
@@ -90,7 +90,6 @@
                     </androidx.appcompat.widget.LinearLayoutCompat>
                 </androidx.appcompat.widget.LinearLayoutCompat>
 
-
                 <androidx.appcompat.widget.LinearLayoutCompat
                     android:id="@+id/products_list_ll_category"
                     android:layout_width="wrap_content"
@@ -123,9 +122,8 @@
                 </androidx.appcompat.widget.LinearLayoutCompat>
             </androidx.constraintlayout.widget.ConstraintLayout>
 
-
             <com.google.android.material.card.MaterialCardView
-                android:id="@+id/homepage_CV_search"
+                android:id="@+id/products_list_CV_search"
                 android:layout_width="match_parent"
                 android:layout_height="50dp"
                 android:layout_gravity="bottom"
@@ -133,19 +131,38 @@
                 android:layout_marginBottom="@dimen/default_margin_8"
                 app:cardCornerRadius="@dimen/BTN_cornerRadius">
 
-                <androidx.appcompat.widget.AppCompatEditText
-                    android:id="@+id/homepage_ET_search"
+                <androidx.appcompat.widget.LinearLayoutCompat
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:background="@null"
-                    android:hint="@string/search_product_in_inventory"
-                    android:padding="@dimen/default_padding_8" />
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal">
+
+                    <androidx.appcompat.widget.AppCompatEditText
+                        android:id="@+id/products_list_ET_search"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1"
+                        android:background="@null"
+                        android:hint="@string/search_product_in_inventory"
+                        android:padding="@dimen/default_padding_8" />
+
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/products_list_BTN_search"
+                        style="@style/Widget.Material3.Button.TextButton"
+                        android:layout_width="wrap_content"
+                        android:layout_height="40dp"
+                        android:layout_marginEnd="@dimen/default_margin_8"
+                        android:text="@string/search"
+                        android:textColor="@color/black" />
+
+                </androidx.appcompat.widget.LinearLayoutCompat>
 
             </com.google.android.material.card.MaterialCardView>
+
         </com.google.android.material.card.MaterialCardView>
 
         <androidx.appcompat.widget.LinearLayoutCompat
-            android:id="@+id/inventory_list_LLC_filters"
+            android:id="@+id/products_list_list_LLC_filters"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginHorizontal="@dimen/default_margin_16"
@@ -155,24 +172,13 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/products_list_CV_headerCard">
 
-            <!--            <androidx.appcompat.widget.AppCompatButton-->
-            <!--                android:id="@+id/inventory_list_BTN_all"-->
-            <!--                android:layout_width="wrap_content"-->
-            <!--                android:layout_height="wrap_content"-->
-            <!--                android:layout_marginEnd="8dp"-->
-            <!--                android:gravity="center"-->
-            <!--                android:padding="@dimen/default_padding_8"-->
-            <!--                android:text="@string/show_all"-->
-            <!--                android:textColor="@color/black"-->
-            <!--                android:textSize="@dimen/btn_txt_size" />-->
-
             <Space
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1" />
 
             <androidx.appcompat.widget.AppCompatButton
-                android:id="@+id/inventory_list_BTN_categories"
+                android:id="@+id/products_list_BTN_categories"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"
@@ -185,7 +191,7 @@
         </androidx.appcompat.widget.LinearLayoutCompat>
 
         <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/inventory_list_RV_products"
+            android:id="@+id/products_list_RV_products"
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_marginStart="@dimen/default_margin_16"
@@ -193,7 +199,7 @@
             android:layout_marginEnd="@dimen/default_margin_16"
             android:layout_marginBottom="@dimen/default_margin_16"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/inventory_list_LLC_filters"
+            app:layout_constraintTop_toBottomOf="@id/products_list_list_LLC_filters"
             tools:listitem="@layout/item_product" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>

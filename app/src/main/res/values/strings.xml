@@ -2,7 +2,7 @@
     <string name="app_name">SmartFridge</string>
     <string name="smart">Smart</string>
     <string name="fridge">Fridge</string>
-    <string name="app_subtitle">Smart Management for Your Kitchen</string>
+    <string name="app_subtitle">ניהול חכם למטבח שלך</string>
     <string name="login">התחבר</string>
     <string name="register">הירשם</string>
     <string name="home_btn_txt">דף הבית</string>
@@ -30,7 +30,7 @@
     <string name="show_all">הצג הכל</string>
     <string name="for_categories">לקטגוריות</string>
     <string name="remove_item">הסר מוצר</string>
-    <string name="expiration_date">תאריך תפוגה: </string>
+    <string name="expiration_date">תאריך תפוגה</string>
     <string name="product_name">שם מוצר</string>
     <string name="barcode">בר קוד</string>
     <string name="default_date">00.00.0000</string>
@@ -49,6 +49,15 @@
     <string name="valid_input_please_select_a_valid_expiration_date">נא לבחור תאריך תפוגה תקין</string>
     <string name="added_successfully">המוצר %1$s נוסף בהצלחה!</string>
     <string name="product_not_added">המוצר כבר קיים במלאי</string>
+    <string name="search">חפש</string>
+    <string name="enter_product_name">אנא הכנס שם מוצר לחיפוש</string>
+    <string name="product_not_found">המוצר לא נמצא במלאי</string>
+    <string name="product_found">מוצר נמצא</string>
+    <string name="similar_products_found">נמצאו מוצרים דומים</string>
+    <string name="ok">אישור</string>
+    <string name="name">שם</string>
+
+
 
 
 </resources>

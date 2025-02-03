@@ -1,14 +1,91 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layoutDirection="rtl"
     tools:context=".fragments.SuperMarketFragment">
 
-    <!-- TODO: Update blank fragment layout -->
-    <TextView
+    <com.google.android.material.card.MaterialCardView
+        android:id="@+id/supermarket_CV_headerCard"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:text="@string/hello_blank_fragment" />
+        android:layout_height="@dimen/template_header"
+        app:cardBackgroundColor="@color/blue"
+        app:layout_constraintTop_toTopOf="parent">
 
-</FrameLayout>
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:padding="@dimen/default_margin_16">
+
+            <!-- App Logo -->
+            <androidx.appcompat.widget.AppCompatImageView
+                android:id="@+id/supermarket_IMG_logo"
+                android:layout_width="60dp"
+                android:layout_height="60dp"
+                android:src="@drawable/app_logo_no_background"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <!-- Title -->
+            <com.google.android.material.textview.MaterialTextView
+                android:id="@+id/supermarket_TV_title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="חפש את הסופר הקרוב ביותר אליך"
+                android:textColor="@color/black"
+                android:textSize="20sp"
+                android:textStyle="bold"
+                android:layout_marginTop="8dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/supermarket_IMG_logo" />
+
+            <!-- Search Box -->
+            <com.google.android.material.card.MaterialCardView
+                android:id="@+id/supermarket_CV_search"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:layout_marginTop="8dp"
+                app:cardCornerRadius="8dp"
+                app:cardElevation="2dp"
+                app:layout_constraintTop_toBottomOf="@id/supermarket_TV_title">
+
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/supermarket_TIL_search"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:hint="הקלד שם סופר"
+                    app:endIconMode="clear_text"
+                    style="@style/Widget.Material3.TextInputLayout.OutlinedBox">
+<!--                    app:startIconDrawable="@drawable/"-->
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/supermarket_TIET_search"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:background="@null"
+                        android:imeOptions="actionSearch"
+                        android:inputType="text"
+                        android:maxLines="1" />
+
+                </com.google.android.material.textfield.TextInputLayout>
+
+            </com.google.android.material.card.MaterialCardView>
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+    </com.google.android.material.card.MaterialCardView>
+
+    <!-- Map Fragment Container -->
+    <androidx.fragment.app.FragmentContainerView
+        android:id="@+id/supermarket_MAP_container"
+        android:name="com.google.android.gms.maps.SupportMapFragment"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        app:layout_constraintTop_toBottomOf="@id/supermarket_CV_headerCard"
+        app:layout_constraintBottom_toBottomOf="parent" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

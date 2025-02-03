@@ -163,25 +163,28 @@ class AddProductManualFragment : Fragment() {
             android.R.layout.simple_dropdown_item_1line,
             categoryNames
         )
-
         categoryDropdown.setAdapter(adapter)
     }
 
     private fun setupDatePicker() {
         expiryDateEdit.setOnClickListener {
+            expiryDateEdit.error = null
             showDatePicker()
         }
     }
 
     private fun showDatePicker() {
-        val datePickerDialog = DatePickerDialog(
-            requireContext(),
+        val datePickerDialog = DatePickerDialog(requireContext(),
             { _, year, month, day ->
                 calendar.set(Calendar.YEAR, year)
                 calendar.set(Calendar.MONTH, month)
                 calendar.set(Calendar.DAY_OF_MONTH, day)
+                //Clear the error (if any) when a new date is selected
+                expiryDateEdit.error = null
                 updateDateInView()
             },
+
+            //These three parameters determine the start date that will be displayed in the dialog
             calendar.get(Calendar.YEAR),
             calendar.get(Calendar.MONTH),
             calendar.get(Calendar.DAY_OF_MONTH)
