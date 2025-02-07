@@ -56,6 +56,20 @@ dependencies {
     implementation(platform(libs.firebase.bom))
     implementation(libs.firebase.analytics)
 
-    //Firebase AuthUi
-    implementation (libs.firebase.ui.auth)
+    //Firebase AuthUi:
+    implementation(libs.firebase.ui.auth)
+
+    //Glide - for image loader
+    implementation(libs.glide)
+
+    //Firestore:
+    implementation(libs.firebase.firestore)
+
+    //Storage
+    implementation(libs.firebase.storage)
+
+    //Realtime DB:
+    implementation(libs.firebase.database)
+
+
 }

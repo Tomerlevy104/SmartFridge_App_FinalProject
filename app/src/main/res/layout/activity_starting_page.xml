@@ -96,11 +96,8 @@
                 android:text="@string/register"
                 android:textColor="@color/white"
                 android:textSize="@dimen/btn_txt_size"
-
                 android:textStyle="bold"
-                app:cornerRadius="@dimen/BTN_cornerRadius"
-                app:strokeColor="@color/blue"
-                app:strokeWidth="@dimen/startingPage_strokeWidth_reg_BTN" />
+                app:cornerRadius="@dimen/BTN_cornerRadius"/>
 
         </androidx.appcompat.widget.LinearLayoutCompat>
     </com.google.android.material.card.MaterialCardView>

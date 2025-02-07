@@ -56,8 +56,17 @@
     <string name="similar_products_found">נמצאו מוצרים דומים</string>
     <string name="ok">אישור</string>
     <string name="name">שם</string>
-
-
+    <string name="identification_via_email">הזדהות באמצעות אימייל</string>
+    <string name="identification_via_sms">הזדהות באמצעות SMS</string>
+    <string name="define_profile_image">הגדר תמונת פרופיל</string>
+    <string name="logout">התנתקות</string>
+    <string name="invalid_first_name">שם פרטי לא תקין</string>
+    <string name="invalid_last_name">שם משפחה לא תקין</string>
+    <string name="invalid_email">כתובת אימייל לא תקינה</string>
+    <string name="invalid_user_name">שם משתמש לא תקין</string>
+    <string name="password_must_contain_at_least">סיסמה חייבת להכיל לפחות 6 תווים, אות אחת ומספר אחד</string>
+    <string name="mismatched_passwords">סיסמאות לא תואמות</string>
+    <string name="user_name_already_exist">שם משתמש כבר קיים במערכת</string>
 
 
 </resources>

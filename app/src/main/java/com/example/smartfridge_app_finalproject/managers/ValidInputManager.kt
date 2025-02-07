@@ -17,6 +17,18 @@ class ValidInputManager private constructor() {
             }
     }
 
+    //First name validation checker
+    fun isValidFirstName(firstName: String): Boolean {
+        if (firstName.length < 2) return false
+        return firstName.all { it.isLetter() }
+    }
+
+    //Last name validation checker
+    fun isValidLastName(lastName: String): Boolean {
+        if (lastName.length < 2) return false
+        return lastName.all { it.isLetter() }
+    }
+
     //Barcode Validation Checker
     fun isValidBarcode(barcode: String): Boolean {
         //Check if barcode is empty or not numeric
