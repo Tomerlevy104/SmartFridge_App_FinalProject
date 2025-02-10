@@ -1,11 +1,16 @@
 package com.example.smartfridge_app_finalproject
 
+import android.content.Intent
 import android.os.Bundle
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.google.android.material.button.MaterialButton
 import com.google.android.material.textfield.TextInputLayout
 import androidx.appcompat.widget.AppCompatEditText
+import com.example.smartfridge_app_finalproject.data.model.User
 import com.example.smartfridge_app_finalproject.managers.ValidInputManager
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.firestore.FirebaseFirestore
 
 class RegisterActivity : AppCompatActivity() {
 
@@ -130,20 +135,52 @@ class RegisterActivity : AppCompatActivity() {
             isValid = false
         }
 
-        // Username existence check
-        if (isValid && validInputManager.isUsernameExists(username)) {
-            register_TIL_username.error = getString(R.string.user_name_already_exist)
-            isValid = false
-        }
-
         return isValid
     }
 
     private fun handleRegistration() {
-        // TODO: Implement registration logic with Firebase
-        // 1. Create user with email/password
-        // 2. Add user details to Firestore/Realtime Database
-        // 3. Handle success/failure scenarios
-        // 4. Navigate to appropriate screen
+        val firstName = register_ET_firstname.text.toString().trim()
+        val lastName = register_ET_lastname.text.toString().trim()
+        val email = register_ET_email.text.toString().trim()
+        val username = register_ET_username.text.toString().trim()
+        val password = register_ET_password.text.toString()
+
+        // Create Firebase Auth user
+        FirebaseAuth.getInstance().createUserWithEmailAndPassword(email, password)
+            .addOnCompleteListener { task ->
+                if (task.isSuccessful) {
+                    val firebaseUser = FirebaseAuth.getInstance().currentUser
+
+                    val user = User(
+                        firstName = firstName,
+                        lastName = lastName,
+                        email = email,
+                        userName = username,
+                        password = "",  //I don't save the password in the firestore
+                        profileImageUrl = "",
+                        uid = firebaseUser?.uid ?: ""
+                    )
+
+                    //Add user to Firestore
+                    FirebaseFirestore.getInstance().collection("users")
+                        .document(firebaseUser?.uid ?: "")
+                        .set(user.toMap())
+                        .addOnSuccessListener {
+                            showToast(getString(R.string.registration_success))
+                            //Navigate to main activity
+                            startActivity(Intent(this, MainActivity::class.java))
+                            finish()
+                        }
+                        .addOnFailureListener {
+                            showToast(getString(R.string.registration_failed))
+                        }
+                } else {
+                    showToast(getString(R.string.user_name_already_exist))
+                }
+            }
+    }
+
+    private fun showToast(message: String) {
+        Toast.makeText(this, message, Toast.LENGTH_LONG).show()
     }
 }

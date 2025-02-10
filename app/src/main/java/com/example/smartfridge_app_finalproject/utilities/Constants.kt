@@ -40,4 +40,9 @@ class Constants {
         const val MAX_PRODUCT_NAME_LENGTH = 50
         const val MAX_QUANTITY = 999
     }
+
+    object ImageUploadRequest {
+        const val CAMERA_PERMISSION_REQUEST = 100
+        const val GALLERY_PERMISSION_REQUEST = 101
+    }
 }

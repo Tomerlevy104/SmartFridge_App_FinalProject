@@ -67,6 +67,17 @@
     <string name="password_must_contain_at_least">סיסמה חייבת להכיל לפחות 6 תווים, אות אחת ומספר אחד</string>
     <string name="mismatched_passwords">סיסמאות לא תואמות</string>
     <string name="user_name_already_exist">שם משתמש כבר קיים במערכת</string>
+    <string name="registration_success">ההרשמה הושלמה בהצלחה!</string>
+    <string name="registration_failed">ההרשמה נכשלה. אנא נסה שוב.</string>
+    <string name="please_enter_an_email">נא להזין אימייל</string>
+    <string name="please_enter_an_password">נא להזין סיסמה</string>
+    <string name="no_user_information_found">לא נמצאו פרטי משתמש</string>
+    <string name="error_loading_user_information">שגיאה בטעינת פרטי משתמש: %1$s</string>
+    <string name="please_enter_an_email_to_restore_your_password">נא להזין אימייל לשחזור סיסמה</string>
+    <string name="password_reset_instructions_sent_to_your_email">הוראות לאיפוס סיסמה נשלחו לאימייל שלך</string>
+    <string name="error_sending_password_reset_email">שגיאה בשליחת אימייל לאיפוס סיסמה</string>
+    <string name="login_error">שגיאה בהתחברות</string>
+    <string name="login_failed">התחברות נכשלה</string>
 
 
 </resources>

@@ -4,6 +4,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.Glide
 import com.example.smartfridge_app_finalproject.R
 import com.example.smartfridge_app_finalproject.data.model.User
 import com.google.android.material.imageview.ShapeableImageView
@@ -24,10 +25,20 @@ class UserAdapter(
 
         fun bind(user: User) {
             userFName.text = user.firstName
-//            userLName.text = user.lastName
             userUserName.text = user.userName
-            userImageProfile.setImageResource(user.imageResourceId)
-            //userSwitch.isChecked = user.isActive
+
+            //Upload profile picture
+            //If no URL, use default image
+            if (user.profileImageUrl.isNullOrEmpty()) {
+                userImageProfile.setImageResource(R.drawable.profile_man)
+            } else {
+                //Load image from URL using Glide
+                Glide.with(itemView.context)
+                    .load(user.profileImageUrl)
+                    .placeholder(R.drawable.profile_man)
+                    .error(R.drawable.profile_man)
+                    .into(userImageProfile)
+            }
 
             userSwitch.setOnCheckedChangeListener { _, isChecked ->
                 onUserStatusChanged(user, isChecked)

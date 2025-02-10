@@ -20,7 +20,7 @@ class UsersManager private constructor() {
 
     fun addUser(user: User): Boolean {
         //Checking id user exist
-        if (users.any { it.Email == user.Email || it.userName == user.userName }) {
+        if (users.any { it.email == user.email || it.userName == user.userName }) {
             return false
         }
         users.add(user)// פה לממש את ההוספה לפייר בייס
@@ -63,7 +63,7 @@ class UsersManager private constructor() {
     }
 
     fun getUserByEmail(email: String): User? {
-        return users.find { it.Email == email }
+        return users.find { it.email == email }
     }
 
     fun getUserByUsername(username: String): User? {

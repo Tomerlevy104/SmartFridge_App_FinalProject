@@ -1,67 +1,49 @@
 package com.example.smartfridge_app_finalproject.managers
 
+import android.util.Log
+import androidx.core.content.ContentProviderCompat.requireContext
+import com.bumptech.glide.Glide
 import com.example.smartfridge_app_finalproject.R
-import com.example.smartfridge_app_finalproject.data.model.User
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.firestore.FirebaseFirestore
 
 class UserHandler {
-    private var user: User? = null
 
-    fun createUser(
-        firstName: String,
-        lastName: String,
-        email: String,
-        userName: String,
-        password: String,
-        imageResourceId: Int = R.drawable.profile_man
-    ): Boolean {
-        if (isValidUserDetails(firstName, lastName, email, userName, password)) {
-            user = User(firstName, lastName, email, userName, password, imageResourceId)
-            return true
+    private lateinit var auth: FirebaseAuth
+    private lateinit var firestore: FirebaseFirestore
+
+    //Function to load user firstName
+    private fun loadUserFirsName(): String?  {
+        val currentUser = auth.currentUser
+        currentUser?.let { user ->
+
+            firestore.collection("users").document(user.uid)
+                .get()
+                .addOnSuccessListener { document ->
+                    if (document != null && document.exists()) {
+                        // נשלוף את הנתונים מה-document
+                        val firstName = document.getString("firstName")
+
+                        //לשים פה בהמשך את המוצרים גם וכו?
+
+                    }
+                }
         }
-        return false
     }
 
-    fun getUser(): User? = user
+    //Function to load user image
+    private fun loadUserImage() {
+        val currentUser = auth.currentUser
+        currentUser?.let { user ->
 
-    fun updateUserDetails(
-        firstName: String? = null,
-        lastName: String? = null,
-        email: String? = null,
-        userName: String? = null,
-        password: String? = null,
-        imageResourceId: Int? = null
-    ): Boolean {
-        user?.let { currentUser ->
-            user = currentUser.copy(
-                firstName = firstName ?: currentUser.firstName,
-                lastName = lastName ?: currentUser.lastName,
-                Email = email ?: currentUser.Email,
-                userName = userName ?: currentUser.userName,
-                password = password ?: currentUser.password,
-                imageResourceId = imageResourceId ?: currentUser.imageResourceId
-            )
-            return true
+            firestore.collection("users").document(user.uid)
+                .get()
+                .addOnSuccessListener { document ->
+                    if (document != null && document.exists()) {
+                        // נשלוף את הנתונים מה-document
+                        val profileImageUrl = document.getString("profileImageUrl")
+                    }
+                }
         }
-        return false
     }
-
-    fun clearUser() {
-        user = null
-    }
-
-    //Check valid user
-    private fun isValidUserDetails(
-        firstName: String,
-        lastName: String,
-        email: String,
-        userName: String,
-        password: String
-    ): Boolean {
-        return firstName.isNotBlank() &&
-                lastName.isNotBlank() &&
-                email.isNotBlank() &&
-                userName.isNotBlank() &&
-                password.length >= 6
-    }
-
 }

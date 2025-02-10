@@ -87,12 +87,6 @@ class ValidInputManager private constructor() {
         return username.matches(validCharPattern)
     }
 
-    //Checks whether the username already exists in the system.
-    fun isUsernameExists(username: String): Boolean {
-        // TODO: יש להוסיף את הלוגיקה של בדיקה מול Firebase
-        return false // ברירת מחדל זמנית
-    }
-
     //Checks the validity of an Israeli phone number
     fun isValidIsraeliPhone(phone: String): Boolean {
         //Cleans up spaces and hyphens

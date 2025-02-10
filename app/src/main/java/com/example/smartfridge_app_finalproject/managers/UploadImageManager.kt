@@ -2,127 +2,142 @@ package com.example.smartfridge_app_finalproject.managers
 
 import android.Manifest
 import android.app.Activity
-import android.content.Intent
+import android.content.Context
 import android.content.pm.PackageManager
 import android.net.Uri
-import android.os.Build
-import android.provider.MediaStore
-import android.util.Log
-import androidx.activity.result.ActivityResultLauncher
+import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
-import android.content.Context
-import com.example.smartfridge_app_finalproject.interfaces.IImageManager
+import com.example.smartfridge_app_finalproject.data.model.User
+import com.example.smartfridge_app_finalproject.utilities.Constants
+import com.example.smartfridge_app_finalproject.utilities.PermissionType
+import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.storage.FirebaseStorage
-import com.google.firebase.storage.StorageReference
-import com.google.firebase.storage.storage
-import java.util.UUID
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.tasks.await
+import kotlinx.coroutines.withContext
 
-class UploadImageManager : IImageManager {
-    private val storage: FirebaseStorage = FirebaseStorage.getInstance()
+class UploadImageManager {
 
-    private val storageRef: StorageReference = storage.reference
+    private val storage = FirebaseStorage.getInstance()
+    private val firestore = FirebaseFirestore.getInstance()
 
-    companion object {
-        private const val CAMERA_PERMISSION = Manifest.permission.CAMERA
-        private const val PROFILE_IMAGES_PATH = "profile_images"
-        private const val PRODUCT_IMAGES_PATH = "products_images"
-        private val GALLERY_PERMISSION = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+    ///////////////////////////////////////////////////////////////////////////////////
+
+    //Permissions
+
+    fun checkCameraPermission(context: Context): Boolean {
+        return ContextCompat.checkSelfPermission(
+            context,
+            Manifest.permission.CAMERA
+        ) == PackageManager.PERMISSION_GRANTED
+    }
+
+    fun requestCameraPermission(activity: Activity) {
+        ActivityCompat.requestPermissions(
+            activity,
+            arrayOf(Manifest.permission.CAMERA),
+            Constants.ImageUploadRequest.CAMERA_PERMISSION_REQUEST
+        )
+    }
+
+    fun checkGalleryPermission(context: Context): Boolean {
+        return ContextCompat.checkSelfPermission(
+            context,
             Manifest.permission.READ_MEDIA_IMAGES
-        } else {
-            Manifest.permission.READ_EXTERNAL_STORAGE
-        }
+        ) == PackageManager.PERMISSION_GRANTED &&
+                ContextCompat.checkSelfPermission(
+                    context,
+                    Manifest.permission.READ_MEDIA_VIDEO
+                ) == PackageManager.PERMISSION_GRANTED
     }
 
-    override fun uploadProfileImage(context: Context, imageUri: Uri, callback: (Boolean, String?) -> Unit) {
-        Log.d("UploadImageManager", "Starting upload for URI: $imageUri")
-
-        // Generate a unique filename for the image
-        val filename = "${UUID.randomUUID()}.jpg"
-        val profileImagesRef = storageRef.child("$PROFILE_IMAGES_PATH/$filename")
-
-        // Start upload task
-        profileImagesRef.putFile(imageUri)
-            .addOnSuccessListener { taskSnapshot ->
-                Log.d("UploadImageManager", "Upload successful, getting download URL")
-                // Get the download URL
-                profileImagesRef.downloadUrl
-                    .addOnSuccessListener { downloadUri ->
-                        Log.d("UploadImageManager", "Download URL obtained: $downloadUri")
-                        // Return success with the download URL
-                        callback(true, downloadUri.toString())
-                    }
-                    .addOnFailureListener { exception ->
-                        Log.e("UploadImageManager", "Failed to get download URL", exception)
-                        // Handle failure to get download URL
-                        callback(false, "Failed to get download URL: ${exception.message}")
-                    }
-            }
-            .addOnFailureListener { exception ->
-                Log.e("UploadImageManager", "Upload failed", exception)
-                // Handle upload failure
-                callback(false, "Upload failed: ${exception.message}")
-            }
-            .addOnProgressListener { taskSnapshot ->
-                // Calculate upload progress
-                val progress = (100.0 * taskSnapshot.bytesTransferred / taskSnapshot.totalByteCount)
-                Log.d("UploadImageManager", "Upload progress: $progress%")
-            }
+    fun requestGalleryPermission(activity: Activity) {
+        ActivityCompat.requestPermissions(
+            activity,
+            arrayOf(
+                Manifest.permission.READ_MEDIA_IMAGES,
+                Manifest.permission.READ_MEDIA_VIDEO
+            ),
+            Constants.ImageUploadRequest.GALLERY_PERMISSION_REQUEST
+        )
     }
 
-    override fun uploadProductImage(context: Context, imageUri: Uri, callback: (Boolean, String?) -> Unit) {
-        val filename = "${UUID.randomUUID()}.jpg"
-        val productImagesRef = storageRef.child("$PRODUCT_IMAGES_PATH/$filename")
-
-        productImagesRef.putFile(imageUri)
-            .addOnSuccessListener { taskSnapshot ->
-                productImagesRef.downloadUrl
-                    .addOnSuccessListener { downloadUri ->
-                        callback(true, downloadUri.toString())
-                    }
-                    .addOnFailureListener { exception ->
-                        callback(false, "Failed to get download URL: ${exception.message}")
-                    }
+    fun shouldShowRequestPermissionRationale(activity: Activity, permissionType: PermissionType): Boolean {
+        return when (permissionType) {
+            PermissionType.CAMERA -> {
+                ActivityCompat.shouldShowRequestPermissionRationale(
+                    activity,
+                    Manifest.permission.CAMERA
+                )
             }
-            .addOnFailureListener { exception ->
-                callback(false, "Upload failed: ${exception.message}")
-            }
-    }
-
-    override fun takePicture(activity: Activity, callback: ActivityResultLauncher<Intent>) {
-        val intent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
-        callback.launch(intent)
-    }
-
-    override fun pickFromGallery(activity: Activity, callback: ActivityResultLauncher<Intent>) {
-        val intent = Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI)
-        callback.launch(intent)
-    }
-
-    override fun checkAndRequestCameraPermission(activity: Activity, callback: ActivityResultLauncher<String>) {
-        when {
-            ContextCompat.checkSelfPermission(
-                activity,
-                CAMERA_PERMISSION
-            ) == PackageManager.PERMISSION_GRANTED -> {
-                takePicture(activity, callback as ActivityResultLauncher<Intent>)
-            }
-            else -> {
-                callback.launch(CAMERA_PERMISSION)
+            PermissionType.GALLERY -> {
+                ActivityCompat.shouldShowRequestPermissionRationale(
+                    activity,
+                    Manifest.permission.READ_MEDIA_IMAGES
+                ) || ActivityCompat.shouldShowRequestPermissionRationale(
+                    activity,
+                    Manifest.permission.READ_MEDIA_VIDEO
+                )
             }
         }
     }
 
-    override fun checkAndRequestGalleryPermission(activity: Activity, callback: ActivityResultLauncher<String>) {
-        when {
-            ContextCompat.checkSelfPermission(
-                activity,
-                GALLERY_PERMISSION
-            ) == PackageManager.PERMISSION_GRANTED -> {
-                pickFromGallery(activity, callback as ActivityResultLauncher<Intent>)
+    ///////////////////////////////////////////////////////////////////////////////////
+
+    //Upload to Firebase
+
+    suspend fun uploadProfileImage(
+        userId: String,
+        imageUri: Uri,
+        context: Context
+    ): Result<String> = withContext(Dispatchers.IO) {
+        try {
+            val imageUrl = uploadImageToStorage(userId, imageUri)
+            updateUserProfileImage(userId, imageUrl)
+            Result.success(imageUrl)
+        } catch (e: Exception) {
+            Result.failure(e)
+        }
+    }
+
+    private suspend fun uploadImageToStorage(userId: String, imageUri: Uri): String {
+        val storageRef = storage.reference
+            .child("profile_images")
+            .child(userId)
+            .child("profile_${System.currentTimeMillis()}.jpg")
+
+        // העלאת התמונה וקבלת ה-URL
+        val uploadTask = storageRef.putFile(imageUri)
+        return uploadTask.continueWithTask { task ->
+            if (!task.isSuccessful) {
+                task.exception?.let { throw it }
             }
-            else -> {
-                callback.launch(GALLERY_PERMISSION)
+            storageRef.downloadUrl
+        }.await().toString()
+    }
+
+    private suspend fun updateUserProfileImage(userId: String, imageUrl: String) {
+        firestore.collection("users")
+            .document(userId)
+            .update("profileImageUrl", imageUrl)
+            .await()
+    }
+
+    suspend fun deleteOldProfileImage(userId: String) {
+        try {
+            val user = firestore.collection("users")
+                .document(userId)
+                .get()
+                .await()
+                .toObject(User::class.java)
+
+            user?.profileImageUrl?.let { url ->
+                if (url.isNotEmpty()) {
+                    storage.getReferenceFromUrl(url).delete().await()
+                }
             }
+        } catch (e: Exception) {
+            // טיפול בשגיאות
         }
     }
 }

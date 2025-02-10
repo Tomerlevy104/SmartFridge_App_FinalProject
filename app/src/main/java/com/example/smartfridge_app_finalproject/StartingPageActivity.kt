@@ -29,7 +29,7 @@ class StartingPageActivity : AppCompatActivity() {
 
         //Register button
         startingPage_BTN_register.setOnClickListener {
-            val intent=Intent(this, FirebaseSignInActivity::class.java)
+            val intent=Intent(this, RegisterActivity::class.java)
             startActivity(intent)
             finish()
         }

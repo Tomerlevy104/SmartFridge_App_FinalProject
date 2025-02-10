@@ -65,7 +65,6 @@
             </androidx.constraintlayout.widget.ConstraintLayout>
         </com.google.android.material.card.MaterialCardView>
 
-        <!-- Rest of the layout remains the same -->
         <com.google.android.material.imageview.ShapeableImageView
             android:id="@+id/profile_management_IMG_userProfile"
             android:layout_width="80dp"
