@@ -78,6 +78,11 @@
     <string name="error_sending_password_reset_email">שגיאה בשליחת אימייל לאיפוס סיסמה</string>
     <string name="login_error">שגיאה בהתחברות</string>
     <string name="login_failed">התחברות נכשלה</string>
+    <string name="google_maps_key">AIzaSyChoF2M-vuYWlyMRd-vFRkvHddRHcT1PSY</string>
+    <string name="choose_supermarket_name">בחר רשת סופר</string>
+    <string name="find_closer_supermarket_to_you">חפש את הסופר הקרוב ביותר אליך</string>
+    <string name="guest">אורח</string>
+    <string name="no_user_loged_in">משתמש לא מחובר</string>
 
 
 </resources>

@@ -23,10 +23,6 @@ class CategoryManager(private val activity: MainActivity) : ICategoryManager {
             putString("SELECTED_CATEGORY", category.name)
             putInt("SELECTED_CATEGORY_IMAGE", category.categoryImage)
         }
-
-        (activity as? MainActivity)?.transactionToAnotherFragment(
-            Constants.Fragment.PRODUCTSLIST,
-            bundle
-        )
+        (activity as? MainActivity)?.transactionToAnotherFragment(Constants.Fragment.PRODUCTSLIST, bundle)
     }
 }

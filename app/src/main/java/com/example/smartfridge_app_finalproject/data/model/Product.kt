@@ -1,8 +1,10 @@
 package com.example.smartfridge_app_finalproject.data.model
 
+import android.net.Uri
+
 data class Product(val barCode: String,
                    val name: String,
                    val category: String,
-                   val imageUrl: Int,
+                   var imageUrl: Uri,
                    var quantity: Int,
                    val expiryDate: String)

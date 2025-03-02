@@ -17,29 +17,22 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
-import androidx.recyclerview.widget.DividerItemDecoration
-import androidx.recyclerview.widget.LinearLayoutManager
 import com.bumptech.glide.Glide
 import com.example.smartfridge_app_finalproject.R
 import com.example.smartfridge_app_finalproject.StartingPageActivity
 import com.example.smartfridge_app_finalproject.adapters.UserAdapter
-import com.example.smartfridge_app_finalproject.data.model.User
-import com.example.smartfridge_app_finalproject.data.repository.UsersRepository
 import com.example.smartfridge_app_finalproject.databinding.FragmentManageProfileBinding
 import com.example.smartfridge_app_finalproject.managers.UploadImageManager
-import com.example.smartfridge_app_finalproject.utilities.Constants
 import com.example.smartfridge_app_finalproject.utilities.PermissionType
 import com.firebase.ui.auth.AuthUI
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.coroutines.launch
 
-class ManageProfileFragment : Fragment() {
+class ProfileFragment : Fragment() {
 
     private lateinit var binding: FragmentManageProfileBinding
     private lateinit var userAdapter: UserAdapter
-    private var usersRepository = UsersRepository()
     private val uploadImageManager = UploadImageManager()
 
     // ניהול תוצאות פעילויות
@@ -90,7 +83,7 @@ class ManageProfileFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        setupRecyclerView()
+//        setupRecyclerView()
         setupClickListeners()
         setupLogoutButton()
         loadInitialUsers("benny_l")
@@ -275,47 +268,83 @@ class ManageProfileFragment : Fragment() {
         }
     }
 
-    private fun setupRecyclerView() {
-        userAdapter = UserAdapter(mutableListOf()) { user, isActive ->
-            // Handle user status change
+//    private fun setupRecyclerView() {
+//        userAdapter = UserAdapter(mutableListOf()) { user, isActive ->
+//            // Handle user status change
+//        }
+//
+//        binding.profileManagementRVUsers.apply {
+//            adapter = userAdapter
+//            addItemDecoration(DividerItemDecoration(context, LinearLayoutManager.VERTICAL))
+//        }
+//    }
+
+//    private fun loadInitialUsers(username: String) {
+//        showLoading(true)
+//
+//        val userHandler = UserHandler.getInstance()
+//
+//        // קודם נבדוק אם יש נתונים מקומיים זמינים
+//        userHandler.getCurrentUserData()?.let { userData ->
+//            updateUIWithUserData(userData)
+//        }
+//
+//        // נטען/נרענן את הנתונים מ-Firestore
+//        userHandler.loadUserProfile { result ->
+//            activity?.runOnUiThread {
+//                result.onSuccess { userData ->
+//                    updateUIWithUserData(userData)
+//                    // עדכון הרשימה ב-RecyclerView
+//                    userAdapter.updateUsers(listOf(
+//                        User(
+//                            firstName = userData.firstName,
+//                            lastName = "", // תלוי במה שיש ב-UserData
+//                            Email = userData.email ?: "",
+//                            userName = username,
+//                            password = "", // לא צריך להציג סיסמה
+//                            profileImageUrl = userData.profileImageUrl,
+//                            imageResourceId = R.drawable.profile_man
+//                        )
+//                    ))
+//                }.onFailure { exception ->
+//                    showToast("שגיאה בטעינת נתוני משתמש: ${exception.message}")
+//                }
+//                showLoading(false)
+//            }
+//        }
+//    }
+
+    private fun loadInitialUsers(username: String) {
+        showLoading(true)
+
+        val userHandler = UserHandler.getInstance()
+
+        // אם יש נתונים בזיכרון המקומי, נציג אותם קודם
+        userHandler.getCurrentUserData()?.let { userData ->
+            updateProfileUI(userData)
         }
 
-        binding.profileManagementRVUsers.apply {
-            adapter = userAdapter
-            addItemDecoration(DividerItemDecoration(context, LinearLayoutManager.VERTICAL))
+        // טעינה/רענון מ-Firestore
+        userHandler.loadUserProfile { result ->
+            activity?.runOnUiThread {
+                result.onSuccess { userData ->
+                    updateProfileUI(userData)
+                }.onFailure { exception ->
+                    showToast("שגיאה בטעינת נתוני משתמש: ${exception.message}")
+                }
+                showLoading(false)
+            }
         }
     }
 
-    private fun loadInitialUsers(username: String) {
-        // הצגת טעינה
-        showLoading(true)
-
-        // שליפת המשתמש מ-Firestore
-        FirebaseAuth.getInstance().currentUser?.uid?.let { userId ->
-            FirebaseFirestore.getInstance()
-                .collection("users")
-                .document(userId)
-                .get()
-                .addOnSuccessListener { document ->
-                    document.toObject(User::class.java)?.let { user ->
-                        // עדכון ה-UI עם המשתמש מ-Firestore
-                        userAdapter.updateUsers(listOf(user))
-
-                        // עדכון תמונת הפרופיל הראשית
-                        if (!user.profileImageUrl.isNullOrEmpty()) {
-                            Glide.with(requireContext())
-                                .load(user.profileImageUrl)
-                                .placeholder(R.drawable.profile_man)
-                                .error(R.drawable.profile_man)
-                                .into(binding.profileManagementIMGUserProfile)
-                        }
-                    }
-                    showLoading(false)
-                }
-                .addOnFailureListener { e ->
-                    showToast("שגיאה בטעינת נתוני משתמש: ${e.message}")
-                    showLoading(false)
-                }
+    private fun updateProfileUI(userData: UserHandler.UserData) {
+        // טעינת תמונת הפרופיל
+        if (!userData.profileImageUrl.isNullOrEmpty()) {
+            Glide.with(requireContext())
+                .load(userData.profileImageUrl)
+                .placeholder(R.drawable.profile_man)
+                .error(R.drawable.profile_man)
+                .into(binding.profileManagementIMGUserProfile)
         }
     }
 

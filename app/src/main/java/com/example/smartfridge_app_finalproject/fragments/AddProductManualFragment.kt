@@ -1,6 +1,7 @@
 package com.example.smartfridge_app_finalproject.fragments
 
 import android.app.DatePickerDialog
+import android.net.Uri
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -12,6 +13,7 @@ import androidx.fragment.app.Fragment
 import com.example.smartfridge_app_finalproject.R
 import com.example.smartfridge_app_finalproject.data.model.Product
 import com.example.smartfridge_app_finalproject.data.repository.CategoryRepository
+import com.example.smartfridge_app_finalproject.data.repository.ProductRepository
 import com.example.smartfridge_app_finalproject.managers.InventoryManager
 import com.example.smartfridge_app_finalproject.managers.ValidInputManager
 import com.google.android.material.button.MaterialButton
@@ -34,6 +36,18 @@ class AddProductManualFragment : Fragment() {
     private val categoryRepository = CategoryRepository()
     private val calendar = Calendar.getInstance()
     private val dateFormatter = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault())
+    private val productRepository = ProductRepository.getInstance()
+    private var selectedImageUri: Uri? = null
+
+    private var scannedBarcode: String? = null
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        //If scan barcode and decide to fill manual
+        arguments?.let {
+            scannedBarcode = it.getString("BARCODE")
+        }
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -49,6 +63,11 @@ class AddProductManualFragment : Fragment() {
         initViews()
         setupCategoryDropdown()
         setupDatePicker()
+        //If scan barcode and decide to fill manual
+        scannedBarcode?.let {
+            productBarCodeEdit.setText(it)
+
+        }
     }
 
     private fun setupViews(view: View) {
@@ -62,12 +81,11 @@ class AddProductManualFragment : Fragment() {
     }
 
     private fun initViews() {
-        // הגדרת מאזינים והתנהגויות התחלתיות
+
         addButton.setOnClickListener {
             handleAddProduct()
         }
 
-        // ניקוי שגיאות בעת הקלדה
         productNameEdit.setOnClickListener { productNameEdit.error = null }
         quantityEdit.setOnClickListener { quantityEdit.error = null }
         categoryDropdown.setOnClickListener { categoryLayout.error = null }
@@ -120,38 +138,46 @@ class AddProductManualFragment : Fragment() {
         return isValid
     }
 
+
     private fun handleAddProduct() {
         if (!validateFields()) {
             return
         }
 
-        val barCode = productBarCodeEdit.text.toString()
-        val productName = productNameEdit.text.toString()
-        val category = categoryDropdown.text.toString()
-        val quantity = quantityEdit.text.toString().toIntOrNull() ?: 0
-        val expiryDate = expiryDateEdit.text.toString()
-
-        // TODO: Add logic to save product
         val product = Product(
-            barCode = barCode,
-            name = productName,
-            imageUrl = R.drawable.category_no_picture,
-            category = category,
-            quantity = quantity,
-            expiryDate = expiryDate
+            barCode = productBarCodeEdit.text.toString(),
+            name = productNameEdit.text.toString(),
+            category = categoryDropdown.text.toString(),
+            quantity = quantityEdit.text.toString().toIntOrNull() ?: 0,
+            expiryDate = expiryDateEdit.text.toString(),
+            imageUrl = Uri.EMPTY
         )
-        if (inventory.addProduct(product)) {
-            Toast.makeText(
-                requireContext(),
-                getString(R.string.added_successfully, product.name), Toast.LENGTH_SHORT
-            ).show()
-            // TODO: You might want to clear fields or navigate back
-        } else {
-            Toast.makeText(
-                requireContext(),
-                getString(R.string.product_not_added), Toast.LENGTH_SHORT
-            ).show()
+
+        inventory.addProduct(product) { result ->
+            result.onSuccess {
+                Toast.makeText(
+                    requireContext(),
+                    getString(R.string.added_successfully, product.name),
+                    Toast.LENGTH_SHORT
+                ).show()
+                clearFields()
+            }.onFailure { exception ->
+                Toast.makeText(
+                    requireContext(),
+                    exception.message ?: getString(R.string.product_not_added),
+                    Toast.LENGTH_SHORT
+                ).show()
+            }
         }
+    }
+
+    private fun clearFields() {
+        productBarCodeEdit.text?.clear()
+        productNameEdit.text?.clear()
+        categoryDropdown.text?.clear()
+        quantityEdit.text?.clear()
+        expiryDateEdit.text?.clear()
+        selectedImageUri = null
     }
 
     private fun setupCategoryDropdown() {
@@ -164,6 +190,7 @@ class AddProductManualFragment : Fragment() {
             categoryNames
         )
         categoryDropdown.setAdapter(adapter)
+
     }
 
     private fun setupDatePicker() {

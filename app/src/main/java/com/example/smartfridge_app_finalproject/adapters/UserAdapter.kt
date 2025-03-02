@@ -19,22 +19,20 @@ class UserAdapter(
     inner class UserViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         private val userImageProfile: ShapeableImageView = itemView.findViewById(R.id.item_user_IMG_avatar)
         private val userFName: MaterialTextView = itemView.findViewById(R.id.item_user_TV_name)
-        private val userUserName: MaterialTextView = itemView.findViewById(R.id.item_user_TV_username)
 
         private val userSwitch: MaterialSwitch = itemView.findViewById(R.id.item_user_SW_active)
 
         fun bind(user: User) {
             userFName.text = user.firstName
-            userUserName.text = user.userName
 
             //Upload profile picture
             //If no URL, use default image
-            if (user.profileImageUrl.isNullOrEmpty()) {
+            if (user.profileImageUri==null) {
                 userImageProfile.setImageResource(R.drawable.profile_man)
             } else {
                 //Load image from URL using Glide
                 Glide.with(itemView.context)
-                    .load(user.profileImageUrl)
+                    .load(user.profileImageUri)
                     .placeholder(R.drawable.profile_man)
                     .error(R.drawable.profile_man)
                     .into(userImageProfile)

@@ -12,6 +12,8 @@
         android:layout_width="60dp"
         android:layout_height="60dp"
         android:src="@drawable/profile_man"
+        app:shapeAppearance="@style/ShapeAppearance.Material3.Corner.Full"
+        android:scaleType="centerCrop"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"

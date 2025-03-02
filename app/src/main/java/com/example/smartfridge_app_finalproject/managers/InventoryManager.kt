@@ -1,44 +1,121 @@
 package com.example.smartfridge_app_finalproject.managers
 
 import android.content.Context
+import android.net.Uri
+import android.util.Log
 import android.widget.Toast
+import androidx.core.content.ContentProviderCompat.requireContext
 import com.example.smartfridge_app_finalproject.R
+import com.example.smartfridge_app_finalproject.adapters.ProductsListAdapter
 import com.example.smartfridge_app_finalproject.data.model.Product
 import com.example.smartfridge_app_finalproject.data.repository.ProductRepository
 import com.example.smartfridge_app_finalproject.interfaces.IInventoryManager
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.QuerySnapshot
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flowOf
 
 class InventoryManager : IInventoryManager {
-    private val productRepository = ProductRepository()
-    private val products = mutableListOf<Product>()
+    private val productRepository = ProductRepository.getInstance()
+    private val productManager = ProductManager.getInstance()
+    private var products = mutableListOf<Product>()
+    private var LocalProductsListInInventory = mutableListOf<Product>() //Products List
 
-    init {
-        products.addAll(productRepository.getInitialProducts())
-    }
+    private lateinit var productsListAdapter: ProductsListAdapter //Adapter
 
-    override fun getProductsByCategory(category: String): List<Product> {
-        return products.filter { it.category == category }
-    }
+    private val userHandler = UserHandler.getInstance()
+    private val firestore: FirebaseFirestore = FirebaseFirestore.getInstance()
 
-    override fun getAllProducts(): Flow<List<Product>> {
-        return flowOf(products.toList())
-    }
 
-    override fun addProduct(product: Product): Boolean {
-        return try {
-            //Check if the barcode already exist
-            if (products.any { it.barCode == product.barCode }) {
-                return false
+//    override fun getProductsByCategory(category: String): List<Product> {
+//        return products.filter { it.category == category }
+//    }
+
+
+    private fun getProductsByCategory(userId: String, category: String) {
+        val productsRef = FirebaseFirestore.getInstance()
+            .collection("users")
+            .document(userId)
+            .collection("products")
+            .whereEqualTo("category", category)
+
+        productsRef.get()
+            .addOnSuccessListener { documents ->
+                processProductDocuments(documents)
             }
-            products.add(product)
-            true
-        } catch (e: Exception) {
-            false
-        }
+            .addOnFailureListener { exception ->
+                Log.e("ProductsList", "Error getting products", exception)
+                Toast.makeText(requireContext(), "שגיאה בטעינת המוצרים", Toast.LENGTH_SHORT).show()
+            }
     }
 
+
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////
+    override fun addProduct(product: Product, onComplete: (Result<Unit>) -> Unit) {
+
+        val currentUser =userHandler.getCurrentFirebaseUser()
+        if(currentUser==null){
+            onComplete(Result.failure(Exception("משתמש לא מחובר")))
+            return
+        }
+
+        // Check if the product already exists
+        firestore.collection("users")
+            .document(currentUser.uid)
+            .collection("products")
+            .document(product.barCode)
+            .get()
+            .addOnSuccessListener { document ->
+                if (document.exists()) {
+                    onComplete(Result.failure(Exception("מוצר עם ברקוד זה כבר קיים")))
+                } else {
+                    // If the product doesn't exist, add it
+                    firestore.collection("users")
+                        .document(currentUser.uid)
+                        .collection("products")
+                        .document(product.barCode)
+                        .set(product)
+                        .addOnSuccessListener {
+                            products.add(product) //Adding to local memory
+                            onComplete(Result.success(Unit))
+                        }
+                        .addOnFailureListener { exception ->
+                            onComplete(Result.failure(exception))
+                        }
+                }
+            }
+            .addOnFailureListener { exception ->
+                onComplete(Result.failure(exception))
+            }
+    }
+///////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    //Processes the results obtained from the query and updates the list
+    private fun processProductDocuments(documents: QuerySnapshot) {
+        LocalProductsListInInventory.clear()
+        for (document in documents) {
+            try {
+                val product = Product(
+                    barCode = document.getString("barCode") ?: continue,
+                    name = document.getString("name") ?: continue,
+                    category = document.getString("category") ?: continue,
+                    imageUrl = document.getString("imageUrl")?.let { Uri.parse(it) } ?: Uri.EMPTY,
+                    quantity = document.getLong("quantity")?.toInt() ?: continue,
+                    expiryDate = document.getString("expiryDate") ?: continue
+                )
+                LocalProductsListInInventory.add(product)
+            } catch (e: Exception) {
+                Log.e("ProductsList", "Error converting document to Product", e)
+                continue
+            }
+        }
+        productsListAdapter.notifyDataSetChanged()
+    }
+
+    //אני צריך לשנות את הפונקציה הזאת כך שתעבוד עם הפייר בייס נראלי.
     override fun findProductsByName(name: String): List<Product> {
         return products.filter {
             it.name.contains(name, ignoreCase = true)
@@ -51,63 +128,11 @@ class InventoryManager : IInventoryManager {
         }
     }
 
-    private fun formatProductDetails(context: Context, product: Product): String {
-        return """
-            ${context.getString(R.string.name)}: ${product.name}
-            ${context.getString(R.string.category)}: ${product.category}
-            ${context.getString(R.string.quantity)}: ${product.quantity}
-            ${context.getString(R.string.expiration_date)}: ${product.expiryDate}
-            ${"-".repeat(30)}
-        """.trimIndent()
-    }
-
     private fun showToast(context: Context, message: String) {
         Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
     }
 
-    private fun showProductFoundDialog(context: Context, product: Product) {
-        MaterialAlertDialogBuilder(context)
-            .setTitle(R.string.product_found)
-            .setMessage(formatProductDetails(context, product))
-            .setPositiveButton(context.getString(R.string.ok)) { dialog, _ ->
-                dialog.dismiss()
-            }
-            .show()
-    }
-
-    private fun showSimilarProductsDialog(context: Context, products: List<Product>) {
-        val productsText = products.joinToString("\n\n") { product ->
-            formatProductDetails(context, product)
-        }
-
-        MaterialAlertDialogBuilder(context)
-            .setTitle(R.string.similar_products_found)
-            .setMessage(productsText)
-            .setPositiveButton(context.getString(R.string.ok)) { dialog, _ ->
-                dialog.dismiss()
-            }
-            .show()
-    }
-
-    override fun searchProduct(context: Context, productName: String) {
-        if (productName.isEmpty()) {
-            showToast(context, context.getString(R.string.enter_product_name))
-            return
-        }
-
-        //First try exact match
-        val exactProduct = findProductByExactName(productName)
-        if (exactProduct != null) {
-            showProductFoundDialog(context, exactProduct)
-            return
-        }
-
-        //If no exact match, try partial matches
-        val similarProducts = findProductsByName(productName)
-        if (similarProducts.isNotEmpty()) {
-            showSimilarProductsDialog(context, similarProducts)
-        } else {
-            showToast(context, context.getString(R.string.product_not_found))
-        }
+    fun clearCache() {
+        products.clear()
     }
 }

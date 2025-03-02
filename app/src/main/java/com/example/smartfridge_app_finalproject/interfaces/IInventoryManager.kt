@@ -6,9 +6,9 @@ import kotlinx.coroutines.flow.Flow
 
 interface IInventoryManager {
 
-    fun getAllProducts(): Flow<List<Product>>
-    fun getProductsByCategory(category: String): List<Product>
-    fun addProduct(product: Product): Boolean
+//    fun getAllProducts(): Flow<List<Product>>
+    fun getProductsByCategory(userId: String,category: String): List<Product>
+    fun addProduct(product: Product, onComplete: (Result<Unit>) -> Unit)
     fun findProductsByName(name: String): List<Product>
     fun findProductByExactName(name: String): Product?
     fun searchProduct(context: Context, productName: String)

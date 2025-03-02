@@ -131,9 +131,9 @@ class UploadImageManager {
                 .await()
                 .toObject(User::class.java)
 
-            user?.profileImageUrl?.let { url ->
-                if (url.isNotEmpty()) {
-                    storage.getReferenceFromUrl(url).delete().await()
+            user?.profileImageUri?.let { uri ->
+                if (uri== null) {
+                    storage.getReferenceFromUrl(uri).delete().await()
                 }
             }
         } catch (e: Exception) {

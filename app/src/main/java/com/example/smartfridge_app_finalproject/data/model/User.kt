@@ -1,12 +1,13 @@
 package com.example.smartfridge_app_finalproject.data.model
 
+import android.net.Uri
+
 data class User(
     val firstName: String = "",
     val lastName: String = "",
     val email: String = "",
-    val userName: String = "",
     val password: String = "",
-    val profileImageUrl: String? = null,
+    val profileImageUri: Uri? = null,
     val uid: String = ""
 ) {
     fun toMap(): Map<String, Any?> {
@@ -14,8 +15,7 @@ data class User(
             "firstName" to firstName,
             "lastName" to lastName,
             "email" to email,
-            "userName" to userName,
-            "profileImageUrl" to profileImageUrl,
+            "profileImageUrl" to profileImageUri,
             "uid" to uid
         )
     }

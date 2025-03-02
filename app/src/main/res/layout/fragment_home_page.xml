@@ -62,9 +62,10 @@
                         android:id="@+id/homepage_IMG_profile"
                         android:layout_width="@dimen/small_IMG_size"
                         android:layout_height="@dimen/small_IMG_size"
+                        app:shapeAppearance="@style/ShapeAppearance.Material3.Corner.Full"
+                        android:scaleType="centerCrop"
                         android:src="@drawable/profile_man"
-                        app:cornerSize="50%"
-                        app:shapeAppearance="@style/ShapeAppearance.Material3.Corner.ExtraLarge" />
+                        app:cornerSize="50%"/>
 
                     <androidx.appcompat.widget.LinearLayoutCompat
                         android:id="@+id/startingPage_ll_profile"
@@ -86,7 +87,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:textColor="@color/black"
-                            android:text="@string/first_name" />
+                            tools:text="@string/first_name" />
                     </androidx.appcompat.widget.LinearLayoutCompat>
                 </androidx.appcompat.widget.LinearLayoutCompat>
 

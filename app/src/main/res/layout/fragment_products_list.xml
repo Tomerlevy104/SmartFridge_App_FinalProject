@@ -62,9 +62,10 @@
                         android:id="@+id/products_list_IMG_profile"
                         android:layout_width="@dimen/small_IMG_size"
                         android:layout_height="@dimen/small_IMG_size"
+                        app:shapeAppearance="@style/ShapeAppearance.Material3.Corner.Full"
+                        android:scaleType="centerCrop"
                         android:src="@drawable/profile_man"
-                        app:cornerSize="50%"
-                        app:shapeAppearance="@style/ShapeAppearance.Material3.Corner.ExtraLarge" />
+                        app:cornerSize="50%"/>
 
                     <androidx.appcompat.widget.LinearLayoutCompat
                         android:id="@+id/products_list_ll_profile"
@@ -82,10 +83,10 @@
                             android:textSize="20sp" />
 
                         <com.google.android.material.textview.MaterialTextView
-                            android:id="@+id/products_list__TV_name"
+                            android:id="@+id/products_list_TV_name"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="@string/first_name"
+                            tools:text="@string/first_name"
                             android:textColor="@color/black" />
                     </androidx.appcompat.widget.LinearLayoutCompat>
                 </androidx.appcompat.widget.LinearLayoutCompat>

@@ -34,7 +34,7 @@
                 android:id="@+id/supermarket_TV_title"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="חפש את הסופר הקרוב ביותר אליך"
+                android:text="@string/find_closer_supermarket_to_you"
                 android:textColor="@color/black"
                 android:textSize="20sp"
                 android:textStyle="bold"
@@ -44,36 +44,23 @@
                 app:layout_constraintTop_toBottomOf="@id/supermarket_IMG_logo" />
 
             <!-- Search Box -->
-            <com.google.android.material.card.MaterialCardView
-                android:id="@+id/supermarket_CV_search"
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/supermarket_TIL_search"
+                style="@style/Widget.Material3.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
                 android:layout_width="match_parent"
-                android:layout_height="50dp"
+                android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
-                app:cardCornerRadius="8dp"
-                app:cardElevation="2dp"
+                android:hint="@string/choose_supermarket_name"
                 app:layout_constraintTop_toBottomOf="@id/supermarket_TV_title">
 
-                <com.google.android.material.textfield.TextInputLayout
-                    android:id="@+id/supermarket_TIL_search"
+                <AutoCompleteTextView
+                    android:id="@+id/supermarket_TIET_search"
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:hint="הקלד שם סופר"
-                    app:endIconMode="clear_text"
-                    style="@style/Widget.Material3.TextInputLayout.OutlinedBox">
-<!--                    app:startIconDrawable="@drawable/"-->
+                    android:layout_height="wrap_content"
+                    android:inputType="none"
+                    android:padding="16dp"/>
 
-                    <com.google.android.material.textfield.TextInputEditText
-                        android:id="@+id/supermarket_TIET_search"
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:background="@null"
-                        android:imeOptions="actionSearch"
-                        android:inputType="text"
-                        android:maxLines="1" />
-
-                </com.google.android.material.textfield.TextInputLayout>
-
-            </com.google.android.material.card.MaterialCardView>
+            </com.google.android.material.textfield.TextInputLayout>
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 

@@ -99,6 +99,72 @@
 
             </com.google.android.material.textfield.TextInputLayout>
 
+            <!-- Profile Image Selection -->
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/register_TIL_profileImage"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/default_margin_8">
+
+                <com.google.android.material.textview.MaterialTextView
+                    android:id="@+id/register_TV_profile_hint"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="בחר תמונת פרופיל"
+                    android:textColor="@color/black"
+                    android:layout_marginStart="4dp"
+                    android:layout_marginBottom="4dp" />
+
+                <androidx.appcompat.widget.LinearLayoutCompat
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:padding="8dp">
+
+                    <!-- Preview Image -->
+                    <com.google.android.material.imageview.ShapeableImageView
+                        android:id="@+id/register_IMG_profile"
+                        android:layout_width="48dp"
+                        android:layout_height="48dp"
+                        android:layout_marginEnd="8dp"
+                        android:scaleType="centerCrop"
+                        android:src="@drawable/profile_man"
+                        app:strokeColor="@color/blue"
+                        app:strokeWidth="1dp" />
+
+                    <!-- Buttons Container -->
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:orientation="horizontal">
+
+                        <!-- Camera Button -->
+                        <com.google.android.material.button.MaterialButton
+                            android:id="@+id/register_BTN_camera"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:layout_marginEnd="4dp"
+                            android:text="מצלמה"
+                            android:textSize="12sp"
+                            app:iconSize="18dp"
+                            style="@style/Widget.MaterialComponents.Button.OutlinedButton" />
+
+                        <!-- Gallery Button -->
+                        <com.google.android.material.button.MaterialButton
+                            android:id="@+id/register_BTN_gallery"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:layout_marginStart="4dp"
+                            android:text="גלריה"
+                            android:textSize="12sp"
+                            style="@style/Widget.MaterialComponents.Button.OutlinedButton" />
+                    </LinearLayout>
+                </androidx.appcompat.widget.LinearLayoutCompat>
+            </com.google.android.material.textfield.TextInputLayout>
+
             <!-- Email -->
             <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/register_TIL_email"
@@ -113,22 +179,6 @@
                     android:layout_height="wrap_content"
                     android:hint="@string/email"
                     android:inputType="textEmailAddress" />
-
-            </com.google.android.material.textfield.TextInputLayout>
-
-            <!-- Username -->
-            <com.google.android.material.textfield.TextInputLayout
-                android:id="@+id/register_TIL_username"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/default_margin_8">
-
-                <androidx.appcompat.widget.AppCompatEditText
-                    android:id="@+id/register_ET_username"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:hint="@string/user_name"
-                    android:inputType="text" />
 
             </com.google.android.material.textfield.TextInputLayout>
 
