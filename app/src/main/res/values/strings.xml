@@ -83,6 +83,37 @@
     <string name="find_closer_supermarket_to_you">חפש את הסופר הקרוב ביותר אליך</string>
     <string name="guest">אורח</string>
     <string name="no_user_loged_in">משתמש לא מחובר</string>
+    <string name="camera_permission_is_required_to_scan_a_barcode">הרשאת מצלמה נדרשת לסריקת ברקוד</string>
+    <string name="please_scan_barcode_first">נא לסרוק ברקוד תחילה</string>
+    <string name="do_not_turn_on_the_camera">לא ניתן להפעיל את המצלמה</string>
+    <string name="barcode_scanning_failed">Barcode scanning failed: %1$s</string>
+    <string name="error_checking_inventory">שגיאה בבדיקת המלאי: %1$s</string>
+    <string name="error_checking_product_repository">Error checking product repository: %1$s</string>
+    <string name="error_checking_product_database">שגיאה בבדיקת מאגר המוצרים: %1$s</string>
+    <string name="product_is_in_repository">מוצר נמצא במאגר</string>
+    <string name="unknown_product">מוצר לא ידוע</string>
+    <string name="founded_the_product_X_do_you_want_to_add_it_to_your_inventory">נמצא המוצר: %1$s\nהאם ברצונך להוסיף אותו למלאי שלך?</string>
+    <string name="add">הוסף</string>
+    <string name="cancel">בטל</string>
+    <string name="edit_details">ערוך פרטים</string>
+    <string name="product_is_in_inventory">מוצר קיים במלאי</string>
+    <string name="the_product_is_already_in_your_inventory_do_you_want_to_increase_the_quantity">המוצר %1$s כבר קיים במלאי שלך. האם ברצונך להגדיל את הכמות?</string>
+    <string name="yes">כן</string>
+    <string name="no">לא</string>
+    <string name="product_quantity_updated_successfully">כמות המוצר עודכנה בהצלחה</string>
+    <string name="error_updating_product_quantity">שגיאה בעדכון כמות המוצר: %1$s</string>
+    <string name="add_manually">הוסף ידנית</string>
+    <string name="new_product">מוצר חדש</string>
+    <string name="barcode_founded_X_do_you_want_to_add_a_new_product_to_inventory">נמצא ברקוד: %1$s\nהאם ברצונך להוסיף מוצר חדש למלאי?</string>
+    <string name="product_added_successfully">המוצר נוסף בהצלחה</string>
+    <string name="error_adding_product">שגיאה בהוספת המוצר: %1$s</string>
+    <string name="gallery_access_permission_is_required_to_select_a_product_image">הרשאת גישה לגלריה נדרשת לבחירת תמונת מוצר</string>
+    <string name="camera_access_permission_is_required_to_select_a_product_image">הרשאת מצלמה נדרשת לצילום תמונת מוצר</string>
+    <string name="error_uploading_product_image">שגיאה בהעלאת תמונת המוצר: %1$s</string>
+    <string name="adding">מוסיף...</string>
+    <string name="error_opening_the_gallery">שגיאה בפתיחת הגלריה</string>
+    <string name="error_opening_the_camera">שגיאה בפתיחת המצלמה</string>
+    <string name="error_creating_temporary_camera_file">שגיאה ביצירת קובץ זמני למצלמה</string>
 
 
 </resources>

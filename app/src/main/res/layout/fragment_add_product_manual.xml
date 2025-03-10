@@ -66,7 +66,71 @@
                 android:layout_height="wrap_content"
                 android:padding="@dimen/default_margin_16">
 
-                <!-- Category Field (First) -->
+                <!-- Product Image Selection Section - Redesigned -->
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/add_product_manual_TIL_image"
+                    style="@style/Widget.Material3.TextInputLayout.OutlinedBox"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:layout_constraintTop_toTopOf="parent">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:gravity="center_vertical"
+                        android:padding="8dp">
+
+                        <!-- Product Image Preview - Smaller -->
+                        <com.google.android.material.imageview.ShapeableImageView
+                            android:id="@+id/add_product_manual_IMG_product"
+                            android:layout_width="60dp"
+                            android:layout_height="60dp"
+                            android:scaleType="centerCrop"
+                            android:src="@drawable/category_no_picture"
+                            app:shapeAppearanceOverlay="@style/ShapeAppearance.Material3.Corner.Medium"
+                            app:strokeColor="@color/blue"
+                            app:strokeWidth="1dp"
+                            android:layout_marginEnd="8dp"/>
+
+                        <!-- Image Selection Buttons - Horizontal -->
+                        <LinearLayout
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:orientation="horizontal">
+
+                            <!-- Camera Button -->
+                            <com.google.android.material.button.MaterialButton
+                                android:id="@+id/add_product_manual_BTN_camera"
+                                style="@style/Widget.Material3.Button.OutlinedButton"
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:text="צלם"
+                                android:textSize="12sp"
+                                app:icon="@drawable/add_barcode"
+                                app:iconSize="18dp"
+                                app:iconGravity="textStart"
+                                android:layout_marginEnd="4dp"/>
+
+                            <!-- Gallery Button -->
+                            <com.google.android.material.button.MaterialButton
+                                android:id="@+id/add_product_manual_BTN_gallery"
+                                style="@style/Widget.Material3.Button.OutlinedButton"
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:text="גלריה"
+                                android:textSize="12sp"
+                                app:icon="@drawable/add_manually"
+                                app:iconSize="18dp"
+                                app:iconGravity="textStart"/>
+                        </LinearLayout>
+                    </LinearLayout>
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <!-- Category Field -->
                 <com.google.android.material.textfield.TextInputLayout
                     android:id="@+id/add_product_manual_TIL_category"
                     style="@style/Widget.Material3.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
@@ -74,7 +138,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/default_margin_8"
                     android:hint="@string/category"
-                    app:layout_constraintTop_toTopOf="parent">
+                    app:layout_constraintTop_toBottomOf="@id/add_product_manual_TIL_image">
 
                     <AutoCompleteTextView
                         android:id="@+id/add_product_manual_ACTV_category"
@@ -83,7 +147,7 @@
                         android:inputType="none" />
                 </com.google.android.material.textfield.TextInputLayout>
 
-                <!-- Product Name Field (Second) -->
+                <!-- Product Name Field -->
                 <com.google.android.material.textfield.TextInputLayout
                     android:id="@+id/add_product_manual_TIL_name"
                     style="@style/Widget.Material3.TextInputLayout.OutlinedBox"
@@ -100,7 +164,7 @@
                         android:inputType="text" />
                 </com.google.android.material.textfield.TextInputLayout>
 
-                <!-- Quantity Field (Third) -->
+                <!-- Quantity Field -->
                 <com.google.android.material.textfield.TextInputLayout
                     android:id="@+id/add_product_manual_TIL_quantity"
                     style="@style/Widget.Material3.TextInputLayout.OutlinedBox"
@@ -117,7 +181,7 @@
                         android:inputType="number" />
                 </com.google.android.material.textfield.TextInputLayout>
 
-                <!-- Expiry Date Field (Fourth) -->
+                <!-- Expiry Date Field -->
                 <com.google.android.material.textfield.TextInputLayout
                     android:id="@+id/add_product_manual_TIL_expiry"
                     style="@style/Widget.Material3.TextInputLayout.OutlinedBox"
@@ -135,7 +199,7 @@
                         android:inputType="date" />
                 </com.google.android.material.textfield.TextInputLayout>
 
-                <!-- Barcode Field (Last) -->
+                <!-- Barcode Field -->
                 <com.google.android.material.textfield.TextInputLayout
                     android:id="@+id/add_product_manual_TIL_barcode"
                     style="@style/Widget.Material3.TextInputLayout.OutlinedBox"
@@ -165,7 +229,9 @@
                     app:cornerRadius="@dimen/BTN_cornerRadius"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/add_product_manual_TIL_barcode" />
+                    app:layout_constraintTop_toBottomOf="@id/add_product_manual_TIL_barcode"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    android:layout_marginBottom="@dimen/default_margin_16"/>
 
             </androidx.constraintlayout.widget.ConstraintLayout>
         </ScrollView>

@@ -4,82 +4,90 @@ import android.content.Context
 import android.net.Uri
 import android.util.Log
 import android.widget.Toast
-import androidx.core.content.ContentProviderCompat.requireContext
 import com.example.smartfridge_app_finalproject.R
-import com.example.smartfridge_app_finalproject.adapters.ProductsListAdapter
 import com.example.smartfridge_app_finalproject.data.model.Product
-import com.example.smartfridge_app_finalproject.data.repository.ProductRepository
 import com.example.smartfridge_app_finalproject.interfaces.IInventoryManager
-import com.google.android.material.dialog.MaterialAlertDialogBuilder
-import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.QuerySnapshot
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.flowOf
 
+//Inventory Manager - Responsible for the logic of managing products in inventory
 class InventoryManager : IInventoryManager {
-    private val productRepository = ProductRepository.getInstance()
-    private val productManager = ProductManager.getInstance()
-    private var products = mutableListOf<Product>()
-    private var LocalProductsListInInventory = mutableListOf<Product>() //Products List
-
-    private lateinit var productsListAdapter: ProductsListAdapter //Adapter
-
     private val userHandler = UserHandler.getInstance()
-    private val firestore: FirebaseFirestore = FirebaseFirestore.getInstance()
 
+    //Loading all products in stock
+    fun loadAllProducts(callback: (List<Product>) -> Unit) {
+        val currentUser = userHandler.getCurrentFirebaseUser()
+        if (currentUser == null) {
+            callback(emptyList())
+            return
+        }
 
-//    override fun getProductsByCategory(category: String): List<Product> {
-//        return products.filter { it.category == category }
-//    }
+        FirebaseFirestore.getInstance()
+            .collection("users")
+            .document(currentUser.uid)
+            .collection("products")
+            .get()
+            .addOnSuccessListener { documents ->
+                val productsList = parseProductsFromDocuments(documents)
+                callback(productsList)
+            }
+            .addOnFailureListener { exception ->
+                Log.e("InventoryManager", "Error loading products", exception)
+                callback(emptyList())
+            }
+    }
 
-
-    private fun getProductsByCategory(userId: String, category: String) {
-        val productsRef = FirebaseFirestore.getInstance()
+    //Loading products by category
+    override fun getProductsByCategory(userId: String, category: String, callback: (List<Product>) -> Unit) {
+        FirebaseFirestore.getInstance()
             .collection("users")
             .document(userId)
             .collection("products")
             .whereEqualTo("category", category)
-
-        productsRef.get()
+            .get()
             .addOnSuccessListener { documents ->
-                processProductDocuments(documents)
+                val productsList = parseProductsFromDocuments(documents)
+                callback(productsList)
             }
             .addOnFailureListener { exception ->
-                Log.e("ProductsList", "Error getting products", exception)
-                Toast.makeText(requireContext(), "שגיאה בטעינת המוצרים", Toast.LENGTH_SHORT).show()
+                Log.e("InventoryManager", "Error loading products from the category", exception)
+                callback(emptyList())
             }
     }
 
-
-
-////////////////////////////////////////////////////////////////////////////////////////////////////////
+    //Adding a product to the database
     override fun addProduct(product: Product, onComplete: (Result<Unit>) -> Unit) {
-
-        val currentUser =userHandler.getCurrentFirebaseUser()
-        if(currentUser==null){
+        val currentUser = userHandler.getCurrentFirebaseUser()
+        if (currentUser == null) {
             onComplete(Result.failure(Exception("משתמש לא מחובר")))
             return
         }
 
-        // Check if the product already exists
-        firestore.collection("users")
+        //Check if the product already exists
+        FirebaseFirestore.getInstance()
+            .collection("users")
             .document(currentUser.uid)
             .collection("products")
             .document(product.barCode)
             .get()
             .addOnSuccessListener { document ->
                 if (document.exists()) {
-                    onComplete(Result.failure(Exception("מוצר עם ברקוד זה כבר קיים")))
+                    //Existing product - updates quantity
+                    val existingProduct = document.toObject(Product::class.java)
+                    if (existingProduct != null) {
+                        updateProductQuantity(existingProduct, existingProduct.quantity + product.quantity, onComplete)
+                    } else {
+                        onComplete(Result.failure(Exception("מוצר קיים אך לא ניתן לקרוא את הנתונים שלו")))
+                    }
                 } else {
-                    // If the product doesn't exist, add it
-                    firestore.collection("users")
+                    //New product - adds
+                    FirebaseFirestore.getInstance()
+                        .collection("users")
                         .document(currentUser.uid)
                         .collection("products")
                         .document(product.barCode)
                         .set(product)
                         .addOnSuccessListener {
-                            products.add(product) //Adding to local memory
                             onComplete(Result.success(Unit))
                         }
                         .addOnFailureListener { exception ->
@@ -91,11 +99,131 @@ class InventoryManager : IInventoryManager {
                 onComplete(Result.failure(exception))
             }
     }
-///////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    //Processes the results obtained from the query and updates the list
-    private fun processProductDocuments(documents: QuerySnapshot) {
-        LocalProductsListInInventory.clear()
+    //Update quantity of an existing product
+    fun updateProductQuantity(product: Product, newQuantity: Int, onComplete: ((Result<Unit>) -> Unit)? = null) {
+        val currentUser = userHandler.getCurrentFirebaseUser()
+        if (currentUser == null) {
+            onComplete?.invoke(Result.failure(Exception("משתמש לא מחובר")))
+            return
+        }
+
+        //Update in Firebase
+        FirebaseFirestore.getInstance()
+            .collection("users")
+            .document(currentUser.uid)
+            .collection("products")
+            .document(product.barCode)
+            .update("quantity", newQuantity)
+            .addOnSuccessListener {
+                onComplete?.invoke(Result.success(Unit))
+            }
+            .addOnFailureListener { exception ->
+                onComplete?.invoke(Result.failure(exception))
+            }
+    }
+
+    //Deleting a product from the database
+    fun removeProduct(product: Product, onComplete: ((Result<Unit>) -> Unit)? = null) {
+        val currentUser = userHandler.getCurrentFirebaseUser()
+        if (currentUser == null) {
+            onComplete?.invoke(Result.failure(Exception("משתמש לא מחובר")))
+            return
+        }
+
+        FirebaseFirestore.getInstance()
+            .collection("users")
+            .document(currentUser.uid)
+            .collection("products")
+            .document(product.barCode)
+            .delete()
+            .addOnSuccessListener {
+                onComplete?.invoke(Result.success(Unit))
+            }
+            .addOnFailureListener { exception ->
+                onComplete?.invoke(Result.failure(exception))
+            }
+    }
+
+    //Search for products by search string
+    override fun searchProducts(context: Context, searchQuery: String, categoryFilter: String?, callback: (List<Product>) -> Unit) {
+        if (searchQuery.isEmpty()) {
+            Toast.makeText(context, R.string.enter_product_name, Toast.LENGTH_SHORT).show()
+            callback(emptyList())
+            return
+        }
+
+        val currentUser = userHandler.getCurrentFirebaseUser()
+        if (currentUser == null) {
+            Toast.makeText(context, R.string.no_user_loged_in, Toast.LENGTH_SHORT).show()
+            callback(emptyList())
+            return
+        }
+
+        val lowerCaseSearchString = searchQuery.lowercase()
+        //Preparing the query - if there is a filter category, add it to the query later
+        val query = FirebaseFirestore.getInstance()
+            .collection("users")
+            .document(currentUser.uid)
+            .collection("products")
+
+        //If there is a filter category, we will search only within the category
+        val filteredQuery = if (categoryFilter != null) {
+            query.whereEqualTo("category", categoryFilter)
+        } else {
+            query
+        }
+
+        filteredQuery.get().addOnSuccessListener { products ->
+                val matchingProducts = mutableListOf<Product>()
+                for (document in products) {
+                    try {
+                        val productNameFromDoc = document.getString("name") ?: continue
+
+                        if (productNameFromDoc.lowercase().contains(lowerCaseSearchString)) {
+                            val product = Product(
+                                barCode = document.getString("barCode") ?: continue,
+                                name = productNameFromDoc,
+                                category = document.getString("category") ?: continue,
+                                imageUrl = document.getString("imageUrl")?.let { Uri.parse(it) } ?: Uri.EMPTY,
+                                quantity = document.getLong("quantity")?.toInt() ?: continue,
+                                expiryDate = document.getString("expiryDate") ?: continue
+                            )
+                            matchingProducts.add(product)
+                        }
+                    } catch (e: Exception) {
+                        Log.e("Inventory", "Error converting document to Product", e)
+                    }
+                }
+
+                if (matchingProducts.isNotEmpty()) {
+                    if (matchingProducts.size == 1) {
+                        Toast.makeText(context, R.string.product_found, Toast.LENGTH_SHORT).show()
+                    } else {
+                        Toast.makeText(context, R.string.similar_products_found, Toast.LENGTH_SHORT).show()
+                    }
+                } else {
+                    //Customized message in case there are no results and there is filtering by category
+                    if (categoryFilter != null) {
+                        Toast.makeText(context, "לא נמצאו מוצרים בקטגוריה '$categoryFilter' למילת החיפוש '$searchQuery'", Toast.LENGTH_SHORT).show()
+                    } else {
+                        Toast.makeText(context, R.string.product_not_found, Toast.LENGTH_SHORT).show()
+                    }
+                }
+
+                callback(matchingProducts)
+            }
+            .addOnFailureListener { exception ->
+                Log.e("InventoryManager", "שגיאה בחיפוש מוצרים", exception)
+                Toast.makeText(context, "שגיאה בחיפוש: ${exception.message}", Toast.LENGTH_SHORT).show()
+                callback(emptyList())
+            }
+    }
+
+    //Converting query results from document to products
+    private fun parseProductsFromDocuments(documents: QuerySnapshot): List<Product> {
+        val productsList = mutableListOf<Product>()
+
         for (document in documents) {
             try {
                 val product = Product(
@@ -106,33 +234,12 @@ class InventoryManager : IInventoryManager {
                     quantity = document.getLong("quantity")?.toInt() ?: continue,
                     expiryDate = document.getString("expiryDate") ?: continue
                 )
-                LocalProductsListInInventory.add(product)
+                productsList.add(product)
             } catch (e: Exception) {
-                Log.e("ProductsList", "Error converting document to Product", e)
-                continue
+                Log.e("InventoryManager", "Error converting document to Product", e)
             }
         }
-        productsListAdapter.notifyDataSetChanged()
-    }
 
-    //אני צריך לשנות את הפונקציה הזאת כך שתעבוד עם הפייר בייס נראלי.
-    override fun findProductsByName(name: String): List<Product> {
-        return products.filter {
-            it.name.contains(name, ignoreCase = true)
-        }
-    }
-
-    override fun findProductByExactName(name: String): Product? {
-        return products.find {
-            it.name.equals(name, ignoreCase = true)
-        }
-    }
-
-    private fun showToast(context: Context, message: String) {
-        Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
-    }
-
-    fun clearCache() {
-        products.clear()
+        return productsList
     }
 }

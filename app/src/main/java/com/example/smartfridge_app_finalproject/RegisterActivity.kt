@@ -8,10 +8,10 @@ import android.graphics.Bitmap
 import android.net.Uri
 import android.os.Bundle
 import android.provider.MediaStore
+import android.util.Log
 import android.widget.Toast
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
-import com.google.android.material.button.MaterialButton
-import com.google.android.material.textfield.TextInputLayout
 import androidx.appcompat.widget.AppCompatEditText
 import androidx.core.content.FileProvider
 import com.example.smartfridge_app_finalproject.managers.UploadImageManager
@@ -19,10 +19,11 @@ import com.example.smartfridge_app_finalproject.managers.UsersManager
 import com.example.smartfridge_app_finalproject.managers.ValidInputManager
 import com.example.smartfridge_app_finalproject.utilities.Constants
 import com.example.smartfridge_app_finalproject.utilities.PermissionType
+import com.google.android.material.button.MaterialButton
 import com.google.android.material.imageview.ShapeableImageView
+import com.google.android.material.textfield.TextInputLayout
 import java.io.File
 import java.io.FileOutputStream
-import android.util.Log
 
 class RegisterActivity : AppCompatActivity() {
 
@@ -37,45 +38,86 @@ class RegisterActivity : AppCompatActivity() {
     private lateinit var register_ET_email: AppCompatEditText
     private lateinit var register_ET_password: AppCompatEditText
     private lateinit var register_ET_confirmpassword: AppCompatEditText
-    private var selectedImageUri: Uri? = null
-    private var cameraImageUri: Uri? = null
 
     private lateinit var register_IMG_profile: ShapeableImageView
     private lateinit var register_BTN_camera: MaterialButton
     private lateinit var register_BTN_gallery: MaterialButton
     private lateinit var register_BTN_submit: MaterialButton
 
-    private lateinit var uploadImageManager: UploadImageManager
+    private var selectedImageUri: Uri? = null
+    private var cameraImageUri: Uri? = null
 
-    private val validInputManager = ValidInputManager.getInstance() //Valid input manager
+    private var uploadImageManager = UploadImageManager.getInstance()
+    private var validInputManager = ValidInputManager.getInstance()
     private lateinit var usersManager: UsersManager
+
     private val TAG = "RegisterActivity"
+
+    // ActivityResultLaunchers for permissions and image selection
+    private val cameraPermissionLauncher = registerForActivityResult(
+        ActivityResultContracts.RequestPermission()
+    ) { isGranted ->
+        if (isGranted) {
+            launchCamera()
+        } else {
+            Toast.makeText(this, "הרשאת מצלמה נדרשת לצילום תמונת פרופיל", Toast.LENGTH_SHORT).show()
+        }
+    }
+
+    private val galleryPermissionLauncher = registerForActivityResult(
+        ActivityResultContracts.RequestPermission()
+    ) { isGranted ->
+        if (isGranted) {
+            launchGallery()
+        } else {
+            Toast.makeText(this, "הרשאת גלריה נדרשת לבחירת תמונת פרופיל", Toast.LENGTH_SHORT).show()
+        }
+    }
+
+    private val cameraLauncher = registerForActivityResult(
+        ActivityResultContracts.StartActivityForResult()
+    ) { result ->
+        if (result.resultCode == Activity.RESULT_OK) {
+            handleCameraResult(result.data)
+        }
+    }
+
+    private val galleryLauncher = registerForActivityResult(
+        ActivityResultContracts.StartActivityForResult()
+    ) { result ->
+        if (result.resultCode == Activity.RESULT_OK) {
+            handleGalleryResult(result.data)
+        }
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_register)
+
         usersManager = UsersManager(this)
-        uploadImageManager = UploadImageManager()
+        uploadImageManager = UploadImageManager.getInstance()
+        validInputManager = ValidInputManager.getInstance()
+
         findViews()
         initViews()
     }
 
     private fun findViews() {
-        //TextInputLayouts
+        // TextInputLayouts
         register_TIL_firstname = findViewById(R.id.register_TIL_firstname)
         register_TIL_lastname = findViewById(R.id.register_TIL_lastname)
         register_TIL_email = findViewById(R.id.register_TIL_email)
         register_TIL_password = findViewById(R.id.register_TIL_password)
         register_TIL_confirmpassword = findViewById(R.id.register_TIL_confirmpassword)
 
-        //EditTexts
+        // EditTexts
         register_ET_firstname = findViewById(R.id.register_ET_firstname)
         register_ET_lastname = findViewById(R.id.register_ET_lastname)
         register_ET_email = findViewById(R.id.register_ET_email)
         register_ET_password = findViewById(R.id.register_ET_password)
         register_ET_confirmpassword = findViewById(R.id.register_ET_confirmpassword)
 
-        // Button
+        // Buttons and ImageView
         register_IMG_profile = findViewById(R.id.register_IMG_profile)
         register_BTN_camera = findViewById(R.id.register_BTN_camera)
         register_BTN_gallery = findViewById(R.id.register_BTN_gallery)
@@ -92,27 +134,11 @@ class RegisterActivity : AppCompatActivity() {
         }
 
         register_BTN_camera.setOnClickListener {
-            if (uploadImageManager.checkCameraPermission(this)) {
-                openCamera()
-            } else {
-                if (uploadImageManager.shouldShowRequestPermissionRationale(this, PermissionType.CAMERA)) {
-                    showPermissionRationale(PermissionType.CAMERA)
-                } else {
-                    uploadImageManager.requestCameraPermission(this)
-                }
-            }
+            handleCameraButtonClick()
         }
 
         register_BTN_gallery.setOnClickListener {
-            if (uploadImageManager.checkGalleryPermission(this)) {
-                openGallery()
-            } else {
-                if (uploadImageManager.shouldShowRequestPermissionRationale(this, PermissionType.GALLERY)) {
-                    showPermissionRationale(PermissionType.GALLERY)
-                } else {
-                    uploadImageManager.requestGalleryPermission(this)
-                }
-            }
+            handleGalleryButtonClick()
         }
     }
 
@@ -173,24 +199,45 @@ class RegisterActivity : AppCompatActivity() {
         return isValid
     }
 
-    // פתיחת מצלמה
-    private fun openCamera() {
+    // Handle camera button click
+    private fun handleCameraButtonClick() {
+        if (uploadImageManager.checkCameraPermission(this)) {
+            launchCamera()
+        } else {
+            if (uploadImageManager.shouldShowRequestPermissionRationale(this, PermissionType.CAMERA)) {
+                showPermissionRationale(PermissionType.CAMERA)
+            } else {
+                cameraPermissionLauncher.launch(android.Manifest.permission.CAMERA)
+            }
+        }
+    }
+
+    // Handle gallery button click
+    private fun handleGalleryButtonClick() {
+        if (uploadImageManager.checkGalleryPermission(this)) {
+            launchGallery()
+        } else {
+            if (uploadImageManager.shouldShowRequestPermissionRationale(this, PermissionType.GALLERY)) {
+                showPermissionRationale(PermissionType.GALLERY)
+            } else {
+                val permission = if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.TIRAMISU) {
+                    android.Manifest.permission.READ_MEDIA_IMAGES
+                } else {
+                    android.Manifest.permission.READ_EXTERNAL_STORAGE
+                }
+                galleryPermissionLauncher.launch(permission)
+            }
+        }
+    }
+
+    // Launch camera using the new approach
+    private fun launchCamera() {
         try {
-            val intent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
-
-            // Create a file to save the image
-            val photoFile = File(applicationContext.cacheDir, "temp_camera_image.jpg")
-            cameraImageUri = FileProvider.getUriForFile(
-                this,
-                "${applicationContext.packageName}.fileprovider",
-                photoFile
-            )
-
-            // Tell the camera where to save the full-size image
-            intent.putExtra(MediaStore.EXTRA_OUTPUT, cameraImageUri)
+            val (intent, uri) = uploadImageManager.createCameraIntent(this)
+            cameraImageUri = uri
 
             if (intent.resolveActivity(packageManager) != null) {
-                startActivityForResult(intent, Constants.ImageUploadRequest.CAMERA_REQUEST_CODE)
+                cameraLauncher.launch(intent)
             } else {
                 Toast.makeText(this, "אין אפליקציית מצלמה זמינה", Toast.LENGTH_SHORT).show()
             }
@@ -200,18 +247,62 @@ class RegisterActivity : AppCompatActivity() {
         }
     }
 
-    // פתיחת גלריה
-    private fun openGallery() {
+    // Launch gallery using the new approach
+    private fun launchGallery() {
         try {
-            val intent = Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI)
-            startActivityForResult(intent, Constants.ImageUploadRequest.GALLERY_REQUEST_CODE)
+            val intent = uploadImageManager.createGalleryIntent()
+            galleryLauncher.launch(intent)
         } catch (e: Exception) {
             Log.e(TAG, "Error opening gallery: ${e.message}", e)
             Toast.makeText(this, "שגיאה בפתיחת הגלריה", Toast.LENGTH_SHORT).show()
         }
     }
 
-    // הצגת הסבר על הרשאות
+    // Handle camera result
+    private fun handleCameraResult(data: Intent?) {
+        try {
+            // If we used EXTRA_OUTPUT, the image is stored in cameraImageUri
+            if (cameraImageUri != null) {
+                selectedImageUri = cameraImageUri
+                register_IMG_profile.setImageURI(cameraImageUri)
+                Log.d(TAG, "Camera image URI: $cameraImageUri")
+            }
+            // Fallback to the thumbnail if for some reason cameraImageUri is null
+            else if (data?.extras?.get("data") != null) {
+                val bitmap = data.extras?.get("data") as Bitmap
+                val uri = getImageUriFromBitmap(bitmap)
+                selectedImageUri = uri
+                register_IMG_profile.setImageBitmap(bitmap)
+                Log.d(TAG, "Camera thumbnail URI: $uri")
+            } else {
+                Log.e(TAG, "No camera data received")
+                Toast.makeText(this, "לא התקבלה תמונה מהמצלמה", Toast.LENGTH_SHORT).show()
+            }
+        } catch (e: Exception) {
+            Log.e(TAG, "Error processing camera image: ${e.message}", e)
+            Toast.makeText(this, "שגיאה בעיבוד תמונת המצלמה", Toast.LENGTH_SHORT).show()
+        }
+    }
+
+    // Handle gallery result
+    private fun handleGalleryResult(data: Intent?) {
+        val uri = data?.data
+        if (uri != null) {
+            try {
+                selectedImageUri = uri
+                register_IMG_profile.setImageURI(uri)
+                Log.d(TAG, "Gallery image URI: $uri")
+            } catch (e: Exception) {
+                Log.e(TAG, "Error processing gallery image: ${e.message}", e)
+                Toast.makeText(this, "שגיאה בעיבוד תמונה מהגלריה", Toast.LENGTH_SHORT).show()
+            }
+        } else {
+            Log.e(TAG, "Gallery returned null URI")
+            Toast.makeText(this, "לא נבחרה תמונה מהגלריה", Toast.LENGTH_SHORT).show()
+        }
+    }
+
+    // Show rationale dialog for permissions
     private fun showPermissionRationale(permissionType: PermissionType) {
         val title: String
         val message: String
@@ -229,71 +320,21 @@ class RegisterActivity : AppCompatActivity() {
             .setMessage(message)
             .setPositiveButton("אישור") { _, _ ->
                 if (permissionType == PermissionType.CAMERA) {
-                    uploadImageManager.requestCameraPermission(this)
+                    cameraPermissionLauncher.launch(android.Manifest.permission.CAMERA)
                 } else {
-                    uploadImageManager.requestGalleryPermission(this)
+                    val permission = if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.TIRAMISU) {
+                        android.Manifest.permission.READ_MEDIA_IMAGES
+                    } else {
+                        android.Manifest.permission.READ_EXTERNAL_STORAGE
+                    }
+                    galleryPermissionLauncher.launch(permission)
                 }
             }
             .setNegativeButton("ביטול", null)
             .show()
     }
 
-    // טיפול בתוצאות מהמצלמה או הגלריה
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        super.onActivityResult(requestCode, resultCode, data)
-
-        try {
-            if (resultCode == Activity.RESULT_OK) {
-                when (requestCode) {
-                    Constants.ImageUploadRequest.CAMERA_REQUEST_CODE -> {
-                        try {
-                            // If we used EXTRA_OUTPUT, the image is stored in cameraImageUri
-                            if (cameraImageUri != null) {
-                                selectedImageUri = cameraImageUri
-                                register_IMG_profile.setImageURI(cameraImageUri)
-                                Log.d(TAG, "Camera image URI: $cameraImageUri")
-                            }
-                            // Fallback to the thumbnail if for some reason cameraImageUri is null
-                            else if (data?.extras?.get("data") != null) {
-                                val bitmap = data.extras?.get("data") as Bitmap
-                                val uri = getImageUriFromBitmap(bitmap)
-                                selectedImageUri = uri
-                                register_IMG_profile.setImageBitmap(bitmap)
-                                Log.d(TAG, "Camera thumbnail URI: $uri")
-                            } else {
-                                Log.e(TAG, "No camera data received")
-                                Toast.makeText(this, "לא התקבלה תמונה מהמצלמה", Toast.LENGTH_SHORT).show()
-                            }
-                        } catch (e: Exception) {
-                            Log.e(TAG, "Error processing camera image: ${e.message}", e)
-                            Toast.makeText(this, "שגיאה בעיבוד תמונת המצלמה", Toast.LENGTH_SHORT).show()
-                        }
-                    }
-                    // Gallery code remains unchanged
-                    Constants.ImageUploadRequest.GALLERY_REQUEST_CODE -> {
-                        val uri = data?.data
-                        if (uri != null) {
-                            try {
-                                selectedImageUri = uri
-                                register_IMG_profile.setImageURI(uri)
-                                Log.d(TAG, "Gallery image URI: $uri")
-                            } catch (e: Exception) {
-                                Log.e(TAG, "Error processing gallery image: ${e.message}", e)
-                                Toast.makeText(this, "שגיאה בעיבוד תמונה מהגלריה", Toast.LENGTH_SHORT).show()
-                            }
-                        } else {
-                            Log.e(TAG, "Gallery returned null URI")
-                            Toast.makeText(this, "לא נבחרה תמונה מהגלריה", Toast.LENGTH_SHORT).show()
-                        }
-                    }
-                }
-            }
-        } catch (e: Exception) {
-            Log.e(TAG, "Error in onActivityResult: ${e.message}", e)
-            Toast.makeText(this, "שגיאה בעיבוד התמונה", Toast.LENGTH_SHORT).show()
-        }
-    }
-
+    // Convert bitmap to URI
     private fun getImageUriFromBitmap(bitmap: Bitmap): Uri {
         try {
             // Create a unique filename with timestamp
@@ -320,33 +361,11 @@ class RegisterActivity : AppCompatActivity() {
             )
         } catch (e: Exception) {
             Log.e(TAG, "Error creating image from bitmap: ${e.message}", e)
-            // Instead of rethrowing, return a default URI or null
             throw e
         }
     }
 
-    // טיפול בתוצאות בקשת הרשאות
-    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-
-        when (requestCode) {
-            Constants.ImageUploadRequest.CAMERA_PERMISSION_REQUEST -> {
-                if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    openCamera()
-                } else {
-                    Toast.makeText(this, "הרשאת מצלמה נדרשת לצילום תמונת פרופיל", Toast.LENGTH_SHORT).show()
-                }
-            }
-            Constants.ImageUploadRequest.GALLERY_PERMISSION_REQUEST -> {
-                if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    openGallery()
-                } else {
-                    Toast.makeText(this, "הרשאת גלריה נדרשת לבחירת תמונת פרופיל", Toast.LENGTH_SHORT).show()
-                }
-            }
-        }
-    }
-
+    // Register the user
     private fun handleRegistration() {
         val firstName = register_ET_firstname.text.toString().trim()
         val lastName = register_ET_lastname.text.toString().trim()

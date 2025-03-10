@@ -22,12 +22,13 @@ import com.google.android.material.imageview.ShapeableImageView
 import com.google.android.material.textview.MaterialTextView
 import com.bumptech.glide.Glide
 import android.util.Log
+import android.widget.Toast
 import androidx.appcompat.widget.AppCompatImageButton
 
 class HomePageFragment : Fragment() {
 
     private lateinit var categoryManager: CategoryManager
-    private var inventoryManager: InventoryManager = InventoryManager() //Inventory manager
+    private var inventoryManager: InventoryManager = InventoryManager()
     private val categoriesList = MutableLiveData<List<Category>>()
     private val userHandler = UserHandler.getInstance()
     private lateinit var categoryAdapter: CategoryAdapter
@@ -44,6 +45,7 @@ class HomePageFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
+
         return inflater.inflate(R.layout.fragment_home_page, container, false)
     }
 
@@ -71,14 +73,15 @@ class HomePageFragment : Fragment() {
     }
 
     private fun setupClickListeners() {
+        //Show all button
         homepage_BTN_show_all.setOnClickListener {
-            //Show all button click
             (activity as? MainActivity)?.transactionToAnotherFragment(Constants.Fragment.PRODUCTSLIST)
         }
+        //Search button
         homepage_BTN_search.setOnClickListener {
             executeSearch()
         }
-
+        //Map button
         homepage_IV_location.setOnClickListener {
             (activity as? MainActivity)?.transactionToAnotherFragment(Constants.Fragment.SUPERMARKET)
         }
@@ -86,7 +89,7 @@ class HomePageFragment : Fragment() {
 
     private fun setupRecyclerView() {
         categoryAdapter = CategoryAdapter { category ->
-            categoryManager.handleCategoryClick(category) //Click on category
+            categoryManager.handleCategoryClick(category) //On category clicked
         }
 
         homePage_RV_categories.apply {
@@ -107,13 +110,37 @@ class HomePageFragment : Fragment() {
 
     private fun executeSearch() {
         val searchQuery = homepage_ET_search.text.toString().trim()
-        inventoryManager.searchProduct(requireContext(), searchQuery)
+
+        //If the query is empty
+        if (searchQuery.isEmpty()) {
+            Toast.makeText(requireContext(), getString(R.string.enter_product_name), Toast.LENGTH_SHORT).show()
+            return
+        }
+
+        //Check if there are products that match the search
+        inventoryManager.searchProducts(requireContext(), searchQuery, null) { products ->
+            if (products.isNotEmpty()) {
+                //If products are found - pass the search term to the ProductsListFragment
+                navigateToProductsListWithSearchQuery(searchQuery)
+            }
+        }
     }
 
+    private fun navigateToProductsListWithSearchQuery(searchQuery: String) {
+        val bundle = Bundle().apply {
+            putString("SEARCH_QUERY", searchQuery)
+            putBoolean("FROM_SEARCH", true)
+        }
+
+        (activity as? MainActivity)?.transactionToAnotherFragment(
+            Constants.Fragment.PRODUCTSLIST, bundle)
+    }
+
+    //Update the UI with user information
     private fun updateUIWithUserData(userData: UserHandler.UserData) {
         homepage_TV_name.text = userData.firstName
 
-        //Load profil image
+        //Load profile picture
         if (!userData.profileImageUrl.isNullOrEmpty()) {
             Glide.with(requireContext())
                 .load(userData.profileImageUrl)
@@ -123,15 +150,12 @@ class HomePageFragment : Fragment() {
         }
     }
 
-    //Function to load user profile
+    //Loading user details
     private fun loadUserProfile() {
         if (userHandler.isUserLoggedIn()) {
-            //Check if there are details in the local memory
             userHandler.getCurrentUserData()?.let { userData ->
                 updateUIWithUserData(userData)
             }
-
-            // Load/refresh the data from Firestore
             userHandler.loadUserProfile { result ->
                 result.onSuccess { userData ->
                     activity?.runOnUiThread {
@@ -140,7 +164,7 @@ class HomePageFragment : Fragment() {
                 }.onFailure { exception ->
                     activity?.runOnUiThread {
                         homepage_TV_name.text = getString(R.string.guest)
-                        Log.e("ProductsListFragment", "Error loading profile", exception)
+                        Log.e("HomePageFragment", "Error loading profile", exception)
                     }
                 }
             }

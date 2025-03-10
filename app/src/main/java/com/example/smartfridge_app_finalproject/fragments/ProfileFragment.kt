@@ -1,28 +1,25 @@
 package com.example.smartfridge_app_finalproject.fragments
 
+import UserHandler
 import android.Manifest
-import android.content.ContentValues
 import android.content.Intent
-import android.content.pm.PackageManager
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
-import android.provider.MediaStore
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import com.bumptech.glide.Glide
 import com.example.smartfridge_app_finalproject.R
 import com.example.smartfridge_app_finalproject.StartingPageActivity
-import com.example.smartfridge_app_finalproject.adapters.UserAdapter
 import com.example.smartfridge_app_finalproject.databinding.FragmentManageProfileBinding
 import com.example.smartfridge_app_finalproject.managers.UploadImageManager
+import com.example.smartfridge_app_finalproject.managers.ValidInputManager
 import com.example.smartfridge_app_finalproject.utilities.PermissionType
 import com.firebase.ui.auth.AuthUI
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
@@ -32,17 +29,19 @@ import kotlinx.coroutines.launch
 class ProfileFragment : Fragment() {
 
     private lateinit var binding: FragmentManageProfileBinding
-    private lateinit var userAdapter: UserAdapter
-    private val uploadImageManager = UploadImageManager()
+    private lateinit var uploadImageManager: UploadImageManager
+    private lateinit var userHandler: UserHandler
+    private val TAG = "ProfileFragment"
 
-    // ניהול תוצאות פעילויות
-    private var tempUri: Uri? = null
+    // Uri to store temporary camera image
+    private var tempCameraUri: Uri? = null
 
+    // ActivityResultLaunchers for permissions and image operations
     private val cameraPermissionLauncher = registerForActivityResult(
         ActivityResultContracts.RequestPermission()
     ) { isGranted ->
         if (isGranted) {
-            openCamera()
+            launchCamera()
         } else {
             showToast("נדרשת הרשאת מצלמה לצילום תמונת פרופיל")
         }
@@ -52,7 +51,7 @@ class ProfileFragment : Fragment() {
         ActivityResultContracts.RequestPermission()
     ) { isGranted ->
         if (isGranted) {
-            openGallery()
+            launchGallery()
         } else {
             showToast("נדרשת הרשאת גלריה לבחירת תמונת פרופיל")
         }
@@ -68,7 +67,7 @@ class ProfileFragment : Fragment() {
         ActivityResultContracts.TakePicture()
     ) { success ->
         if (success) {
-            tempUri?.let { handleSelectedImage(it) }
+            tempCameraUri?.let { handleSelectedImage(it) }
         }
     }
 
@@ -78,18 +77,25 @@ class ProfileFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View {
         binding = FragmentManageProfileBinding.inflate(inflater, container, false)
+        uploadImageManager = UploadImageManager.getInstance()
+        userHandler = UserHandler.getInstance()
         return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-//        setupRecyclerView()
         setupClickListeners()
         setupLogoutButton()
-        loadInitialUsers("benny_l")
+        setupEditButtons()
+        loadUserProfile()
     }
 
     private fun setupClickListeners() {
+        // Profile image change
+        binding.profileBTNChangeImage.setOnClickListener {
+            showImagePickerDialog()
+        }
+
         binding.profileManagementIMGUserProfile.setOnClickListener {
             showImagePickerDialog()
         }
@@ -98,6 +104,166 @@ class ProfileFragment : Fragment() {
     private fun setupLogoutButton() {
         binding.profileManagementBTNLogout.setOnClickListener {
             showLogoutConfirmationDialog()
+        }
+    }
+
+    private fun setupEditButtons() {
+        // First name edit
+        binding.profileBTNEditFirstName.setOnClickListener {
+            showEditField(
+                binding.profileTILFirstName,
+                binding.profileLLFirstNameButtons,
+                binding.profileTVFirstName.text.toString()
+            )
+        }
+
+        // Last name edit
+        binding.profileBTNEditLastName.setOnClickListener {
+            showEditField(
+                binding.profileTILLastName,
+                binding.profileLLLastNameButtons,
+                binding.profileTVLastName.text.toString()
+            )
+        }
+
+        // First name save
+        binding.profileBTNSaveFirstName.setOnClickListener {
+            val newFirstName = binding.profileETFirstName.text.toString().trim()
+            if (newFirstName.isNotEmpty()) {
+                // Process update - only hide fields if update is successful
+                val validInputManager = ValidInputManager.getInstance()
+                if (validInputManager.isValidFirstName(newFirstName)) {
+                    updateUserField("firstName", newFirstName)
+                    binding.profileTVFirstName.text = newFirstName
+                    hideEditField(
+                        binding.profileTILFirstName,
+                        binding.profileLLFirstNameButtons
+                    )
+                } else {
+                    binding.profileETFirstName.error = getString(R.string.invalid_first_name)
+                    showToast(getString(R.string.invalid_first_name))
+                }
+            } else {
+                binding.profileETFirstName.error = "השם אינו יכול להיות ריק"
+                showToast("השם אינו יכול להיות ריק")
+            }
+        }
+
+        // Last name save
+        binding.profileBTNSaveLastName.setOnClickListener {
+            val newLastName = binding.profileETLastName.text.toString().trim()
+            if (newLastName.isNotEmpty()) {
+                // Process update - only hide fields if update is successful
+                val validInputManager = ValidInputManager.getInstance()
+                if (validInputManager.isValidLastName(newLastName)) {
+                    updateUserField("lastName", newLastName)
+                    binding.profileTVLastName.text = newLastName
+                    hideEditField(
+                        binding.profileTILLastName,
+                        binding.profileLLLastNameButtons
+                    )
+                } else {
+                    binding.profileETLastName.error = getString(R.string.invalid_last_name)
+                    showToast(getString(R.string.invalid_last_name))
+                }
+            } else {
+                binding.profileETLastName.error = "שם המשפחה אינו יכול להיות ריק"
+                showToast("שם המשפחה אינו יכול להיות ריק")
+            }
+        }
+
+        // Cancel buttons
+        binding.profileBTNCancelFirstName.setOnClickListener {
+            hideEditField(
+                binding.profileTILFirstName,
+                binding.profileLLFirstNameButtons
+            )
+        }
+
+        binding.profileBTNCancelLastName.setOnClickListener {
+            hideEditField(
+                binding.profileTILLastName,
+                binding.profileLLLastNameButtons
+            )
+        }
+
+        // Reset password button
+        binding.profileBTNResetPassword.setOnClickListener {
+            resetPassword()
+        }
+    }
+
+    private fun showEditField(inputLayout: View, buttonsLayout: View, currentValue: String) {
+        // Show the edit field and set current value
+        inputLayout.visibility = View.VISIBLE
+        buttonsLayout.visibility = View.VISIBLE
+
+        // Set current value
+        when (inputLayout.id) {
+            R.id.profile_TIL_firstName -> binding.profileETFirstName.setText(currentValue)
+            R.id.profile_TIL_lastName -> binding.profileETLastName.setText(currentValue)
+        }
+    }
+
+    private fun hideEditField(inputLayout: View, buttonsLayout: View) {
+        inputLayout.visibility = View.GONE
+        buttonsLayout.visibility = View.GONE
+    }
+
+    private fun updateUserField(fieldName: String, value: String) {
+        // Validate the input using ValidInputManager
+        val validInputManager = ValidInputManager.getInstance()
+
+        when (fieldName) {
+            "firstName" -> {
+                if (!validInputManager.isValidFirstName(value)) {
+                    activity?.runOnUiThread {
+                        binding.profileETFirstName.error = getString(R.string.invalid_first_name)
+                    }
+                    return
+                }
+            }
+            "lastName" -> {
+                if (!validInputManager.isValidLastName(value)) {
+                    activity?.runOnUiThread {
+                        binding.profileETLastName.error = getString(R.string.invalid_last_name)
+                    }
+                    return
+                }
+            }
+        }
+
+        userHandler.getCurrentUserData()?.let { userData ->
+            val firstName = if (fieldName == "firstName") value else userData.firstName
+            val lastName = if (fieldName == "lastName") value else userData.lastName
+
+            userHandler.updateUserProfile(
+                firstName = firstName,
+                lastName = lastName,
+                profileImageUrl = userData.profileImageUrl
+            ) { result ->
+                activity?.runOnUiThread {
+                    result.onSuccess {
+                        showToast("הפרטים עודכנו בהצלחה")
+                    }.onFailure { exception ->
+                        showToast("שגיאה בעדכון הפרטים: ${exception.message}")
+                    }
+                }
+            }
+        }
+    }
+
+    private fun resetPassword() {
+        userHandler.getCurrentUserData()?.let { userData ->
+            userData.email?.let { email ->
+                FirebaseAuth.getInstance().sendPasswordResetEmail(email)
+                    .addOnSuccessListener {
+                        showToast("הוראות לאיפוס סיסמה נשלחו לכתובת האימייל שלך")
+                    }
+                    .addOnFailureListener { exception ->
+                        showToast("שגיאה בשליחת הוראות איפוס: ${exception.message}")
+                    }
+            } ?: showToast("לא נמצאה כתובת אימייל")
         }
     }
 
@@ -115,6 +281,8 @@ class ProfileFragment : Fragment() {
     }
 
     private fun signOut() {
+        userHandler.clearUserData() // Clear cached user data
+
         AuthUI.getInstance()
             .signOut(requireContext())
             .addOnCompleteListener {
@@ -138,40 +306,29 @@ class ProfileFragment : Fragment() {
     }
 
     private fun handleCameraRequest() {
-        when {
-            ContextCompat.checkSelfPermission(
-                requireContext(),
-                Manifest.permission.CAMERA
-            ) == PackageManager.PERMISSION_GRANTED -> {
-                openCamera()
-            }
-            shouldShowRequestPermissionRationale(Manifest.permission.CAMERA) -> {
+        if (uploadImageManager.checkCameraPermission(requireContext())) {
+            launchCamera()
+        } else {
+            if (uploadImageManager.shouldShowRequestPermissionRationale(requireActivity(), PermissionType.CAMERA)) {
                 showPermissionExplanationDialog(PermissionType.CAMERA)
-            }
-            else -> {
+            } else {
                 cameraPermissionLauncher.launch(Manifest.permission.CAMERA)
             }
         }
     }
 
     private fun handleGalleryRequest() {
-        val permission = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-            Manifest.permission.READ_MEDIA_IMAGES
+        if (uploadImageManager.checkGalleryPermission(requireContext())) {
+            launchGallery()
         } else {
-            Manifest.permission.READ_EXTERNAL_STORAGE
-        }
-
-        when {
-            ContextCompat.checkSelfPermission(
-                requireContext(),
-                permission
-            ) == PackageManager.PERMISSION_GRANTED -> {
-                openGallery()
-            }
-            shouldShowRequestPermissionRationale(permission) -> {
+            if (uploadImageManager.shouldShowRequestPermissionRationale(requireActivity(), PermissionType.GALLERY)) {
                 showPermissionExplanationDialog(PermissionType.GALLERY)
-            }
-            else -> {
+            } else {
+                val permission = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                    Manifest.permission.READ_MEDIA_IMAGES
+                } else {
+                    Manifest.permission.READ_EXTERNAL_STORAGE
+                }
                 galleryPermissionLauncher.launch(permission)
             }
         }
@@ -203,34 +360,23 @@ class ProfileFragment : Fragment() {
             .show()
     }
 
-    private fun openCamera() {
+    private fun launchCamera() {
         try {
-            val contentValues = ContentValues().apply {
-                put(MediaStore.Images.Media.TITLE, "Temp Picture")
-                put(MediaStore.Images.Media.DESCRIPTION, "Temp Description")
-            }
+            val (intent, uri) = uploadImageManager.createCameraIntent(requireContext())
+            tempCameraUri = uri
 
-            tempUri = requireActivity().contentResolver.insert(
-                MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
-                contentValues
-            )
-
-            tempUri?.let { uri ->
-                cameraLauncher.launch(uri)
-            } ?: run {
-                showToast("שגיאה ביצירת קובץ זמני למצלמה")
-            }
+            cameraLauncher.launch(uri)
         } catch (e: Exception) {
-            Log.e("ManageProfileFragment", "Error opening camera: ${e.message}")
+            Log.e(TAG, "Error opening camera: ${e.message}", e)
             showToast("שגיאה בפתיחת המצלמה")
         }
     }
 
-    private fun openGallery() {
+    private fun launchGallery() {
         try {
             galleryLauncher.launch("image/*")
         } catch (e: Exception) {
-            Log.e("ManageProfileFragment", "Error opening gallery: ${e.message}")
+            Log.e(TAG, "Error opening gallery: ${e.message}", e)
             showToast("שגיאה בפתיחת הגלריה")
         }
     }
@@ -241,95 +387,52 @@ class ProfileFragment : Fragment() {
                 val userId = FirebaseAuth.getInstance().currentUser?.uid ?: return@launch
                 showLoading(true)
 
-                // מחיקת תמונה ישנה
+                // Delete old profile image first
                 uploadImageManager.deleteOldProfileImage(userId)
 
-                // העלאת תמונה חדשה
-                val result = uploadImageManager.uploadProfileImage(userId, uri, requireContext())
+                // Use the new method to upload profile image
+                uploadImageManager.uploadProfileImage(requireContext(), uri) { success, imageUrl ->
+                    if (success) {
+                        // Update profile image in UI
+                        Glide.with(requireContext())
+                            .load(uri)
+                            .placeholder(R.drawable.profile_man)
+                            .error(R.drawable.profile_man)
+                            .into(binding.profileManagementIMGUserProfile)
 
-                result.onSuccess { url ->
-                    // עדכון תמונת הפרופיל
-                    Glide.with(requireContext())
-                        .load(uri)
-                        .into(binding.profileManagementIMGUserProfile)
+                        // Reload user data to get updated profile
+                        loadUserProfile()
 
-                    // טעינת נתוני המשתמש המעודכנים
-                    loadInitialUsers(userId)
+                        showToast("התמונה הועלתה בהצלחה")
+                    } else {
+                        showToast("שגיאה בהעלאת התמונה: $imageUrl")
+                    }
 
-                    showToast("התמונה הועלתה בהצלחה")
-                }.onFailure { exception ->
-                    showToast("שגיאה בהעלאת התמונה: ${exception.message}")
+                    showLoading(false)
                 }
             } catch (e: Exception) {
+                Log.e(TAG, "Error handling selected image", e)
                 showToast("שגיאה: ${e.message}")
-            } finally {
                 showLoading(false)
             }
         }
     }
 
-//    private fun setupRecyclerView() {
-//        userAdapter = UserAdapter(mutableListOf()) { user, isActive ->
-//            // Handle user status change
-//        }
-//
-//        binding.profileManagementRVUsers.apply {
-//            adapter = userAdapter
-//            addItemDecoration(DividerItemDecoration(context, LinearLayoutManager.VERTICAL))
-//        }
-//    }
-
-//    private fun loadInitialUsers(username: String) {
-//        showLoading(true)
-//
-//        val userHandler = UserHandler.getInstance()
-//
-//        // קודם נבדוק אם יש נתונים מקומיים זמינים
-//        userHandler.getCurrentUserData()?.let { userData ->
-//            updateUIWithUserData(userData)
-//        }
-//
-//        // נטען/נרענן את הנתונים מ-Firestore
-//        userHandler.loadUserProfile { result ->
-//            activity?.runOnUiThread {
-//                result.onSuccess { userData ->
-//                    updateUIWithUserData(userData)
-//                    // עדכון הרשימה ב-RecyclerView
-//                    userAdapter.updateUsers(listOf(
-//                        User(
-//                            firstName = userData.firstName,
-//                            lastName = "", // תלוי במה שיש ב-UserData
-//                            Email = userData.email ?: "",
-//                            userName = username,
-//                            password = "", // לא צריך להציג סיסמה
-//                            profileImageUrl = userData.profileImageUrl,
-//                            imageResourceId = R.drawable.profile_man
-//                        )
-//                    ))
-//                }.onFailure { exception ->
-//                    showToast("שגיאה בטעינת נתוני משתמש: ${exception.message}")
-//                }
-//                showLoading(false)
-//            }
-//        }
-//    }
-
-    private fun loadInitialUsers(username: String) {
+    private fun loadUserProfile() {
         showLoading(true)
 
-        val userHandler = UserHandler.getInstance()
-
-        // אם יש נתונים בזיכרון המקומי, נציג אותם קודם
+        // First check if we have cached user data
         userHandler.getCurrentUserData()?.let { userData ->
             updateProfileUI(userData)
         }
 
-        // טעינה/רענון מ-Firestore
+        // Then load/refresh from Firestore
         userHandler.loadUserProfile { result ->
             activity?.runOnUiThread {
                 result.onSuccess { userData ->
                     updateProfileUI(userData)
                 }.onFailure { exception ->
+                    Log.e(TAG, "Error loading user profile", exception)
                     showToast("שגיאה בטעינת נתוני משתמש: ${exception.message}")
                 }
                 showLoading(false)
@@ -338,13 +441,22 @@ class ProfileFragment : Fragment() {
     }
 
     private fun updateProfileUI(userData: UserHandler.UserData) {
-        // טעינת תמונת הפרופיל
-        if (!userData.profileImageUrl.isNullOrEmpty()) {
-            Glide.with(requireContext())
-                .load(userData.profileImageUrl)
-                .placeholder(R.drawable.profile_man)
-                .error(R.drawable.profile_man)
-                .into(binding.profileManagementIMGUserProfile)
+        try {
+            // Update profile image if available
+            if (!userData.profileImageUrl.isNullOrEmpty()) {
+                Glide.with(requireContext())
+                    .load(userData.profileImageUrl)
+                    .placeholder(R.drawable.profile_man)
+                    .error(R.drawable.profile_man)
+                    .into(binding.profileManagementIMGUserProfile)
+            }
+
+            // Update text fields with user data
+            binding.profileTVFirstName.text = userData.firstName
+            binding.profileTVLastName.text = userData.lastName
+//            binding.profileTVEmail.text = userData.email ?: getString(R.string.no_email_available)
+        } catch (e: Exception) {
+            Log.e(TAG, "Error updating profile UI", e)
         }
     }
 
@@ -353,6 +465,16 @@ class ProfileFragment : Fragment() {
     }
 
     private fun showLoading(show: Boolean) {
-//        binding.progressBar.visibility = if (show) View.VISIBLE else View.GONE
+        try {
+            binding.profileProgressBar.visibility = if (show) View.VISIBLE else View.GONE
+        } catch (e: Exception) {
+            Log.e(TAG, "Error showing/hiding loading indicator", e)
+        }
+    }
+
+    override fun onResume() {
+        super.onResume()
+        // Refresh user data every time the fragment is resumed
+        loadUserProfile()
     }
 }

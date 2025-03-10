@@ -68,38 +68,7 @@
             android:orientation="vertical"
             android:padding="16dp">
 
-            <!-- First Name -->
-            <com.google.android.material.textfield.TextInputLayout
-                android:id="@+id/register_TIL_firstname"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/default_margin_8">
-
-                <androidx.appcompat.widget.AppCompatEditText
-                    android:id="@+id/register_ET_firstname"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:hint="@string/first_name"
-                    android:inputType="textPersonName" />
-
-            </com.google.android.material.textfield.TextInputLayout>
-
-            <!-- Last Name -->
-            <com.google.android.material.textfield.TextInputLayout
-                android:id="@+id/register_TIL_lastname"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/default_margin_8">
-                <androidx.appcompat.widget.AppCompatEditText
-                    android:id="@+id/register_ET_lastname"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:hint="@string/last_name"
-                    android:inputType="textPersonName" />
-
-            </com.google.android.material.textfield.TextInputLayout>
-
-            <!-- Profile Image Selection -->
+            <!-- Profile Image Selection - MOVED TO TOP OF FORM -->
             <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/register_TIL_profileImage"
                 android:layout_width="match_parent"
@@ -163,6 +132,37 @@
                             style="@style/Widget.MaterialComponents.Button.OutlinedButton" />
                     </LinearLayout>
                 </androidx.appcompat.widget.LinearLayoutCompat>
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <!-- First Name -->
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/register_TIL_firstname"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/default_margin_8">
+
+                <androidx.appcompat.widget.AppCompatEditText
+                    android:id="@+id/register_ET_firstname"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="@string/first_name"
+                    android:inputType="textPersonName" />
+
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <!-- Last Name -->
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/register_TIL_lastname"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/default_margin_8">
+                <androidx.appcompat.widget.AppCompatEditText
+                    android:id="@+id/register_ET_lastname"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="@string/last_name"
+                    android:inputType="textPersonName" />
+
             </com.google.android.material.textfield.TextInputLayout>
 
             <!-- Email -->

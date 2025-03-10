@@ -7,8 +7,8 @@ import android.net.Uri
 import androidx.activity.result.ActivityResultLauncher
 
 interface IImageManager {
-    fun uploadProfileImage(context: Context, imageUri: Uri, callback: (Boolean, String?) -> Unit)
-    fun uploadProductImage(context: Context, imageUri: Uri, callback: (Boolean, String?) -> Unit)
+    suspend fun uploadProfileImage(context: Context, imageUri: Uri, callback: (Boolean, String?) -> Unit)
+    suspend fun uploadProductImage(context: Context, imageUri: Uri, callback: (Boolean, String?) -> Unit)
     fun takePicture(activity: Activity, callback: ActivityResultLauncher<Intent>)
     fun pickFromGallery(activity: Activity, callback: ActivityResultLauncher<Intent>)
     fun checkAndRequestCameraPermission(activity: Activity, callback: ActivityResultLauncher<String>)

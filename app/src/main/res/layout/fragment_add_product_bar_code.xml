@@ -8,7 +8,7 @@
     tools:context=".fragments.AddProductBarCodeFragment">
 
     <com.google.android.material.card.MaterialCardView
-        android:id="@+id/barcode_CV_headerCard"
+        android:id="@+id/barCode_CV_header"
         android:layout_width="match_parent"
         android:layout_height="@dimen/template_header"
         app:cardBackgroundColor="@color/blue"
@@ -21,18 +21,18 @@
 
             <!-- App Logo -->
             <androidx.appcompat.widget.AppCompatImageView
-                android:id="@+id/barcode_IMG_logo"
+                android:id="@+id/barCode_IMG_logo"
                 android:layout_width="80dp"
                 android:layout_height="80dp"
                 android:src="@drawable/app_logo_no_background"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintBottom_toTopOf="@id/barcode_TV_title" />
+                app:layout_constraintBottom_toTopOf="@id/barCode_TV_title" />
 
             <!-- Title -->
             <com.google.android.material.textview.MaterialTextView
-                android:id="@+id/barcode_TV_title"
+                android:id="@+id/barCode_TV_title"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="סרוק מוצר"
@@ -42,7 +42,7 @@
                 android:layout_marginTop="8dp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/barcode_IMG_logo"
+                app:layout_constraintTop_toBottomOf="@id/barCode_IMG_logo"
                 app:layout_constraintBottom_toBottomOf="parent" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
@@ -50,15 +50,15 @@
 
     <!-- Camera Preview -->
     <androidx.camera.view.PreviewView
-        android:id="@+id/barcode_preview_view"
+        android:id="@+id/barCode_PV_preview"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        app:layout_constraintBottom_toTopOf="@id/barcode_result_container"
-        app:layout_constraintTop_toBottomOf="@id/barcode_CV_headerCard" />
+        app:layout_constraintBottom_toTopOf="@id/barCode_CL_resultContainer"
+        app:layout_constraintTop_toBottomOf="@id/barCode_CV_header" />
 
     <!-- Result Container -->
     <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/barcode_result_container"
+        android:id="@+id/barCode_CL_resultContainer"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@color/white"
@@ -66,7 +66,7 @@
         app:layout_constraintBottom_toBottomOf="parent">
 
         <com.google.android.material.textview.MaterialTextView
-            android:id="@+id/barcode_TV_result_label"
+            android:id="@+id/barCode_TV_resultLabel"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="תוצאת סריקה:"
@@ -76,18 +76,18 @@
             app:layout_constraintTop_toTopOf="parent" />
 
         <com.google.android.material.textview.MaterialTextView
-            android:id="@+id/barcode_TV_result"
+            android:id="@+id/barCode_TV_result"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
             android:textSize="16sp"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@id/barcode_TV_result_label"
-            app:layout_constraintTop_toTopOf="@id/barcode_TV_result_label"
+            app:layout_constraintStart_toEndOf="@id/barCode_TV_resultLabel"
+            app:layout_constraintTop_toTopOf="@id/barCode_TV_resultLabel"
             tools:text="1234567890123" />
 
         <com.google.android.material.button.MaterialButton
-            android:id="@+id/barcode_BTN_add"
+            android:id="@+id/barCode_BTN_add"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
@@ -95,7 +95,7 @@
             android:text="הוסף מוצר"
             android:textColor="@color/black"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/barcode_TV_result" />
+            app:layout_constraintTop_toBottomOf="@id/barCode_TV_result" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

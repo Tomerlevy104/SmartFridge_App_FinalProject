@@ -1,51 +1,128 @@
 package com.example.smartfridge_app_finalproject.fragments
 
+import android.Manifest
 import android.app.DatePickerDialog
+import android.content.ContentValues
 import android.net.Uri
 import android.os.Bundle
+import android.provider.MediaStore
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ArrayAdapter
 import android.widget.AutoCompleteTextView
 import android.widget.Toast
+import androidx.activity.result.contract.ActivityResultContracts
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
+import com.bumptech.glide.Glide
 import com.example.smartfridge_app_finalproject.R
 import com.example.smartfridge_app_finalproject.data.model.Product
 import com.example.smartfridge_app_finalproject.data.repository.CategoryRepository
-import com.example.smartfridge_app_finalproject.data.repository.ProductRepository
 import com.example.smartfridge_app_finalproject.managers.InventoryManager
+import com.example.smartfridge_app_finalproject.managers.ProductManager
 import com.example.smartfridge_app_finalproject.managers.ValidInputManager
+import com.example.smartfridge_app_finalproject.utilities.PermissionType
+import com.example.smartfridge_app_finalproject.data.repository.ProductRepositoryService
 import com.google.android.material.button.MaterialButton
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
+import com.google.android.material.imageview.ShapeableImageView
 import com.google.android.material.textfield.TextInputEditText
 import com.google.android.material.textfield.TextInputLayout
+import com.google.android.material.textview.MaterialTextView
+import com.google.firebase.auth.FirebaseAuth
 import java.text.SimpleDateFormat
 import java.util.*
 
 class AddProductManualFragment : Fragment() {
 
+    private val TAG = "AddProductManualFragment"
+
+    // UI components
     private lateinit var categoryDropdown: AutoCompleteTextView
     private lateinit var categoryLayout: TextInputLayout
     private lateinit var expiryDateEdit: TextInputEditText
     private lateinit var productNameEdit: TextInputEditText
     private lateinit var quantityEdit: TextInputEditText
     private lateinit var productBarCodeEdit: TextInputEditText
+    private lateinit var productImageView: ShapeableImageView
+    private lateinit var cameraButton: MaterialButton
+    private lateinit var galleryButton: MaterialButton
     private lateinit var addButton: MaterialButton
+    private lateinit var titleTextView: MaterialTextView
+
+    // Managers
     private var inventory = InventoryManager()
     private val validInputManager = ValidInputManager.getInstance()
     private val categoryRepository = CategoryRepository()
+    private val productManager = ProductManager.getInstance()
+    private val productRepositoryService = ProductRepositoryService()
+
+    // Date handling
     private val calendar = Calendar.getInstance()
     private val dateFormatter = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault())
-    private val productRepository = ProductRepository.getInstance()
-    private var selectedImageUri: Uri? = null
 
-    private var scannedBarcode: String? = null
+    // Image handling
+    private var selectedImageUri: Uri? = null
+    private var tempCameraUri: Uri? = null
+
+    // Repository related
+    private var prefillFromRepository = false
+    private var prefillScannedBarcode = ""
+    private var prefillProductName = ""
+    private var prefillCategory = ""
+    private var prefillImageUrl = ""
+//    private var contributeToRepository = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        //If scan barcode and decide to fill manual
-        arguments?.let {
-            scannedBarcode = it.getString("BARCODE")
+        // Get product details for prefilling
+        arguments?.let { args ->
+            prefillScannedBarcode = args.getString("BARCODE","")
+            prefillProductName = args.getString("NAME", "")
+            prefillCategory = args.getString("CATEGORY", "")
+            prefillImageUrl = args.getString("IMAGE_URL", "")
+        }
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        setupViews(view)
+        initViews()
+        setupCategoryDropdown()
+        setupDatePicker()
+
+        // Prefill fields from bundle data
+        if (prefillScannedBarcode.isNotEmpty()) {
+            productBarCodeEdit.setText(prefillScannedBarcode)
+        }
+
+        if (prefillProductName.isNotEmpty()) {
+            productNameEdit.setText(prefillProductName)
+        }
+
+        if (prefillCategory.isNotEmpty()) {
+            categoryDropdown.setText(prefillCategory)
+        }
+
+        // Set default quantity to 1
+        if (quantityEdit.text.isNullOrEmpty()) {
+            quantityEdit.setText("1")
+        }
+
+        // Load image if URL provided
+        if (prefillImageUrl.isNotEmpty()) {
+            try {
+                selectedImageUri = Uri.parse(prefillImageUrl)
+                Glide.with(requireContext())
+                    .load(selectedImageUri)
+                    .placeholder(R.drawable.category_no_picture)
+                    .error(R.drawable.category_no_picture)
+                    .into(productImageView)
+            } catch (e: Exception) {
+                Log.e(TAG, "Error loading image from URL: ${e.message}")
+            }
         }
     }
 
@@ -57,18 +134,6 @@ class AddProductManualFragment : Fragment() {
         return inflater.inflate(R.layout.fragment_add_product_manual, container, false)
     }
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-        setupViews(view)
-        initViews()
-        setupCategoryDropdown()
-        setupDatePicker()
-        //If scan barcode and decide to fill manual
-        scannedBarcode?.let {
-            productBarCodeEdit.setText(it)
-
-        }
-    }
 
     private fun setupViews(view: View) {
         categoryDropdown = view.findViewById(R.id.add_product_manual_ACTV_category)
@@ -78,10 +143,15 @@ class AddProductManualFragment : Fragment() {
         productNameEdit = view.findViewById(R.id.add_product_manual_EDT_name)
         quantityEdit = view.findViewById(R.id.add_product_manual_EDT_quantity)
         addButton = view.findViewById(R.id.add_product_manual_BTN_add)
+        titleTextView = view.findViewById(R.id.add_product_manual_TV_title)
+
+        // Product image components
+        productImageView = view.findViewById(R.id.add_product_manual_IMG_product)
+        cameraButton = view.findViewById(R.id.add_product_manual_BTN_camera)
+        galleryButton = view.findViewById(R.id.add_product_manual_BTN_gallery)
     }
 
     private fun initViews() {
-
         addButton.setOnClickListener {
             handleAddProduct()
         }
@@ -93,26 +163,182 @@ class AddProductManualFragment : Fragment() {
             expiryDateEdit.error = null
             showDatePicker()
         }
+
+        // Initialize image selection buttons
+        cameraButton.setOnClickListener {
+            handleCameraRequest()
+        }
+
+        galleryButton.setOnClickListener {
+            handleGalleryRequest()
+        }
+    }
+
+    // Permission and result launchers
+    private val cameraPermissionLauncher = registerForActivityResult(
+        ActivityResultContracts.RequestPermission()
+    ) { isGranted ->
+        if (isGranted) {
+            openCamera()
+        } else {
+            showToast(getString(R.string.camera_access_permission_is_required_to_select_a_product_image))
+        }
+    }
+
+    private val galleryPermissionLauncher = registerForActivityResult(
+        ActivityResultContracts.RequestPermission()
+    ) { isGranted ->
+        if (isGranted) {
+            openGallery()
+        } else {
+            showToast(getString(R.string.gallery_access_permission_is_required_to_select_a_product_image))
+        }
+    }
+
+    private val cameraLauncher = registerForActivityResult(
+        ActivityResultContracts.TakePicture()
+    ) { success ->
+        if (success) {
+            tempCameraUri?.let { uri ->
+                selectedImageUri = uri
+                loadImageIntoView(uri)
+            }
+        }
+    }
+
+    private val galleryLauncher = registerForActivityResult(
+        ActivityResultContracts.GetContent()
+    ) { uri: Uri? ->
+        uri?.let {
+            selectedImageUri = it
+            loadImageIntoView(it)
+        }
+    }
+
+    private fun handleCameraRequest() {
+        when {
+            ContextCompat.checkSelfPermission(
+                requireContext(),
+                Manifest.permission.CAMERA
+            ) == android.content.pm.PackageManager.PERMISSION_GRANTED -> {
+                openCamera()
+            }
+            shouldShowRequestPermissionRationale(Manifest.permission.CAMERA) -> {
+                showPermissionExplanationDialog(PermissionType.CAMERA)
+            }
+            else -> {
+                cameraPermissionLauncher.launch(Manifest.permission.CAMERA)
+            }
+        }
+    }
+
+    private fun handleGalleryRequest() {
+        val permission = if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.TIRAMISU) {
+            Manifest.permission.READ_MEDIA_IMAGES
+        } else {
+            Manifest.permission.READ_EXTERNAL_STORAGE
+        }
+
+        when {
+            ContextCompat.checkSelfPermission(
+                requireContext(),
+                permission
+            ) == android.content.pm.PackageManager.PERMISSION_GRANTED -> {
+                openGallery()
+            }
+            shouldShowRequestPermissionRationale(permission) -> {
+                showPermissionExplanationDialog(PermissionType.GALLERY)
+            }
+            else -> {
+                galleryPermissionLauncher.launch(permission)
+            }
+        }
+    }
+
+    private fun openCamera() {
+        try {
+            val contentValues = ContentValues().apply {
+                put(MediaStore.Images.Media.TITLE, "Product Image")
+                put(MediaStore.Images.Media.DESCRIPTION, "Captured with Smart Fridge app")
+            }
+
+            tempCameraUri = requireActivity().contentResolver.insert(
+                MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
+                contentValues
+            )
+
+            tempCameraUri?.let { uri ->
+                cameraLauncher.launch(uri)
+            } ?: run {
+                showToast(getString(R.string.error_creating_temporary_camera_file))
+            }
+        } catch (e: Exception) {
+            Log.e(TAG, getString(R.string.error_opening_the_camera)+" ${e.message}", e)
+            showToast(getString(R.string.error_opening_the_camera))
+        }
+    }
+
+    private fun openGallery() {
+        try {
+            galleryLauncher.launch("image/*")
+        } catch (e: Exception) {
+            Log.e(TAG, "Error opening gallery: ${e.message}", e)
+            showToast(getString(R.string.error_opening_the_gallery))
+        }
+    }
+
+    private fun loadImageIntoView(uri: Uri) {
+        Glide.with(requireContext())
+            .load(uri)
+            .placeholder(R.drawable.category_no_picture)
+            .error(R.drawable.category_no_picture)
+            .into(productImageView)
+    }
+
+    private fun showPermissionExplanationDialog(permissionType: PermissionType) {
+        val message = when (permissionType) {
+            PermissionType.CAMERA -> "אנחנו צריכים גישה למצלמה כדי לצלם תמונת מוצר"
+            PermissionType.GALLERY -> "אנחנו צריכים גישה לגלריה כדי לבחור תמונת מוצר"
+        }
+
+        MaterialAlertDialogBuilder(requireContext())
+            .setTitle("נדרשת הרשאה")
+            .setMessage(message)
+            .setPositiveButton("אישור") { _, _ ->
+                when (permissionType) {
+                    PermissionType.CAMERA -> cameraPermissionLauncher.launch(Manifest.permission.CAMERA)
+                    PermissionType.GALLERY -> {
+                        val permission = if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.TIRAMISU) {
+                            Manifest.permission.READ_MEDIA_IMAGES
+                        } else {
+                            Manifest.permission.READ_EXTERNAL_STORAGE
+                        }
+                        galleryPermissionLauncher.launch(permission)
+                    }
+                }
+            }
+            .setNegativeButton("ביטול", null)
+            .show()
     }
 
     private fun validateFields(): Boolean {
         var isValid = true
 
-        //Barcode
-        val barcode = productBarCodeEdit.text.toString()
+        // Barcode
+        val barcode = productBarCodeEdit.text.toString().trim()
         if (!validInputManager.isValidBarcode(barcode)) {
             productBarCodeEdit.error = getString(R.string.valid_input_product_barcode)
             isValid = false
         }
 
-        //Product name
-        val productName = productNameEdit.text.toString()
+        // Product Name
+        val productName = productNameEdit.text.toString().trim()
         if (!validInputManager.isValidProductName(productName)) {
             productNameEdit.error = getString(R.string.valid_input_product_name)
             isValid = false
         }
 
-        //Category
+        // Category
         val category = categoryDropdown.text.toString()
         if (!validInputManager.isValidCategory(category)) {
             categoryLayout.error =
@@ -120,14 +346,14 @@ class AddProductManualFragment : Fragment() {
             isValid = false
         }
 
-        //Quantity
+        // Quantity
         val quantity = quantityEdit.text.toString().toIntOrNull() ?: 0
         if (!validInputManager.isValidQuantity(quantity)) {
             quantityEdit.error = getString(R.string.valid_input_quantity_must_be_between_and)
             isValid = false
         }
 
-        //Expiry Date
+        // Expiry Date
         val expiryDate = expiryDateEdit.text.toString()
         if (!validInputManager.isValidExpiryDate(expiryDate)) {
             expiryDateEdit.error =
@@ -138,37 +364,119 @@ class AddProductManualFragment : Fragment() {
         return isValid
     }
 
-
     private fun handleAddProduct() {
         if (!validateFields()) {
             return
         }
 
-        val product = Product(
-            barCode = productBarCodeEdit.text.toString(),
-            name = productNameEdit.text.toString(),
-            category = categoryDropdown.text.toString(),
-            quantity = quantityEdit.text.toString().toIntOrNull() ?: 0,
-            expiryDate = expiryDateEdit.text.toString(),
-            imageUrl = Uri.EMPTY
-        )
+        val barCode = productBarCodeEdit.text.toString()
+        val name = productNameEdit.text.toString()
+        val category = categoryDropdown.text.toString()
+        val quantity = quantityEdit.text.toString().toIntOrNull() ?: 0
+        val expiryDate = expiryDateEdit.text.toString()
+        val imageUri = selectedImageUri ?: Uri.EMPTY
 
+            // Just add to inventory
+            addProductToUserInventory(barCode, name, category, quantity, expiryDate, imageUri)
+
+    }
+
+    private fun addProductToUserInventory(
+        barCode: String,
+        name: String,
+        category: String,
+        quantity: Int,
+        expiryDate: String,
+        imageUri: Uri
+    ) {
+        // Show loading state
+        setLoadingState(true)
+
+        val userId = FirebaseAuth.getInstance().currentUser?.uid
+
+        if (userId == null) {
+            showToast(getString(R.string.no_user_loged_in))
+            setLoadingState(false)
+            return
+        }
+
+        // Check if this is a repository image URL (starts with http/https)
+        val isRepositoryImage = imageUri != Uri.EMPTY &&
+                (imageUri.toString().startsWith("http://") || imageUri.toString().startsWith("https://"))
+
+        if (imageUri != Uri.EMPTY && !isRepositoryImage) {
+            // Case 1: New local image selected - upload it first
+            productManager.uploadProductImage(userId, barCode, imageUri) { result ->
+                result.onSuccess { imageUrl ->
+                    // Create product with uploaded image URL
+                    val productWithImage = Product(
+                        barCode = barCode,
+                        name = name,
+                        category = category,
+                        quantity = quantity,
+                        expiryDate = expiryDate,
+                        imageUrl = Uri.parse(imageUrl)
+                    )
+
+                    // Add product to database
+                    addProductToDatabase(productWithImage)
+                }.onFailure { exception ->
+                    requireActivity().runOnUiThread {
+                        showToast(
+                            getString(
+                                R.string.error_uploading_product_image,
+                                exception.message
+                            ))
+                        setLoadingState(false)
+                    }
+                }
+            }
+        } else if (isRepositoryImage) {
+            // Case 2: Image from repository - use it directly without uploading
+            val product = Product(
+                barCode = barCode,
+                name = name,
+                category = category,
+                quantity = quantity,
+                expiryDate = expiryDate,
+                imageUrl = imageUri // Use the repository image URL directly
+            )
+
+            // Add product to database
+            addProductToDatabase(product)
+        } else {
+            // Case 3: No image
+            val product = Product(
+                barCode = barCode,
+                name = name,
+                category = category,
+                quantity = quantity,
+                expiryDate = expiryDate,
+                imageUrl = Uri.EMPTY
+            )
+
+            // Add product to database
+            addProductToDatabase(product)
+        }
+    }
+
+    private fun addProductToDatabase(product: Product) {
         inventory.addProduct(product) { result ->
-            result.onSuccess {
-                Toast.makeText(
-                    requireContext(),
-                    getString(R.string.added_successfully, product.name),
-                    Toast.LENGTH_SHORT
-                ).show()
-                clearFields()
-            }.onFailure { exception ->
-                Toast.makeText(
-                    requireContext(),
-                    exception.message ?: getString(R.string.product_not_added),
-                    Toast.LENGTH_SHORT
-                ).show()
+            requireActivity().runOnUiThread {
+                result.onSuccess {
+                    showToast(getString(R.string.added_successfully, product.name))
+                    clearFields()
+                }.onFailure { exception ->
+                    showToast(exception.message ?: getString(R.string.product_not_added))
+                }
+                setLoadingState(false)
             }
         }
+    }
+
+    private fun setLoadingState(isLoading: Boolean) {
+        addButton.isEnabled = !isLoading
+        addButton.text = if (isLoading) getString(R.string.adding) else getString(R.string.add_product)
     }
 
     private fun clearFields() {
@@ -178,6 +486,7 @@ class AddProductManualFragment : Fragment() {
         quantityEdit.text?.clear()
         expiryDateEdit.text?.clear()
         selectedImageUri = null
+        productImageView.setImageResource(R.drawable.category_no_picture)
     }
 
     private fun setupCategoryDropdown() {
@@ -190,7 +499,6 @@ class AddProductManualFragment : Fragment() {
             categoryNames
         )
         categoryDropdown.setAdapter(adapter)
-
     }
 
     private fun setupDatePicker() {
@@ -206,12 +514,11 @@ class AddProductManualFragment : Fragment() {
                 calendar.set(Calendar.YEAR, year)
                 calendar.set(Calendar.MONTH, month)
                 calendar.set(Calendar.DAY_OF_MONTH, day)
-                //Clear the error (if any) when a new date is selected
                 expiryDateEdit.error = null
                 updateDateInView()
             },
 
-            //These three parameters determine the start date that will be displayed in the dialog
+            // The following three parameters determine the start date to be displayed in the dialog
             calendar.get(Calendar.YEAR),
             calendar.get(Calendar.MONTH),
             calendar.get(Calendar.DAY_OF_MONTH)
@@ -223,5 +530,9 @@ class AddProductManualFragment : Fragment() {
 
     private fun updateDateInView() {
         expiryDateEdit.setText(dateFormatter.format(calendar.time))
+    }
+
+    private fun showToast(message: String) {
+        Toast.makeText(requireContext(), message, Toast.LENGTH_SHORT).show()
     }
 }

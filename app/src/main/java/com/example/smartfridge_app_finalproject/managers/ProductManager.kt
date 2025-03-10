@@ -1,8 +1,6 @@
 package com.example.smartfridge_app_finalproject.managers
 
 import android.net.Uri
-import com.example.smartfridge_app_finalproject.data.model.Product
-import com.example.smartfridge_app_finalproject.data.repository.ProductRepository
 import com.google.firebase.storage.FirebaseStorage
 
 class ProductManager private constructor() {
