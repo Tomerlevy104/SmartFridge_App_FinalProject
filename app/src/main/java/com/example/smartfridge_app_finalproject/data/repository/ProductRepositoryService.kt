@@ -5,10 +5,15 @@ import android.util.Log
 import com.example.smartfridge_app_finalproject.data.model.Product
 import com.example.smartfridge_app_finalproject.utilities.Constants
 import com.google.firebase.firestore.FirebaseFirestore
+import java.time.LocalDate
+import java.time.format.DateTimeFormatter
 
 class ProductRepositoryService {
     private val productsRepositoryDB = FirebaseFirestore.getInstance()
 
+    /**
+     * Add a Product to Repository Of Products Collection
+     */
     fun addProductToRepository(product: Product, onSuccess: () -> Unit, onFailure: (Exception) -> Unit) {
         productsRepositoryDB.collection("RepositoryOfProducts")
             .document(product.barCode)
@@ -23,25 +28,92 @@ class ProductRepositoryService {
             }
     }
 
-    fun getProductByBarcode(barcode: String, onSuccess: (Map<String, Any>?) -> Unit) {
+    ///////////////////////////////////////////////////////////////////////////////////////////////////////////
+    /**
+     * Get all products from the Repository Of Products Collection
+     */
+    fun getAllProductsFromRepository(onSuccess: (List<Product>) -> Unit) {
+        productsRepositoryDB.collection("RepositoryOfProducts")
+            .get()
+            .addOnSuccessListener { querySnapshot ->
+                val repositoryProductsList = mutableListOf<Product>()
+
+                for (document in querySnapshot.documents) {
+                    try {
+                        val barCode = document.id
+                        val name = document.getString("name") ?: continue
+                        val category = document.getString("category") ?: continue
+                        val imageUrlString = document.getString("imageUrl")
+                        val imageUrl = if (!imageUrlString.isNullOrEmpty()) Uri.parse(imageUrlString) else Uri.EMPTY
+
+                        // Create a product with default quantity of 1 and empty expiration date
+                        val product = Product(
+                            barCode = barCode,
+                            name = name,
+                            category = category,
+                            imageUrl = imageUrl,
+                            quantity = 1,
+                            expiryDate = "" // Empty
+                        )
+                        repositoryProductsList.add(product)
+                    } catch (e: Exception) {
+                        Log.e("ProductRepositoryService", "Error parsing product document: ${e.message}")
+                    }
+                }
+
+                onSuccess(repositoryProductsList)
+            }
+            .addOnFailureListener { exception ->
+                Log.e("ProductRepositoryService", "Error getting products: ${exception.message}")
+                onSuccess(emptyList()) // Return empty list on failure
+            }
+    }
+
+    ///////////////////////////////////////////////////////////////////////////////////////////////////////////
+    /**
+     * Get a Product object from repository by barcode
+     */
+    fun getProductByBarcode(barcode: String, onComplete: (Product?) -> Unit) {
         productsRepositoryDB.collection("RepositoryOfProducts")
             .document(barcode)
             .get()
             .addOnSuccessListener { document ->
-                //Check if the document exists in the database
                 if (document.exists()) {
-                    val productData = document.data
-                    onSuccess(productData)
+                    try {
+                        val name = document.getString("name") ?: ""
+                        val category = document.getString("category") ?: ""
+                        val imageUrl = document.getString("imageUrl")
+
+                        // Create expiry date (2 weeks from now)
+                        val expiryDate = LocalDate.now().plusWeeks(2)
+                            .format(DateTimeFormatter.ofPattern("dd/MM/yyyy"))
+
+                        // Create Product object - with default quantity of 1
+                        val product = Product(
+                            barCode = barcode,
+                            name = name,
+                            category = category,
+                            imageUrl = imageUrl?.let { Uri.parse(it) } ?: Uri.EMPTY,
+                            quantity = 1, // Default quantity
+                            expiryDate = expiryDate
+                        )
+
+                        onComplete(product)
+                    } catch (e: Exception) {
+                        Log.e("Repository", "Error creating product object: ${e.message}")
+                        onComplete(null)
+                    }
                 } else {
-                    //If the document does not exist, return null
-                    onSuccess(null)
+                    // Product not found
+                    onComplete(null)
                 }
             }
             .addOnFailureListener { exception ->
                 Log.e("Repository", "Error getting product: ${exception.message}")
-                onSuccess(null)
+                onComplete(null)
             }
     }
+    ///////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     fun getProductsByCategory(category: String, onSuccess: (List<Product>) -> Unit) {
         productsRepositoryDB.collection("RepositoryOfProducts")
@@ -55,7 +127,7 @@ class ProductRepositoryService {
                 onSuccess(emptyList())
             }
     }
-
+    ///////////////////////////////////////////////////////////////////////////////////////////////////////////
     fun createProductsRepository() {
         val db = FirebaseFirestore.getInstance()
         val productsCollection = db.collection("RepositoryOfProducts")
@@ -208,21 +280,5 @@ class ProductRepositoryService {
                 Log.e("Repository", "שגיאה ביצירת אוסף RepositoryOfProducts", e)
             }
     }
-
-    ////////////////////////////////////////////////////////////////////////
-    //Get product from repository by bar code
-//    fun getProductByBarcode(barcode: String, onSuccess: (Product?) -> Unit) {
-//        val db = FirebaseFirestore.getInstance()
-//        db.collection("RepositoryOfProducts")
-//            .document(barcode)
-//            .get()
-//            .addOnSuccessListener { document ->
-//                val product = document.toObject(Product::class.java)
-//                onSuccess(product)
-//            }
-//            .addOnFailureListener {
-//                onSuccess(null)
-//            }
-//    }
-    //////////////////////////////////////////////////////////////////////////
+    /////////////////////////////////////////////////////////////////////////////////////////////////////
 }

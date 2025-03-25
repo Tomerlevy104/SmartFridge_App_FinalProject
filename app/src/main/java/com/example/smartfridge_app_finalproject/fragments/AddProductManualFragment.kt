@@ -67,6 +67,9 @@ class AddProductManualFragment : Fragment() {
     private var selectedImageUri: Uri? = null
     private var tempCameraUri: Uri? = null
 
+    // User
+    private val userId = FirebaseAuth.getInstance().currentUser?.uid
+
     // Repository related
     private var prefillFromRepository = false
     private var prefillScannedBarcode = ""
@@ -79,7 +82,7 @@ class AddProductManualFragment : Fragment() {
         super.onCreate(savedInstanceState)
         // Get product details for prefilling
         arguments?.let { args ->
-            prefillScannedBarcode = args.getString("BARCODE","")
+            prefillScannedBarcode = args.getString("BARCODE", "")
             prefillProductName = args.getString("NAME", "")
             prefillCategory = args.getString("CATEGORY", "")
             prefillImageUrl = args.getString("IMAGE_URL", "")
@@ -223,9 +226,11 @@ class AddProductManualFragment : Fragment() {
             ) == android.content.pm.PackageManager.PERMISSION_GRANTED -> {
                 openCamera()
             }
+
             shouldShowRequestPermissionRationale(Manifest.permission.CAMERA) -> {
                 showPermissionExplanationDialog(PermissionType.CAMERA)
             }
+
             else -> {
                 cameraPermissionLauncher.launch(Manifest.permission.CAMERA)
             }
@@ -233,11 +238,12 @@ class AddProductManualFragment : Fragment() {
     }
 
     private fun handleGalleryRequest() {
-        val permission = if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.TIRAMISU) {
-            Manifest.permission.READ_MEDIA_IMAGES
-        } else {
-            Manifest.permission.READ_EXTERNAL_STORAGE
-        }
+        val permission =
+            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.TIRAMISU) {
+                Manifest.permission.READ_MEDIA_IMAGES
+            } else {
+                Manifest.permission.READ_EXTERNAL_STORAGE
+            }
 
         when {
             ContextCompat.checkSelfPermission(
@@ -246,9 +252,11 @@ class AddProductManualFragment : Fragment() {
             ) == android.content.pm.PackageManager.PERMISSION_GRANTED -> {
                 openGallery()
             }
+
             shouldShowRequestPermissionRationale(permission) -> {
                 showPermissionExplanationDialog(PermissionType.GALLERY)
             }
+
             else -> {
                 galleryPermissionLauncher.launch(permission)
             }
@@ -273,7 +281,7 @@ class AddProductManualFragment : Fragment() {
                 showToast(getString(R.string.error_creating_temporary_camera_file))
             }
         } catch (e: Exception) {
-            Log.e(TAG, getString(R.string.error_opening_the_camera)+" ${e.message}", e)
+            Log.e(TAG, getString(R.string.error_opening_the_camera) + " ${e.message}", e)
             showToast(getString(R.string.error_opening_the_camera))
         }
     }
@@ -295,6 +303,7 @@ class AddProductManualFragment : Fragment() {
             .into(productImageView)
     }
 
+    //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     private fun showPermissionExplanationDialog(permissionType: PermissionType) {
         val message = when (permissionType) {
             PermissionType.CAMERA -> "אנחנו צריכים גישה למצלמה כדי לצלם תמונת מוצר"
@@ -308,11 +317,12 @@ class AddProductManualFragment : Fragment() {
                 when (permissionType) {
                     PermissionType.CAMERA -> cameraPermissionLauncher.launch(Manifest.permission.CAMERA)
                     PermissionType.GALLERY -> {
-                        val permission = if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.TIRAMISU) {
-                            Manifest.permission.READ_MEDIA_IMAGES
-                        } else {
-                            Manifest.permission.READ_EXTERNAL_STORAGE
-                        }
+                        val permission =
+                            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.TIRAMISU) {
+                                Manifest.permission.READ_MEDIA_IMAGES
+                            } else {
+                                Manifest.permission.READ_EXTERNAL_STORAGE
+                            }
                         galleryPermissionLauncher.launch(permission)
                     }
                 }
@@ -321,6 +331,7 @@ class AddProductManualFragment : Fragment() {
             .show()
     }
 
+    //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     private fun validateFields(): Boolean {
         var isValid = true
 
@@ -364,11 +375,11 @@ class AddProductManualFragment : Fragment() {
         return isValid
     }
 
+    //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     private fun handleAddProduct() {
         if (!validateFields()) {
             return
         }
-
         val barCode = productBarCodeEdit.text.toString()
         val name = productNameEdit.text.toString()
         val category = categoryDropdown.text.toString()
@@ -376,11 +387,11 @@ class AddProductManualFragment : Fragment() {
         val expiryDate = expiryDateEdit.text.toString()
         val imageUri = selectedImageUri ?: Uri.EMPTY
 
-            // Just add to inventory
-            addProductToUserInventory(barCode, name, category, quantity, expiryDate, imageUri)
-
+        // Add to inventory
+        addProductToUserInventory(barCode, name, category, quantity, expiryDate, imageUri)
     }
 
+    //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     private fun addProductToUserInventory(
         barCode: String,
         name: String,
@@ -392,79 +403,18 @@ class AddProductManualFragment : Fragment() {
         // Show loading state
         setLoadingState(true)
 
-        val userId = FirebaseAuth.getInstance().currentUser?.uid
-
         if (userId == null) {
             showToast(getString(R.string.no_user_loged_in))
             setLoadingState(false)
             return
         }
+        val product = Product(barCode = barCode, name = name, category = category, quantity = quantity,
+                              expiryDate = expiryDate, imageUrl = imageUri)
 
-        // Check if this is a repository image URL (starts with http/https)
-        val isRepositoryImage = imageUri != Uri.EMPTY &&
-                (imageUri.toString().startsWith("http://") || imageUri.toString().startsWith("https://"))
-
-        if (imageUri != Uri.EMPTY && !isRepositoryImage) {
-            // Case 1: New local image selected - upload it first
-            productManager.uploadProductImage(userId, barCode, imageUri) { result ->
-                result.onSuccess { imageUrl ->
-                    // Create product with uploaded image URL
-                    val productWithImage = Product(
-                        barCode = barCode,
-                        name = name,
-                        category = category,
-                        quantity = quantity,
-                        expiryDate = expiryDate,
-                        imageUrl = Uri.parse(imageUrl)
-                    )
-
-                    // Add product to database
-                    addProductToDatabase(productWithImage)
-                }.onFailure { exception ->
-                    requireActivity().runOnUiThread {
-                        showToast(
-                            getString(
-                                R.string.error_uploading_product_image,
-                                exception.message
-                            ))
-                        setLoadingState(false)
-                    }
-                }
-            }
-        } else if (isRepositoryImage) {
-            // Case 2: Image from repository - use it directly without uploading
-            val product = Product(
-                barCode = barCode,
-                name = name,
-                category = category,
-                quantity = quantity,
-                expiryDate = expiryDate,
-                imageUrl = imageUri // Use the repository image URL directly
-            )
-
-            // Add product to database
-            addProductToDatabase(product)
-        } else {
-            // Case 3: No image
-            val product = Product(
-                barCode = barCode,
-                name = name,
-                category = category,
-                quantity = quantity,
-                expiryDate = expiryDate,
-                imageUrl = Uri.EMPTY
-            )
-
-            // Add product to database
-            addProductToDatabase(product)
-        }
-    }
-
-    private fun addProductToDatabase(product: Product) {
-        inventory.addProduct(product) { result ->
+        inventory.handleAddProduct(product) { result ->
             requireActivity().runOnUiThread {
                 result.onSuccess {
-                    showToast(getString(R.string.added_successfully, product.name))
+                    showToast(getString(R.string.added_successfully, name))
                     clearFields()
                 }.onFailure { exception ->
                     showToast(exception.message ?: getString(R.string.product_not_added))
@@ -474,11 +424,14 @@ class AddProductManualFragment : Fragment() {
         }
     }
 
+    //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     private fun setLoadingState(isLoading: Boolean) {
-        addButton.isEnabled = !isLoading
-        addButton.text = if (isLoading) getString(R.string.adding) else getString(R.string.add_product)
+        addButton.isEnabled = !isLoading // If "isLoading" == true - you can't press the button
+        addButton.text =
+            if (isLoading) getString(R.string.adding) else getString(R.string.add_product)
     }
 
+    //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     private fun clearFields() {
         productBarCodeEdit.text?.clear()
         productNameEdit.text?.clear()
@@ -489,6 +442,7 @@ class AddProductManualFragment : Fragment() {
         productImageView.setImageResource(R.drawable.category_no_picture)
     }
 
+    //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     private fun setupCategoryDropdown() {
         val categories = categoryRepository.getInitialCategories()
         val categoryNames = categories.map { it.name }
@@ -501,6 +455,7 @@ class AddProductManualFragment : Fragment() {
         categoryDropdown.setAdapter(adapter)
     }
 
+    //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     private fun setupDatePicker() {
         expiryDateEdit.setOnClickListener {
             expiryDateEdit.error = null
@@ -508,8 +463,10 @@ class AddProductManualFragment : Fragment() {
         }
     }
 
+    //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     private fun showDatePicker() {
-        val datePickerDialog = DatePickerDialog(requireContext(),
+        val datePickerDialog = DatePickerDialog(
+            requireContext(),
             { _, year, month, day ->
                 calendar.set(Calendar.YEAR, year)
                 calendar.set(Calendar.MONTH, month)
@@ -528,10 +485,12 @@ class AddProductManualFragment : Fragment() {
         datePickerDialog.show()
     }
 
+    //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     private fun updateDateInView() {
         expiryDateEdit.setText(dateFormatter.format(calendar.time))
     }
 
+    //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     private fun showToast(message: String) {
         Toast.makeText(requireContext(), message, Toast.LENGTH_SHORT).show()
     }

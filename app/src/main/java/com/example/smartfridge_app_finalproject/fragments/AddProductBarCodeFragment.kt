@@ -63,6 +63,7 @@ class AddProductBarCodeFragment : Fragment() {
     private var isScanningPaused = false  // Flag to pause scanning after detection
 
 
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////
     /**
      * Permission launcher for camera
      */
@@ -80,6 +81,7 @@ class AddProductBarCodeFragment : Fragment() {
         }
     }
 
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -88,6 +90,7 @@ class AddProductBarCodeFragment : Fragment() {
         return inflater.inflate(R.layout.fragment_add_product_bar_code, container, false)
     }
 
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
@@ -98,12 +101,14 @@ class AddProductBarCodeFragment : Fragment() {
         setupListeners()
     }
 
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////
     private fun findViews(view: View) {
         barCode_PV_preview = view.findViewById(R.id.barCode_PV_preview)
         barCode_TV_result = view.findViewById(R.id.barCode_TV_result)
         barCode_BTN_add = view.findViewById(R.id.barCode_BTN_add)
     }
 
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////
     /**
      * Setup the barcode scanner with appropriate options
      */
@@ -126,6 +131,7 @@ class AddProductBarCodeFragment : Fragment() {
         cameraExecutor = Executors.newSingleThreadExecutor()
     }
 
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////
     /**
      * Check camera permission
      */
@@ -142,14 +148,15 @@ class AddProductBarCodeFragment : Fragment() {
         }
     }
 
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////
     /**
      * Setup button click listeners
      */
     private fun setupListeners() {
         barCode_BTN_add.setOnClickListener {
             lastScannedBarcode?.let { barcode ->
-                // If a barcode has been scanned, show dialog to add product
-                showProductDialog(barcode)
+                // Adding process start
+                showProductDialog(barcode) // If a barcode has been scanned, show dialog to add product
             } ?: run {
                 // If no barcode has been scanned yet
                 Toast.makeText(requireContext(),
@@ -158,6 +165,7 @@ class AddProductBarCodeFragment : Fragment() {
         }
     }
 
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////
     /**
      * Initialize and start the camera for barcode scanning
      */
@@ -208,7 +216,7 @@ class AddProductBarCodeFragment : Fragment() {
         }, ContextCompat.getMainExecutor(requireContext()))  // Run on main thread
     }
 
-
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////
     /**
      * Process each camera frame to detect barcodes
      * This function is the core of the barcode scanning mechanism in the app.
@@ -268,155 +276,50 @@ class AddProductBarCodeFragment : Fragment() {
         }
     }
 
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////
     /**
-     * Show dialog to handle adding the product associated with the scanned barcode
+     * Displays appropriate dialog depending on barcode scanning results
      */
     private fun showProductDialog(barcode: String) {
-        // First check if product exists in the database or product repository
-        checkIfProductExists(barcode)
-    }
-
-    /**
-     * Check if a product with the scanned barcode exists in the inventory
-     * or in the product repository
-     */
-    private fun checkIfProductExists(barcode: String) {
-        val currentUser = userHandler.getCurrentFirebaseUser()
-        if (currentUser == null) {
-            Toast.makeText(requireContext(), getString(R.string.no_user_loged_in), Toast.LENGTH_SHORT).show()
-            return
-        }
-
-        // First check if the product exists in user's inventory
-        try {
-            inventoryManager.loadAllProducts { products ->
-                // Find any product with matching barcode
-                val existingProduct = products.firstOrNull { it.barCode == barcode }
-
-                // Now check in the products repository if not found in user's inventory
+        // Check if the product is in the user's inventory
+        inventoryManager.productIsExistInUserInventory(barcode) { existingProduct ->
+            activity?.runOnUiThread {
                 if (existingProduct != null) {
-                    // Product exists in user's inventory - show dialog to increase quantity
-                    activity?.runOnUiThread {
-                        showProductExistsDialog(existingProduct)
-                    }
+                    // The product is in user inventory - displays a quantity update dialog
+                    showProductExistsInUserInventoryDialog(existingProduct)
                 } else {
-                    // Product not in inventory, check repository
-                    checkProductInRepository(barcode)
-                }
-            }
-        } catch (e: Exception) {
-            Log.e(TAG, "Error checking inventory: ${e.message}", e)
-            activity?.runOnUiThread {
-                Toast.makeText(
-                    requireContext(),
-                    getString(R.string.error_checking_inventory, e.message),
-                    Toast.LENGTH_SHORT
-                ).show()
-                isScanningPaused = false
-            }
-        }
-    }
-
-
-    /**
-     * Check if the product exists in the product repository (Fire store)
-     */
-    private fun checkProductInRepository(barcode: String) {
-        try {
-            // Use the ProductRepositoryService to check if product exists
-            productRepositoryService.getProductByBarcode(barcode) { result ->
-                activity?.runOnUiThread {
-                    if (result != null) {
-                        // Product found in repository - show dialog to add it to inventory
-                        showProductFromRepositoryDialog(result, barcode)
-                    } else {
-                        // Product not found anywhere - show dialog to add a new product
-                        showProductNotFoundDialog(barcode)
+                    // Check if the product exists in Repository Of Products Collection
+                    inventoryManager.productIsExistInRepositoryOfProductCollection(barcode) { existsInRepository ->
+                        if (existsInRepository) {
+                            // The product exists in the Repository Of Products Collection - get its details
+                            try {
+                                productRepositoryService.getProductByBarcode(barcode) { theProduct ->
+                                    if (theProduct != null) {
+                                        showProductFromRepositoryDialog(theProduct, barcode)
+                                    } else {
+                                        // The product exists in the database but we were unable to got it
+                                        showProductNotFoundDialog(barcode)
+                                    }
+                                }
+                            } catch (e: Exception) {
+                                Log.e(TAG, "Error retrieving product from repository: ${e.message}", e)
+                                showProductNotFoundDialog(barcode)
+                            }
+                        } else {
+                            // The product does not exist anywhere
+                            showProductNotFoundDialog(barcode)
+                        }
                     }
                 }
             }
-        } catch (e: Exception) {
-            // Handle any exceptions during the repository check
-            Log.e(TAG, getString(R.string.error_checking_product_repository, e.message), e)
-            activity?.runOnUiThread {
-                Toast.makeText(
-                    requireContext(),
-                    getString(R.string.error_checking_product_database, e.message),
-                    Toast.LENGTH_SHORT
-                ).show()
-                // Show the regular not-found dialog as fallback
-                showProductNotFoundDialog(barcode)
-            }
         }
     }
 
-    /**
-     * Show dialog for adding a product that exists in the repository but not in user's inventory
-     */
-    private fun showProductFromRepositoryDialog(repositoryProduct: Map<String, Any>, barcode: String) {
-        val productName = repositoryProduct["name"] as? String ?: getString(R.string.unknown_product)
-        val category = repositoryProduct["category"] as? String ?: Constants.Category.OTHER
-        val imageUrl = repositoryProduct["imageUrl"] as? String
-
-        MaterialAlertDialogBuilder(requireContext())
-            .setTitle(getString(R.string.product_is_in_repository))
-            .setMessage(
-                getString(
-                    R.string.founded_the_product_X_do_you_want_to_add_it_to_your_inventory,
-                    productName
-                ))
-            .setPositiveButton(getString(R.string.add)) { _, _ ->
-                // Add product to user's inventory from repository data
-                addProductFromRepository(barcode, productName, category, imageUrl)
-            }
-            .setNegativeButton(getString(R.string.edit_details)) { _, _ ->
-                // Open manual add screen with prefilled details
-                val bundle = Bundle().apply {
-                    putString("BARCODE", barcode)
-                    putString("NAME", productName)
-                    putString("CATEGORY", category)
-                    imageUrl?.let { putString("IMAGE_URL", it) }
-                }
-                // Going to "Add manual fragment"
-                (activity as? MainActivity)?.transactionToAnotherFragment(
-                    Constants.Fragment.ADDPRODUCTMANUAL,
-                    bundle
-                )
-            }
-            .setNeutralButton(getString(R.string.cancel)) { dialog, _ ->
-                dialog.dismiss()
-                isScanningPaused = false
-            }
-            .show()
-    }
-
-    /**
-     * Add a product to user's inventory using data from the repository
-     */
-    private fun addProductFromRepository(
-        barcode: String,
-        name: String,
-        category: String,
-        imageUrl: String?
-    ) {
-        // Create product object with data from repository
-        val product = Product(
-            barCode = barcode,
-            name = name,
-            category = category,
-            imageUrl = imageUrl?.let { Uri.parse(it) } ?: Uri.EMPTY,
-            quantity = 1,
-            expiryDate = LocalDate.now().plusMonths(3).format(DateTimeFormatter.ofPattern("dd/MM/yyyy"))
-        )
-
-        // Add product to database
-        addProductToInventory(product)
-    }
-
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////
     /**
      * Show dialog for a product that already exists in user's inventory
      */
-    private fun showProductExistsDialog(product: Product) {
+    private fun showProductExistsInUserInventoryDialog(product: Product) {
         MaterialAlertDialogBuilder(requireContext())
             .setTitle(getString(R.string.product_is_in_inventory))
             .setMessage(
@@ -425,8 +328,41 @@ class AddProductBarCodeFragment : Fragment() {
                     product.name
                 ))
             .setPositiveButton(getString(R.string.yes)) { _, _ ->
-                // Increase product quantity by 1
-                updateProductQuantity(product)
+                //Update the quantity of an existing product
+                try {
+                    inventoryManager.updateProductQuantity(product.barCode, product.quantity + 1) { result ->
+                        activity?.runOnUiThread {
+                            result.onSuccess {
+                                Toast.makeText(
+                                    requireContext(),
+                                    getString(R.string.product_quantity_updated_successfully),
+                                    Toast.LENGTH_SHORT
+                                ).show()
+
+                                (activity as? MainActivity)?.transactionToAnotherFragment(
+                                    Constants.Fragment.PRODUCTSLIST
+                                )
+                            }.onFailure { exception ->
+                                Toast.makeText(
+                                    requireContext(),
+                                    getString(R.string.error_updating_product_quantity, exception.message),
+                                    Toast.LENGTH_SHORT
+                                ).show()
+                                isScanningPaused = false
+                            }
+                        }
+                    }
+                } catch (e: Exception) {
+                    Log.e(TAG, getString(R.string.error_updating_product_quantity), e)
+                    activity?.runOnUiThread {
+                        Toast.makeText(
+                            requireContext(),
+                            getString(R.string.error_updating_product_quantity),
+                            Toast.LENGTH_SHORT
+                        ).show()
+                        isScanningPaused = false
+                    }
+                }
             }
             .setNegativeButton(getString(R.string.no)) { dialog, _ ->
                 dialog.dismiss()
@@ -435,43 +371,71 @@ class AddProductBarCodeFragment : Fragment() {
             .show()
     }
 
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////
     /**
-     * Update the quantity of an existing product
+     * Show dialog for adding a product that exists in the repository but not in user's inventory
      */
-    private fun updateProductQuantity(product: Product) {
-        try {
-            // Update product quantity in database
-            inventoryManager.updateProductQuantity(product, product.quantity + 1) { result ->
-                result.onSuccess {
+    private fun showProductFromRepositoryDialog(repositoryProduct: Product, barcode: String) {
+        MaterialAlertDialogBuilder(requireContext())
+            .setTitle(getString(R.string.product_is_in_repository))
+            .setMessage(
+                getString(
+                    R.string.founded_the_product_X_do_you_want_to_add_it_to_your_inventory,
+                    repositoryProduct.name
+                ))
+            .setPositiveButton(getString(R.string.add)) { _, _ ->
+                // Add product to user's inventory
+                inventoryManager.handleAddProduct(repositoryProduct) { result ->
                     activity?.runOnUiThread {
-                        Toast.makeText(requireContext(),
-                            getString(R.string.product_quantity_updated_successfully), Toast.LENGTH_SHORT).show()
-                        (activity as? MainActivity)?.transactionToAnotherFragment(Constants.Fragment.PRODUCTSLIST)
-                    }
-                }.onFailure { exception ->
-                    activity?.runOnUiThread {
-                        Toast.makeText(
-                            requireContext(),
-                            getString(R.string.error_updating_product_quantity, exception.message),
-                            Toast.LENGTH_SHORT
-                        ).show()
-                        isScanningPaused = false
+                        result.onSuccess {
+                            Toast.makeText(
+                                requireContext(),
+                                getString(R.string.added_successfully, repositoryProduct.name),
+                                Toast.LENGTH_SHORT
+                            ).show()
+
+                            // Navigate to products list
+                            (activity as? MainActivity)?.transactionToAnotherFragment(
+                                Constants.Fragment.PRODUCTSLIST
+                            )
+                        }.onFailure { exception ->
+                            Toast.makeText(
+                                requireContext(),
+                                getString(R.string.error_adding_product, exception.message),
+                                Toast.LENGTH_SHORT
+                            ).show()
+                            isScanningPaused = false
+                        }
                     }
                 }
             }
-        } catch (e: Exception) {
-            Log.e(TAG, getString(R.string.error_updating_product_quantity), e)
-            activity?.runOnUiThread {
-                Toast.makeText(
-                    requireContext(),
-                    getString(R.string.error_updating_product_quantity),
-                    Toast.LENGTH_SHORT
-                ).show()
+            .setNegativeButton(getString(R.string.cancel)) { dialog, _ ->
+
+                dialog.dismiss()
                 isScanningPaused = false
             }
-        }
+            .setNeutralButton(getString(R.string.edit_details)) { _, _ ->
+                // Open manual add screen with prefilled details
+                val bundle = Bundle().apply {
+                    putString("BARCODE", barcode)
+                    putString("NAME", repositoryProduct.name)
+                    putString("CATEGORY", repositoryProduct.category)
+                    repositoryProduct.imageUrl.toString().let {
+                        if (it != "null" && it.isNotEmpty()) {
+                            putString("IMAGE_URL", it)
+                        }
+                    }
+                }
+                // Going to "Add manual fragment"
+                (activity as? MainActivity)?.transactionToAnotherFragment(
+                    Constants.Fragment.ADDPRODUCTMANUAL,
+                    bundle
+                )
+            }
+            .show()
     }
 
+    ////////////////////////////////////////////////////////////////////////////////////////////////
     /**
      * Show dialog for a product that doesn't exist anywhere
      */
@@ -499,43 +463,7 @@ class AddProductBarCodeFragment : Fragment() {
             }
             .show()
     }
-
-    /**
-     * Add a product to the user's inventory
-     */
-    private fun addProductToInventory(product: Product) {
-        try {
-            inventoryManager.addProduct(product) { result ->
-                result.onSuccess {
-                    activity?.runOnUiThread {
-                        Toast.makeText(requireContext(),
-                            getString(R.string.product_added_successfully), Toast.LENGTH_SHORT).show()
-                        (activity as? MainActivity)?.transactionToAnotherFragment(Constants.Fragment.PRODUCTSLIST)
-                    }
-                }.onFailure { exception ->
-                    activity?.runOnUiThread {
-                        Toast.makeText(
-                            requireContext(),
-                            getString(R.string.error_adding_product, exception.message),
-                            Toast.LENGTH_SHORT
-                        ).show()
-                        isScanningPaused = false
-                    }
-                }
-            }
-        } catch (e: Exception) {
-            Log.e(TAG, getString(R.string.error_adding_product), e)
-            activity?.runOnUiThread {
-                Toast.makeText(
-                    requireContext(),
-                    getString(R.string.error_adding_product),
-                    Toast.LENGTH_SHORT
-                ).show()
-                isScanningPaused = false
-            }
-        }
-    }
-
+    ////////////////////////////////////////////////////////////////////////////////////////////////
     override fun onDestroy() {
         super.onDestroy()
         // Shut down the executor when fragment is destroyed

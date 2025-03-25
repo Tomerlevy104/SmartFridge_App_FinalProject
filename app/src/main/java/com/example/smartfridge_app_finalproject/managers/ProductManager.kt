@@ -19,7 +19,7 @@ class ProductManager private constructor() {
     }
 
      fun uploadProductImage(userId: String, barCode: String, imageUri: Uri, onComplete: (Result<String>) -> Unit) {
-        val imageRef = storage.reference.child("products/$userId/$barCode.jpg")
+        val imageRef = storage.reference.child("/users_products_images/$userId/$barCode.jpg")
         imageRef.putFile(imageUri)
             .continueWithTask { task ->
                 if (!task.isSuccessful) {

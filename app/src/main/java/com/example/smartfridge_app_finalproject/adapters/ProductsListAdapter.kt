@@ -121,7 +121,7 @@ class ProductsListAdapter(
 
         // Update product quantity
         private fun updateProductQuantity(product: Product, newQuantity: Int) {
-            inventoryManager.updateProductQuantity(product, newQuantity) { result ->
+            inventoryManager.updateProductQuantity(product.barCode, newQuantity) { result ->
                 result.onSuccess {
                     onQuantityChanged(product, newQuantity) // Call callback to update UI
                 }

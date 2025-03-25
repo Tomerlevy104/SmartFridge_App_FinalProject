@@ -2,10 +2,12 @@ package com.example.smartfridge_app_finalproject.fragments
 
 import UserHandler
 import android.Manifest
+import android.content.ContentValues
 import android.content.Intent
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
+import android.provider.MediaStore
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -141,11 +143,9 @@ class ProfileFragment : Fragment() {
                     )
                 } else {
                     binding.profileETFirstName.error = getString(R.string.invalid_first_name)
-                    showToast(getString(R.string.invalid_first_name))
                 }
             } else {
                 binding.profileETFirstName.error = "השם אינו יכול להיות ריק"
-                showToast("השם אינו יכול להיות ריק")
             }
         }
 
@@ -164,11 +164,9 @@ class ProfileFragment : Fragment() {
                     )
                 } else {
                     binding.profileETLastName.error = getString(R.string.invalid_last_name)
-                    showToast(getString(R.string.invalid_last_name))
                 }
             } else {
                 binding.profileETLastName.error = "שם המשפחה אינו יכול להיות ריק"
-                showToast("שם המשפחה אינו יכול להיות ריק")
             }
         }
 
@@ -244,9 +242,9 @@ class ProfileFragment : Fragment() {
             ) { result ->
                 activity?.runOnUiThread {
                     result.onSuccess {
-                        showToast("הפרטים עודכנו בהצלחה")
+                        showToast(getString(R.string.details_updated_successfully))
                     }.onFailure { exception ->
-                        showToast("שגיאה בעדכון הפרטים: ${exception.message}")
+                        showToast(getString(R.string.error_updating_details, exception.message))
                     }
                 }
             }
@@ -258,12 +256,16 @@ class ProfileFragment : Fragment() {
             userData.email?.let { email ->
                 FirebaseAuth.getInstance().sendPasswordResetEmail(email)
                     .addOnSuccessListener {
-                        showToast("הוראות לאיפוס סיסמה נשלחו לכתובת האימייל שלך")
+                        showToast(getString(R.string.password_reset_instructions_have_been_sent_to_your_email_address))
                     }
                     .addOnFailureListener { exception ->
-                        showToast("שגיאה בשליחת הוראות איפוס: ${exception.message}")
+                        showToast(
+                            getString(
+                                R.string.error_sending_reset_instructions,
+                                exception.message
+                            ))
                     }
-            } ?: showToast("לא נמצאה כתובת אימייל")
+            } ?: showToast(getString(R.string.no_email_address_found))
         }
     }
 
@@ -362,13 +364,31 @@ class ProfileFragment : Fragment() {
 
     private fun launchCamera() {
         try {
-            val (intent, uri) = uploadImageManager.createCameraIntent(requireContext())
-            tempCameraUri = uri
+            // Create the content values for a temporary image file
+            val values = ContentValues().apply {
+                put(MediaStore.Images.Media.TITLE, "Profile Image")
+                put(MediaStore.Images.Media.DESCRIPTION, "Captured with SmartFridge")
+            }
 
-            cameraLauncher.launch(uri)
+            // Get URI from content resolver
+            tempCameraUri = requireActivity().contentResolver.insert(
+                MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
+                values
+            )
+
+            // Check if URI was created successfully
+            if (tempCameraUri == null) {
+                Log.e(TAG, "Failed to create camera image URI")
+                showToast("לא ניתן ליצור URI לתמונת מצלמה")
+                return
+            }
+
+            // Launch camera with the URI
+            cameraLauncher.launch(tempCameraUri)
+
         } catch (e: Exception) {
             Log.e(TAG, "Error opening camera: ${e.message}", e)
-            showToast("שגיאה בפתיחת המצלמה")
+            showToast("שגיאה בפתיחת המצלמה: ${e.message}")
         }
     }
 
@@ -403,16 +423,16 @@ class ProfileFragment : Fragment() {
                         // Reload user data to get updated profile
                         loadUserProfile()
 
-                        showToast("התמונה הועלתה בהצלחה")
+                        showToast(getString(R.string.the_image_was_uploaded_successfully))
                     } else {
-                        showToast("שגיאה בהעלאת התמונה: $imageUrl")
+                        showToast(getString(R.string.error_uploading_image, imageUrl))
                     }
 
                     showLoading(false)
                 }
             } catch (e: Exception) {
                 Log.e(TAG, "Error handling selected image", e)
-                showToast("שגיאה: ${e.message}")
+                showToast(getString(R.string.error, e.message))
                 showLoading(false)
             }
         }
@@ -421,7 +441,6 @@ class ProfileFragment : Fragment() {
     private fun loadUserProfile() {
         showLoading(true)
 
-        // First check if we have cached user data
         userHandler.getCurrentUserData()?.let { userData ->
             updateProfileUI(userData)
         }
@@ -433,7 +452,7 @@ class ProfileFragment : Fragment() {
                     updateProfileUI(userData)
                 }.onFailure { exception ->
                     Log.e(TAG, "Error loading user profile", exception)
-                    showToast("שגיאה בטעינת נתוני משתמש: ${exception.message}")
+                    showToast(getString(R.string.error_loading_user_data, exception.message))
                 }
                 showLoading(false)
             }

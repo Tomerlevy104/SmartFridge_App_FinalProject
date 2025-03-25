@@ -2,6 +2,7 @@ package com.example.smartfridge_app_finalproject
 
 import android.app.Activity
 import android.app.AlertDialog
+import android.content.ContentValues
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.Bitmap
@@ -231,19 +232,44 @@ class RegisterActivity : AppCompatActivity() {
     }
 
     // Launch camera using the new approach
+    // Launch camera using a direct ContentResolver approach
     private fun launchCamera() {
         try {
-            val (intent, uri) = uploadImageManager.createCameraIntent(this)
-            cameraImageUri = uri
-
-            if (intent.resolveActivity(packageManager) != null) {
-                cameraLauncher.launch(intent)
-            } else {
-                Toast.makeText(this, "אין אפליקציית מצלמה זמינה", Toast.LENGTH_SHORT).show()
+            // Create content values for the temporary image
+            val values = ContentValues().apply {
+                put(MediaStore.Images.Media.TITLE, "Profile Image")
+                put(MediaStore.Images.Media.DESCRIPTION, "Temporary profile image for SmartFridge app")
             }
+
+            // Get URI from content resolver
+            cameraImageUri = contentResolver.insert(
+                MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
+                values
+            )
+
+            // Check if URI was created successfully
+            if (cameraImageUri == null) {
+                Log.e(TAG, "Failed to create camera image URI")
+                Toast.makeText(this, "לא ניתן ליצור URI לתמונת מצלמה", Toast.LENGTH_SHORT).show()
+                return
+            }
+
+            // Create camera intent
+            val takePictureIntent = Intent(MediaStore.ACTION_IMAGE_CAPTURE).apply {
+                putExtra(MediaStore.EXTRA_OUTPUT, cameraImageUri)
+                addFlags(Intent.FLAG_GRANT_WRITE_URI_PERMISSION)
+            }
+
+            // Check if there's an app to handle this intent
+            if (takePictureIntent.resolveActivity(packageManager) != null) {
+                cameraLauncher.launch(takePictureIntent)
+            } else {
+                Toast.makeText(this, "אין אפליקציית מצלמה זמינה במכשיר", Toast.LENGTH_SHORT).show()
+            }
+
         } catch (e: Exception) {
             Log.e(TAG, "Error opening camera: ${e.message}", e)
-            Toast.makeText(this, "שגיאה בפתיחת המצלמה", Toast.LENGTH_SHORT).show()
+            Toast.makeText(this, "שגיאה בפתיחת המצלמה: ${e.message}", Toast.LENGTH_SHORT).show()
         }
     }
 

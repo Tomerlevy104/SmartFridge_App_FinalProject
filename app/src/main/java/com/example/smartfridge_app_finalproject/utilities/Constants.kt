@@ -13,7 +13,7 @@ class Constants {
         const val ADDPRODUCTSCANBARCODE = "ADDPRODUCTSCANBARCODE"
         const val ADDPRODUCTMANUAL = "ADDPRODUCTMANUAL"
         const val CREATESHOPINGLIST = "CREATESHOPINGLIST"
-        const val SHOPINGLIST = "SHOPINGLIST"
+        const val SHOPPINGLIST = "SHOPPINGLIST"
         const val PROFILE = "PROFILE"
         const val SUPERMARKET = "SUPERMARKET"    }
 

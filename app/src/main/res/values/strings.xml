@@ -43,7 +43,7 @@
     <string name="quantity">כמות</string>
     <string name="fill_details_to_add_product">מלא פרטים להוספת המוצר</string>
     <string name="valid_input_product_name">שם המוצר חייב להכיל אותיות ולא יותר מ-50 תווים</string>
-    <string name="valid_input_product_barcode">ברקוד חייב להתחיל ב-2025 ולהכיל 8-13 ספרות</string>
+    <string name="valid_input_product_barcode">ברקוד חייב להכיל 8-13 ספרות</string>
     <string name="valid_input_please_select_a_category_from_the_list">נא לבחור קטגוריה מהרשימה</string>
     <string name="valid_input_quantity_must_be_between_and">כמות חייבת להיות בין 1 ל-999</string>
     <string name="valid_input_please_select_a_valid_expiration_date">נא לבחור תאריך תפוגה תקין</string>
@@ -114,6 +114,20 @@
     <string name="error_opening_the_gallery">שגיאה בפתיחת הגלריה</string>
     <string name="error_opening_the_camera">שגיאה בפתיחת המצלמה</string>
     <string name="error_creating_temporary_camera_file">שגיאה ביצירת קובץ זמני למצלמה</string>
+    <string name="error_loading_user_data">שגיאה בטעינת נתוני משתמש: %1$s</string>
+    <string name="error">שגיאה: %1$s</string>
+    <string name="the_image_was_uploaded_successfully">התמונה הועלתה בהצלחה</string>
+    <string name="error_uploading_image">שגיאה בהעלאת התמונה: %1$s</string>
+    <string name="password_reset_instructions_have_been_sent_to_your_email_address">הוראות לאיפוס סיסמה נשלחו לכתובת האימייל שלך</string>
+    <string name="error_sending_reset_instructions">שגיאה בשליחת הוראות איפוס: %1$s</string>
+    <string name="no_email_address_found">לא נמצאה כתובת אימייל</string>
+    <string name="details_updated_successfully">הפרטים עודכנו בהצלחה</string>
+    <string name="error_updating_details">שגיאה בעדכון הפרטים: %1$s</string>
+    <string name="photograph">צלם</string>
+    <string name="no_products_were_found_in_category_X_for_the_search_term">לא נמצאו מוצרים בקטגוריה \'%1$s\' למילת החיפוש \'%2$s\'</string>
+    <string name="show_shopping_list">הצג רשימה</string>
+    <string name="search_for_a_product_in_the_product_list">חיפוש מוצר ברשימת מוצרים</string>
+    <string name="shopping_list_is_empty">רשימת הקניות ריקה</string>
 
 
 </resources>

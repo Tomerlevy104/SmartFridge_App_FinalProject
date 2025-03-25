@@ -1,0 +1,132 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/white"
+    android:layoutDirection="rtl">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <!-- Header Card with blue background -->
+        <com.google.android.material.card.MaterialCardView
+            android:id="@+id/shopping_list_CV_headerCard"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/template_header"
+            app:cardBackgroundColor="@color/blue"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:padding="@dimen/default_margin_16">
+
+                <com.google.android.material.textview.MaterialTextView
+                    android:id="@+id/shopping_list_TV_title"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/default_margin_16"
+                    android:text="יצירת רשימת קניות"
+                    android:textColor="@color/black"
+                    android:textSize="24sp"
+                    android:textStyle="bold"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <!-- App Logo -->
+                <androidx.appcompat.widget.AppCompatImageView
+                    android:id="@+id/shopping_list_IMG_logo"
+                    android:layout_width="60dp"
+                    android:layout_height="60dp"
+                    android:src="@drawable/add_to_cart"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/shopping_list_TV_title" />
+
+
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+            <!-- Search Box at the bottom of the header -->
+            <com.google.android.material.card.MaterialCardView
+                android:id="@+id/shopping_list_CV_search"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:layout_gravity="bottom"
+                android:layout_marginHorizontal="@dimen/default_margin_16"
+                android:layout_marginBottom="@dimen/default_margin_8"
+                app:cardCornerRadius="@dimen/BTN_cornerRadius">
+
+                <androidx.appcompat.widget.LinearLayoutCompat
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical">
+
+                    <androidx.appcompat.widget.AppCompatEditText
+                        android:id="@+id/shopping_list_ET_search"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1"
+                        android:background="@null"
+                        android:hint="@string/search_for_a_product_in_the_product_list"
+                        android:padding="@dimen/default_padding_8" />
+
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/shopping_list_BTN_search"
+                        android:layout_width="wrap_content"
+                        android:layout_height="40dp"
+                        android:layout_marginEnd="@dimen/default_margin_8"
+                        android:text="@string/search"
+                        android:textColor="@color/black"
+                        style="@style/Widget.Material3.Button.TextButton"/>
+
+                </androidx.appcompat.widget.LinearLayoutCompat>
+            </com.google.android.material.card.MaterialCardView>
+        </com.google.android.material.card.MaterialCardView>
+
+        <!-- Shopping Cart Button Header -->
+        <androidx.appcompat.widget.LinearLayoutCompat
+            android:id="@+id/shopping_list_LLC_header"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="@dimen/default_margin_16"
+            android:layout_marginTop="@dimen/default_margin_8"
+            android:orientation="horizontal"
+            android:gravity="end"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/shopping_list_CV_headerCard">
+
+            <!-- View Shopping Cart Button -->
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/shopping_list_BTN_viewCart"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/show_shopping_list"
+                android:textColor="@color/white"
+                android:backgroundTint="@color/simple_blue"
+                app:icon="@drawable/add_manually"
+                app:iconTint="@color/white" />
+
+        </androidx.appcompat.widget.LinearLayoutCompat>
+
+        <!-- Products RecyclerView -->
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/shopping_list_RV_products"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_marginStart="@dimen/default_margin_16"
+            android:layout_marginTop="@dimen/default_margin_8"
+            android:layout_marginEnd="@dimen/default_margin_16"
+            android:layout_marginBottom="@dimen/default_margin_16"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/shopping_list_LLC_header"
+            tools:listitem="@layout/item_shopping_product" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</FrameLayout>

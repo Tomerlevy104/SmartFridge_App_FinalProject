@@ -114,7 +114,7 @@ class ProductsListFragment : Fragment() {
             products = productsList,
             onQuantityChanged = { product, newQuantity ->
                 //Update product quantity in firestore
-                inventoryManager.updateProductQuantity(product, newQuantity) { result ->
+                inventoryManager.updateProductQuantity(product.barCode, newQuantity) { result ->
                     result.onSuccess {
                         //Update the local list after a successful update
                         val index = productsList.indexOfFirst { it.barCode == product.barCode }

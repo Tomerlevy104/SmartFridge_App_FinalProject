@@ -7,6 +7,6 @@ import com.example.smartfridge_app_finalproject.data.model.Product
 interface IInventoryManager {
 
     fun getProductsByCategory(userId: String, category: String, callback: (List<Product>) -> Unit)
-    fun addProduct(product: Product, onComplete: (Result<Unit>) -> Unit)
+//    fun addProduct(product: Product, onComplete: (Result<Unit>) -> Unit)
     fun searchProducts(context: Context, searchQuery: String, categoryFilter: String? = null, callback: (List<Product>) -> Unit)
 }

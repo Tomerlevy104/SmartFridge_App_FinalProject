@@ -53,7 +53,7 @@ class ValidInputManager private constructor() {
         if (productName.all { it.isDigit() }) return false
 
         //Checking that there are no special characters (except spaces and hyphens)
-        val validCharPattern = Regex("^[\\u0590-\\u05FFa-zA-Z0-9\\s-]+$")
+        val validCharPattern = Regex("^[\\u0590-\\u05FFa-zA-Z0-9\\s\\-,'\\\"\\%]+$")
         return productName.matches(validCharPattern)
     }
 
