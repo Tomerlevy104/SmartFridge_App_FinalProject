@@ -24,7 +24,6 @@ import com.example.smartfridge_app_finalproject.data.repository.CategoryReposito
 import com.example.smartfridge_app_finalproject.managers.InventoryManager
 import com.example.smartfridge_app_finalproject.managers.ValidInputManager
 import com.example.smartfridge_app_finalproject.utilities.PermissionType
-import com.example.smartfridge_app_finalproject.data.repository.ProductRepositoryService
 import com.example.smartfridge_app_finalproject.utilities.Constants
 import com.google.android.material.button.MaterialButton
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
@@ -61,7 +60,6 @@ class AddProductManualFragment : Fragment() {
     private var inventoryManager = InventoryManager()
     private val validInputManager = ValidInputManager.getInstance()
     private val categoryRepository = CategoryRepository()
-    private val productRepositoryService = ProductRepositoryService()
 
     // Date handling
     private val calendar = Calendar.getInstance()
@@ -75,7 +73,6 @@ class AddProductManualFragment : Fragment() {
     private val userId = FirebaseAuth.getInstance().currentUser?.uid
 
     // Repository related
-    private var prefillFromRepository = false
     private var prefillScannedBarcode = ""
     private var prefillProductName = ""
     private var prefillCategory = ""
@@ -92,6 +89,7 @@ class AddProductManualFragment : Fragment() {
             prefillImageUrl = args.getString("IMAGE_URL", "")
         }
     }
+
     ////////////////////////////////////////////////////////////////////////////////////////////////////////
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -135,6 +133,7 @@ class AddProductManualFragment : Fragment() {
         // Clear the expiry date field to force the user to select a date
         expiryDateEdit.text?.clear()
     }
+
     ////////////////////////////////////////////////////////////////////////////////////////////////////////
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -143,6 +142,7 @@ class AddProductManualFragment : Fragment() {
     ): View? {
         return inflater.inflate(R.layout.fragment_add_product_manual, container, false)
     }
+
     ////////////////////////////////////////////////////////////////////////////////////////////////////////
     private fun setupViews(view: View) {
         categoryDropdown = view.findViewById(R.id.add_product_manual_ACTV_category)
@@ -159,6 +159,7 @@ class AddProductManualFragment : Fragment() {
         cameraButton = view.findViewById(R.id.add_product_manual_BTN_camera)
         galleryButton = view.findViewById(R.id.add_product_manual_BTN_gallery)
     }
+
     ////////////////////////////////////////////////////////////////////////////////////////////////////////
     private fun initViews() {
         addButton.setOnClickListener {
@@ -182,8 +183,10 @@ class AddProductManualFragment : Fragment() {
             handleGalleryRequest()
         }
     }
+
     ////////////////////////////////////////////////////////////////////////////////////////////////////////
-    // Permission and result launchers
+    // Requests permission to access the camera from the user
+    // Handles the result of the permission request (whether the user approved or denied)
     private val cameraPermissionLauncher = registerForActivityResult(
         ActivityResultContracts.RequestPermission()
     ) { isGranted ->
@@ -193,7 +196,10 @@ class AddProductManualFragment : Fragment() {
             showToast(getString(R.string.camera_access_permission_is_required_to_select_a_product_image))
         }
     }
+
     ////////////////////////////////////////////////////////////////////////////////////////////////////////
+    // Requests permission to access the gallery from the user
+    // Handles the result of the permission request (whether the user approved or denied)
     private val galleryPermissionLauncher = registerForActivityResult(
         ActivityResultContracts.RequestPermission()
     ) { isGranted ->
@@ -203,7 +209,11 @@ class AddProductManualFragment : Fragment() {
             showToast(getString(R.string.gallery_access_permission_is_required_to_select_a_product_image))
         }
     }
+
     ////////////////////////////////////////////////////////////////////////////////////////////////////////
+    // Activate the device's camera app to take a picture
+    // Predefine where the picture will be saved
+    // Handles the result of the photo operation (whether the photo was successful or not)
     private val cameraLauncher = registerForActivityResult(
         ActivityResultContracts.TakePicture()
     ) { success ->
@@ -214,7 +224,11 @@ class AddProductManualFragment : Fragment() {
             }
         }
     }
+
     ////////////////////////////////////////////////////////////////////////////////////////////////////////
+    // Activate the gallery app to choose a picture
+    // Predefine where the picture will be saved
+    // Handles the result of the photo operation (whether the photo was successful or not)
     private val galleryLauncher = registerForActivityResult(
         ActivityResultContracts.GetContent()
     ) { uri: Uri? ->
@@ -223,7 +237,9 @@ class AddProductManualFragment : Fragment() {
             loadImageIntoView(it)
         }
     }
+
     ////////////////////////////////////////////////////////////////////////////////////////////////////////
+    // A function that checks the camera permission status and acts according to the result
     private fun handleCameraRequest() {
         when {
             ContextCompat.checkSelfPermission(
@@ -242,7 +258,9 @@ class AddProductManualFragment : Fragment() {
             }
         }
     }
+
     ////////////////////////////////////////////////////////////////////////////////////////////////////////
+    // A function that checks the gallery permission status and acts according to the result
     private fun handleGalleryRequest() {
         val permission =
             if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.TIRAMISU) {
@@ -268,19 +286,24 @@ class AddProductManualFragment : Fragment() {
             }
         }
     }
+
     ////////////////////////////////////////////////////////////////////////////////////////////////////////
+    // Opens the device camera to capture an image
     private fun openCamera() {
         try {
             val contentValues = ContentValues().apply {
+                // Creates a ContentValues object that contains information about the file to be created
                 put(MediaStore.Images.Media.TITLE, "Product Image")
                 put(MediaStore.Images.Media.DESCRIPTION, "Captured with Smart Fridge app")
             }
 
+            // The action returns a URI that points to the location where the image will be saved.
             tempCameraUri = requireActivity().contentResolver.insert(
                 MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
                 contentValues
             )
 
+            // Checking that the URI was created successfully and activating the camera
             tempCameraUri?.let { uri ->
                 cameraLauncher.launch(uri)
             } ?: run {
@@ -291,7 +314,9 @@ class AddProductManualFragment : Fragment() {
             showToast(getString(R.string.error_opening_the_camera))
         }
     }
+
     ////////////////////////////////////////////////////////////////////////////////////////////////////////
+    // Opens the device gallery to capture an image
     private fun openGallery() {
         try {
             galleryLauncher.launch("image/*")
@@ -300,7 +325,9 @@ class AddProductManualFragment : Fragment() {
             showToast(getString(R.string.error_opening_the_gallery))
         }
     }
+
     ////////////////////////////////////////////////////////////////////////////////////////////////////////
+    // Loads the image into the Image view component.
     private fun loadImageIntoView(uri: Uri) {
         Glide.with(requireContext())
             .load(uri)
@@ -312,14 +339,14 @@ class AddProductManualFragment : Fragment() {
     ////////////////////////////////////////////////////////////////////////////////////////////////////////
     private fun showPermissionExplanationDialog(permissionType: PermissionType) {
         val message = when (permissionType) {
-            PermissionType.CAMERA -> "אנחנו צריכים גישה למצלמה כדי לצלם תמונת מוצר"
-            PermissionType.GALLERY -> "אנחנו צריכים גישה לגלריה כדי לבחור תמונת מוצר"
+            PermissionType.CAMERA -> getString(R.string.we_need_pemission_for_camera)
+            PermissionType.GALLERY -> getString(R.string.we_need_permission_for_gallery)
         }
 
         MaterialAlertDialogBuilder(requireContext())
-            .setTitle("נדרשת הרשאה")
+            .setTitle(getString(R.string.permission_required))
             .setMessage(message)
-            .setPositiveButton("אישור") { _, _ ->
+            .setPositiveButton(getString(R.string.accept)) { _, _ ->
                 when (permissionType) {
                     PermissionType.CAMERA -> cameraPermissionLauncher.launch(Manifest.permission.CAMERA)
                     PermissionType.GALLERY -> {
@@ -333,11 +360,12 @@ class AddProductManualFragment : Fragment() {
                     }
                 }
             }
-            .setNegativeButton("ביטול", null)
+            .setNegativeButton(getString(R.string.cancel), null)
             .show()
     }
 
-    //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////
+    // Check valid input
     private fun validateFields(): Boolean {
         var isValid = true
 
@@ -393,8 +421,10 @@ class AddProductManualFragment : Fragment() {
         val expiryDate = expiryDateEdit.text.toString()
         val imageUri = selectedImageUri ?: Uri.EMPTY
 
-        val product = Product(barCode = barCode, name = name, category = category, quantity = quantity,
-            expiryDate = expiryDate, imageUrl = imageUri)
+        val product = Product(
+            barCode = barCode, name = name, category = category, quantity = quantity,
+            expiryDate = expiryDate, imageUrl = imageUri
+        )
 
         // Add to inventory
         addProductToUserInventory(product)
@@ -419,7 +449,8 @@ class AddProductManualFragment : Fragment() {
 
                     // Navigate to products list
                     (activity as? MainActivity)?.transactionToAnotherFragment(
-                        Constants.Fragment.PRODUCTSLIST)
+                        Constants.Fragment.PRODUCTSLIST
+                    )
                 }.onFailure { exception ->
                     showToast(exception.message ?: getString(R.string.product_not_added))
                 }

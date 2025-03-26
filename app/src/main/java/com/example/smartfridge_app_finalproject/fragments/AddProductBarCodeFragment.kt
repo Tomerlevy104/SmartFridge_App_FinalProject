@@ -37,7 +37,7 @@ import java.util.concurrent.ExecutorService
 import java.util.concurrent.Executors
 
 /**
- * Fragment for scanning product barcodes with the device camera.
+ * Fragment for scanning product barcodes with the device camera
  */
 class AddProductBarCodeFragment : Fragment() {
 
@@ -77,8 +77,8 @@ class AddProductBarCodeFragment : Fragment() {
                     Toast.LENGTH_LONG
                 ).show()
                 // Returns back to the page we came from if there is no camera permission
-//            requireActivity().onBackPressedDispatcher.onBackPressed()
-                requireActivity().onBackPressed()
+                requireActivity().onBackPressedDispatcher.onBackPressed()
+                //requireActivity().onBackPressed()
             }
         }
 
@@ -185,7 +185,7 @@ class AddProductBarCodeFragment : Fragment() {
 
             // Defines what will happen to each image that comes from the camera
             imageAnalysis.setAnalyzer(cameraExecutor) { imageProxy ->
-                // `ImageProxy` is an object that contains the image taken from the camera and other information related to it.
+                // `ImageProxy` is an object that contains the image taken from the camera and other information related to it
                 processImageProxy(imageProxy)
             }
 

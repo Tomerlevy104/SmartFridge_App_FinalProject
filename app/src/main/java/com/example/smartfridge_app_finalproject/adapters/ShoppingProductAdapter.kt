@@ -19,11 +19,15 @@ class ShoppingProductAdapter(
     private val onAddToCartClicked: (Product) -> Unit
 ) : RecyclerView.Adapter<ShoppingProductAdapter.ShoppingProductViewHolder>() {
 
+    ///////////////////////////////////////////////////////////////////////////////////////////////////////////
     inner class ShoppingProductViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        private val imageProduct: AppCompatImageView = itemView.findViewById(R.id.shopping_item_IMG_product)
+        private val imageProduct: AppCompatImageView =
+            itemView.findViewById(R.id.shopping_item_IMG_product)
         private val tvName: MaterialTextView = itemView.findViewById(R.id.shopping_item_TV_name)
-        private val imgAddToCart: AppCompatImageView = itemView.findViewById(R.id.shopping_item_IMG_addToCart)
+        private val imgAddToCart: AppCompatImageView =
+            itemView.findViewById(R.id.shopping_item_IMG_addToCart)
 
+        ///////////////////////////////////////////////////////////////////////////////////////////////////////////
         fun bind(product: Product) {
             // Set product name
             tvName.text = product.name
@@ -46,23 +50,19 @@ class ShoppingProductAdapter(
         }
     }
 
+    ///////////////////////////////////////////////////////////////////////////////////////////////////////////
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ShoppingProductViewHolder {
         val view = LayoutInflater.from(parent.context)
             .inflate(R.layout.item_shopping_product, parent, false)
         return ShoppingProductViewHolder(view)
     }
 
+    ///////////////////////////////////////////////////////////////////////////////////////////////////////////
     override fun onBindViewHolder(holder: ShoppingProductViewHolder, position: Int) {
         holder.bind(products[position])
     }
 
+    ///////////////////////////////////////////////////////////////////////////////////////////////////////////
     override fun getItemCount() = products.size
-
-    /**
-     * Update the adapter with a new list of products
-     */
-    fun updateProducts(newProducts: List<Product>) {
-        products = newProducts
-        notifyDataSetChanged()
-    }
+    ///////////////////////////////////////////////////////////////////////////////////////////////////////////
 }

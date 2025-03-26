@@ -137,6 +137,31 @@
     <string name="adding_by_barcode">הוספה עם ברקוד</string>
     <string name="adding_manual">הוספה ידנית</string>
     <string name="there_are_no_products_from_this_category">אין כרגע מוצרים מקטגוריה זו</string>
+    <string name="apple">תפוח עץ זהוב</string>
+    <string name="tomatos">עגבניות</string>
+    <string name="coca_cola_1_5_liters">קוקה קולה 1.5 ליטר</string>
+    <string name="water_neviot">מים מינרליים נביעות</string>
+    <string name="chicken">חזה עוף טרי</string>
+    <string name="fresh_salmon">סלמון טרי</string>
+    <string name="tnuva_milk_3_precent">חלב תנובה 3%</string>
+    <string name="cotege_5_precent_tnuva">קוטג\' תנובה 5%</string>
+    <string name="engel_white_bread">לחם לבן של אנג\'ל</string>
+    <string name="lahmaniot">לחמניות המאפייה</string>
+    <string name="milk_chocolate">שוקולד פרה חלב</string>
+    <string name="bisli_onion">ביסלי בטעם בצל</string>
+    <string name="freeze_pizza">פיצה קפואה</string>
+    <string name="vanilla_ice_cream">גלידה וניל</string>
+    <string name="successfully_created_repository_with_products">נוצר בהצלחה אוסף RepositoryOfProducts עם %1$d מוצרים</string>
+    <string name="error_creating_RepositoryOfProducts_collection">שגיאה ביצירת אוסף RepositoryOfProducts</string>
+    <string name="we_need_pemission_for_camera">אנחנו צריכים גישה למצלמה כדי לצלם תמונת מוצר</string>
+    <string name="we_need_permission_for_gallery">אנחנו צריכים גישה לגלריה כדי לבחור תמונת מוצר</string>
+    <string name="permission_required">נדרשת הרשאה</string>
+    <string name="accept">אישור</string>
+    <string name="enter_query_search">נא להזין מילת חיפוש</string>
+    <string name="no_products_found_matching_your_search">לא נמצאו מוצרים התואמים לחיפוש</string>
+    <string name="search_result">תוצאות חיפוש: %1$s</string>
+    <string name="camera_permission_is_required_to_take_a_profile_picture">נדרשת הרשאת מצלמה לצילום תמונת פרופיל</string>
+    <string name="gallery_permission_is_required_to_choose_a_profile_picture">נדרשת הרשאת גלריה לבחירת תמונת פרופיל</string>
 
 
 </resources>

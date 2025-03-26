@@ -2,6 +2,9 @@ package com.example.smartfridge_app_finalproject.data.model
 
 import android.net.Uri
 
+/**
+ * User model
+ */
 data class User(
     val firstName: String = "",
     val lastName: String = "",

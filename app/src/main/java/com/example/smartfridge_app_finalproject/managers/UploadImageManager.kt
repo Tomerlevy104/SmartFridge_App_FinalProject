@@ -13,7 +13,6 @@ import androidx.activity.result.ActivityResultLauncher
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.core.content.FileProvider
-import com.example.smartfridge_app_finalproject.data.model.User
 import com.example.smartfridge_app_finalproject.interfaces.IImageManager
 import com.example.smartfridge_app_finalproject.utilities.Constants
 import com.example.smartfridge_app_finalproject.utilities.PermissionType
@@ -57,7 +56,7 @@ class UploadImageManager private constructor() : IImageManager {
     // ===================================================================================================
     // PERMISSION HANDLING
     // ===================================================================================================
-
+    //////////////////////////////////////////////////////////////////////////////////////////////////////
     /**
      * Checks if camera permission is granted
      */

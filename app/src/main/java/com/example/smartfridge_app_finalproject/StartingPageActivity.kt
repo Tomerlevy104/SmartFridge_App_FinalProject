@@ -9,13 +9,13 @@ class StartingPageActivity : AppCompatActivity() {
 
     private lateinit var startingPage_BTN_login: MaterialButton
     private lateinit var startingPage_BTN_register: MaterialButton
-    private val userHandler = UserHandler.getInstance()
+    private val userHandlerManager = UserHandlerManager.getInstance()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
         // Checks if there is a user logged in before displaying the screen
-        if (userHandler.isUserLoggedIn()) {
+        if (userHandlerManager.isUserLoggedIn()) {
             startMainActivity() //Go straight to the home screen
             return
         }

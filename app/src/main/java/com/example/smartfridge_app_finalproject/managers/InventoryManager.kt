@@ -10,12 +10,15 @@ import com.example.smartfridge_app_finalproject.data.repository.ProductRepositor
 import com.example.smartfridge_app_finalproject.interfaces.IInventoryManager
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.QuerySnapshot
+import java.text.SimpleDateFormat
+import java.util.Calendar
+import java.util.Locale
 
 /**
  * Inventory Manager - Responsible for the logic of managing products in inventory
  */
 class InventoryManager : IInventoryManager {
-    private val userHandler = UserHandler.getInstance()
+    private val userHandler = UserHandlerManager.getInstance()
     private val currentUser = userHandler.getCurrentFirebaseUser()
     private val productRepositoryService = ProductRepositoryService()
 
@@ -197,6 +200,35 @@ class InventoryManager : IInventoryManager {
     }
 
     ////////////////////////////////////////////////////////////////////////////////////////////////////////
+    // Checks if a product is expired based on its expiry date string.
+    // @param expiryDateStr The expiry date in format "dd/MM/yyyy"
+    // @return true if the product is expired, false otherwise
+    fun isProductExpired(expiryDateStr: String): Boolean {
+        try {
+            // Make sure we're using the correct date format
+            val dateFormat = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault())
+
+            // Get current date without time portion for fair comparison
+            val calendar = Calendar.getInstance()
+            calendar.set(Calendar.HOUR_OF_DAY, 0)
+            calendar.set(Calendar.MINUTE, 0)
+            calendar.set(Calendar.SECOND, 0)
+            calendar.set(Calendar.MILLISECOND, 0)
+            val currentDate = calendar.time
+
+            // Parse the expiry date
+            val expiryDate = dateFormat.parse(expiryDateStr) ?: return false
+
+            // If expiry date is before the current date, the product is expired
+            return expiryDate.before(currentDate)
+        } catch (e: Exception) {
+            // Log any parsing errors
+            Log.e("InventoryManager", "Error parsing date: ${e.message}", e)
+            return false
+        }
+    }
+
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////
     //Handle the process of adding a product to inventory
     //his function checks if the product exists in the user's inventory or repository of products collection
     //and takes appropriate action
@@ -243,6 +275,7 @@ class InventoryManager : IInventoryManager {
             .document(product.barCode)
             .delete()
             .addOnSuccessListener {
+                // Creates an object that represents an operation that succeeded and does not return a specific value
                 onComplete.invoke(Result.success(Unit))
             }
             .addOnFailureListener { exception ->

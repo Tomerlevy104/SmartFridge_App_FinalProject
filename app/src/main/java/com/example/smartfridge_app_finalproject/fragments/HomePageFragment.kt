@@ -23,14 +23,13 @@ import com.google.android.material.textview.MaterialTextView
 import com.bumptech.glide.Glide
 import android.util.Log
 import android.widget.Toast
-import androidx.appcompat.widget.AppCompatImageButton
 
 class HomePageFragment : Fragment() {
 
     private lateinit var categoryManager: CategoryManager
     private var inventoryManager: InventoryManager = InventoryManager()
     private val categoriesList = MutableLiveData<List<Category>>()
-    private val userHandler = UserHandler.getInstance()
+    private val userHandlerManager = UserHandlerManager.getInstance()
     private lateinit var categoryAdapter: CategoryAdapter
     private lateinit var homePage_RV_categories: RecyclerView
     private lateinit var homepage_BTN_show_all: AppCompatButton
@@ -39,6 +38,7 @@ class HomePageFragment : Fragment() {
     private lateinit var homepage_IMG_profile: ShapeableImageView
     private lateinit var homepage_TV_name: MaterialTextView
 
+    ////////////////////////////////////////////////////////////////////////////////////////////////////
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -48,6 +48,7 @@ class HomePageFragment : Fragment() {
         return inflater.inflate(R.layout.fragment_home_page, container, false)
     }
 
+    ////////////////////////////////////////////////////////////////////////////////////////////////////
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
@@ -61,6 +62,7 @@ class HomePageFragment : Fragment() {
         loadUserProfile()
     }
 
+    ////////////////////////////////////////////////////////////////////////////////////////////////////
     private fun findViews(view: View) {
         homePage_RV_categories = view.findViewById(R.id.homePage_RV_categories)
         homepage_BTN_show_all = view.findViewById(R.id.homepage_BTN_show_all)
@@ -70,6 +72,7 @@ class HomePageFragment : Fragment() {
         homepage_TV_name = view.findViewById(R.id.homepage_TV_name)
     }
 
+    ////////////////////////////////////////////////////////////////////////////////////////////////////
     private fun setupClickListeners() {
         //Show all button
         homepage_BTN_show_all.setOnClickListener {
@@ -81,6 +84,7 @@ class HomePageFragment : Fragment() {
         }
     }
 
+    ////////////////////////////////////////////////////////////////////////////////////////////////////
     private fun setupRecyclerView() {
         categoryAdapter = CategoryAdapter { category ->
             categoryManager.handleCategoryClick(category) //On category clicked
@@ -92,16 +96,19 @@ class HomePageFragment : Fragment() {
         }
     }
 
+    ////////////////////////////////////////////////////////////////////////////////////////////////////
     private fun loadCategories() {
         categoriesList.value = categoryManager.getAllCategories()
     }
 
+    ////////////////////////////////////////////////////////////////////////////////////////////////////
     private fun observeCategories() {
         categoriesList.observe(viewLifecycleOwner) { categoryList ->
             categoryAdapter.updateCategories(categoryList)
         }
     }
 
+    ////////////////////////////////////////////////////////////////////////////////////////////////////
     private fun executeSearch() {
         val searchQuery = homepage_ET_search.text.toString().trim()
 
@@ -120,6 +127,8 @@ class HomePageFragment : Fragment() {
         }
     }
 
+    ////////////////////////////////////////////////////////////////////////////////////////////////////
+    // navigate to product list fragment after execute search query
     private fun navigateToProductsListWithSearchQuery(searchQuery: String) {
         val bundle = Bundle().apply {
             putString("SEARCH_QUERY", searchQuery)
@@ -130,8 +139,9 @@ class HomePageFragment : Fragment() {
             Constants.Fragment.PRODUCTSLIST, bundle)
     }
 
+    ////////////////////////////////////////////////////////////////////////////////////////////////////
     //Update the UI with user information
-    private fun updateUIWithUserData(userData: UserHandler.UserData) {
+    private fun updateUIWithUserData(userData: UserHandlerManager.UserData) {
         homepage_TV_name.text = userData.firstName
 
         //Load profile picture
@@ -144,13 +154,14 @@ class HomePageFragment : Fragment() {
         }
     }
 
+    ////////////////////////////////////////////////////////////////////////////////////////////////////
     //Loading user details
     private fun loadUserProfile() {
-        if (userHandler.isUserLoggedIn()) {
-            userHandler.getCurrentUserData()?.let { userData ->
+        if (userHandlerManager.isUserLoggedIn()) {
+            userHandlerManager.getCurrentUserData()?.let { userData ->
                 updateUIWithUserData(userData)
             }
-            userHandler.loadUserProfile { result ->
+            userHandlerManager.loadUserProfile { result ->
                 result.onSuccess { userData ->
                     activity?.runOnUiThread {
                         updateUIWithUserData(userData)
@@ -166,4 +177,5 @@ class HomePageFragment : Fragment() {
             homepage_TV_name.text = getString(R.string.guest)
         }
     }
+    ////////////////////////////////////////////////////////////////////////////////////////////////////
 }

@@ -4,6 +4,9 @@ import com.example.smartfridge_app_finalproject.R
 import com.example.smartfridge_app_finalproject.data.model.Category
 import com.example.smartfridge_app_finalproject.utilities.Constants
 
+/**
+ * Repository class that provides access to product categories data
+*/
 class CategoryRepository {
 
     fun getInitialCategories(): List<Category> = listOf(

@@ -9,8 +9,11 @@ import com.example.smartfridge_app_finalproject.R
 import com.example.smartfridge_app_finalproject.data.model.Category
 import com.google.android.material.textview.MaterialTextView
 
-class CategoryAdapter(private val onCategoryClick: (Category) -> Unit)
-    : RecyclerView.Adapter<CategoryAdapter.CategoryViewHolder>() {
+/**
+ *  Adapter for displaying categories in a RecyclerView.
+ */
+class CategoryAdapter(private val onCategoryClick: (Category) -> Unit) :
+    RecyclerView.Adapter<CategoryAdapter.CategoryViewHolder>() {
 
     private var categories = listOf<Category>()
 
@@ -18,6 +21,7 @@ class CategoryAdapter(private val onCategoryClick: (Category) -> Unit)
         private val imageView: ImageView = itemView.findViewById(R.id.category_image)
         private val textView: MaterialTextView = itemView.findViewById(R.id.category_name)
 
+    /////////////////////////////////////////////////////////////////////////////////////////////////////
         fun bind(category: Category) {
             // Set image resource
             imageView.setImageResource(category.categoryImage)
@@ -27,24 +31,31 @@ class CategoryAdapter(private val onCategoryClick: (Category) -> Unit)
 
             // Set click listener
             itemView.setOnClickListener {
-                onCategoryClick(category) }
+                onCategoryClick(category)
+            }
         }
+    /////////////////////////////////////////////////////////////////////////////////////////////////////
     }
 
+    /////////////////////////////////////////////////////////////////////////////////////////////////////
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CategoryViewHolder {
         val view = LayoutInflater.from(parent.context)
             .inflate(R.layout.item_category, parent, false)
         return CategoryViewHolder(view)
     }
 
+    /////////////////////////////////////////////////////////////////////////////////////////////////////
     override fun onBindViewHolder(holder: CategoryViewHolder, position: Int) {
         holder.bind(categories[position])
     }
 
+    /////////////////////////////////////////////////////////////////////////////////////////////////////
     override fun getItemCount() = categories.size
 
+    /////////////////////////////////////////////////////////////////////////////////////////////////////
     fun updateCategories(newCategories: List<Category>) {
         categories = newCategories
         notifyDataSetChanged()
     }
+    /////////////////////////////////////////////////////////////////////////////////////////////////////
 }

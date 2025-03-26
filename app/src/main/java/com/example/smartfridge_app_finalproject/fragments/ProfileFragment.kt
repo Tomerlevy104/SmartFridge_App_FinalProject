@@ -1,6 +1,6 @@
 package com.example.smartfridge_app_finalproject.fragments
 
-import UserHandler
+import UserHandlerManager
 import android.Manifest
 import android.content.ContentValues
 import android.content.Intent
@@ -30,10 +30,11 @@ import kotlinx.coroutines.launch
 
 class ProfileFragment : Fragment() {
 
+    private val TAG = "ProfileFragment"
+
     private lateinit var binding: FragmentManageProfileBinding
     private lateinit var uploadImageManager: UploadImageManager
-    private lateinit var userHandler: UserHandler
-    private val TAG = "ProfileFragment"
+    private lateinit var userHandlerManager: UserHandlerManager
 
     // Uri to store temporary camera image
     private var tempCameraUri: Uri? = null
@@ -45,7 +46,7 @@ class ProfileFragment : Fragment() {
         if (isGranted) {
             launchCamera()
         } else {
-            showToast("נדרשת הרשאת מצלמה לצילום תמונת פרופיל")
+            showToast(getString(R.string.camera_permission_is_required_to_take_a_profile_picture))
         }
     }
 
@@ -55,7 +56,7 @@ class ProfileFragment : Fragment() {
         if (isGranted) {
             launchGallery()
         } else {
-            showToast("נדרשת הרשאת גלריה לבחירת תמונת פרופיל")
+            showToast(getString(R.string.gallery_permission_is_required_to_choose_a_profile_picture))
         }
     }
 
@@ -80,7 +81,7 @@ class ProfileFragment : Fragment() {
     ): View {
         binding = FragmentManageProfileBinding.inflate(inflater, container, false)
         uploadImageManager = UploadImageManager.getInstance()
-        userHandler = UserHandler.getInstance()
+        userHandlerManager = UserHandlerManager.getInstance()
         return binding.root
     }
 
@@ -231,11 +232,11 @@ class ProfileFragment : Fragment() {
             }
         }
 
-        userHandler.getCurrentUserData()?.let { userData ->
+        userHandlerManager.getCurrentUserData()?.let { userData ->
             val firstName = if (fieldName == "firstName") value else userData.firstName
             val lastName = if (fieldName == "lastName") value else userData.lastName
 
-            userHandler.updateUserProfile(
+            userHandlerManager.updateUserProfile(
                 firstName = firstName,
                 lastName = lastName,
                 profileImageUrl = userData.profileImageUrl
@@ -252,7 +253,7 @@ class ProfileFragment : Fragment() {
     }
 
     private fun resetPassword() {
-        userHandler.getCurrentUserData()?.let { userData ->
+        userHandlerManager.getCurrentUserData()?.let { userData ->
             userData.email?.let { email ->
                 FirebaseAuth.getInstance().sendPasswordResetEmail(email)
                     .addOnSuccessListener {
@@ -283,7 +284,7 @@ class ProfileFragment : Fragment() {
     }
 
     private fun signOut() {
-        userHandler.clearUserData() // Clear cached user data
+        userHandlerManager.clearUserData() // Clear cached user data
 
         AuthUI.getInstance()
             .signOut(requireContext())
@@ -441,12 +442,12 @@ class ProfileFragment : Fragment() {
     private fun loadUserProfile() {
         showLoading(true)
 
-        userHandler.getCurrentUserData()?.let { userData ->
+        userHandlerManager.getCurrentUserData()?.let { userData ->
             updateProfileUI(userData)
         }
 
         // Then load/refresh from Firestore
-        userHandler.loadUserProfile { result ->
+        userHandlerManager.loadUserProfile { result ->
             activity?.runOnUiThread {
                 result.onSuccess { userData ->
                     updateProfileUI(userData)
@@ -459,7 +460,7 @@ class ProfileFragment : Fragment() {
         }
     }
 
-    private fun updateProfileUI(userData: UserHandler.UserData) {
+    private fun updateProfileUI(userData: UserHandlerManager.UserData) {
         try {
             // Update profile image if available
             if (!userData.profileImageUrl.isNullOrEmpty()) {

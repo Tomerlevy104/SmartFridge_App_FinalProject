@@ -3,7 +3,7 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.firestore.FirebaseFirestore
 
-class UserHandler private constructor() {
+class UserHandlerManager private constructor() {
     private val auth: FirebaseAuth = FirebaseAuth.getInstance()
     private val firestore: FirebaseFirestore = FirebaseFirestore.getInstance()
     private var userData: UserData? = null
@@ -104,11 +104,11 @@ class UserHandler private constructor() {
 
     companion object {
         @Volatile
-        private var instance: UserHandler? = null
+        private var instance: UserHandlerManager? = null
 
-        fun getInstance(): UserHandler {
+        fun getInstance(): UserHandlerManager {
             return instance ?: synchronized(this) {
-                instance ?: UserHandler().also { instance = it }
+                instance ?: UserHandlerManager().also { instance = it }
             }
         }
     }

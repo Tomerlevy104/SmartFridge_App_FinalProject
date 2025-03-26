@@ -8,7 +8,6 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.appcompat.widget.AppCompatButton
 import androidx.appcompat.widget.AppCompatEditText
-import androidx.appcompat.widget.AppCompatImageButton
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -23,13 +22,15 @@ import com.google.android.material.button.MaterialButton
 import com.google.android.material.imageview.ShapeableImageView
 import com.google.android.material.textview.MaterialTextView
 
-//Fragment to display the list of products in stock
+/**
+ * Fragment to display the list of products in stock
+ */
 class ProductsListFragment : Fragment() {
 
     private lateinit var productsListAdapter: ProductsListAdapter
     private val productsList = mutableListOf<Product>() //List of products to display
     private val inventoryManager = InventoryManager() //Inventory manager
-    private val userHandler = UserHandler.getInstance()
+    private val userHandlerManager = UserHandlerManager.getInstance()
 
     //UI Components
     private lateinit var productsListBtnCategories: AppCompatButton
@@ -46,6 +47,7 @@ class ProductsListFragment : Fragment() {
     private var fromSearch: Boolean = false
     private var searchQuery: String? = null
 
+    /////////////////////////////////////////////////////////////////////////////////////////////////////
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         //Receive the parameters passed to the fragment
@@ -60,6 +62,7 @@ class ProductsListFragment : Fragment() {
         }
     }
 
+    /////////////////////////////////////////////////////////////////////////////////////////////////////
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -68,6 +71,7 @@ class ProductsListFragment : Fragment() {
         return inflater.inflate(R.layout.fragment_products_list, container, false)
     }
 
+    /////////////////////////////////////////////////////////////////////////////////////////////////////
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         findViews(view)
@@ -78,6 +82,7 @@ class ProductsListFragment : Fragment() {
         loadUserProfile() //Load user details
     }
 
+    /////////////////////////////////////////////////////////////////////////////////////////////////////
     private fun findViews(view: View) {
         productsListBtnCategories = view.findViewById(R.id.products_list_BTN_categories)
         productsListTvCategoryName = view.findViewById(R.id.products_list_TV_categoryName)
@@ -94,6 +99,7 @@ class ProductsListFragment : Fragment() {
         }
     }
 
+    /////////////////////////////////////////////////////////////////////////////////////////////////////
     private fun setupClickListeners() {
         //All categories button
         productsListBtnCategories.setOnClickListener {
@@ -105,6 +111,7 @@ class ProductsListFragment : Fragment() {
         }
     }
 
+    /////////////////////////////////////////////////////////////////////////////////////////////////////
     private fun setupRecyclerView() {
         productsListAdapter = ProductsListAdapter(
             products = productsList,
@@ -143,9 +150,10 @@ class ProductsListFragment : Fragment() {
         }
     }
 
+    /////////////////////////////////////////////////////////////////////////////////////////////////////
     //Loading the initial products - according to the parameters received
     private fun loadInitialProducts() {
-        val currentUser = userHandler.getCurrentFirebaseUser()
+        val currentUser = userHandlerManager.getCurrentFirebaseUser()
         if (currentUser == null) {
             Toast.makeText(
                 requireContext(),
@@ -174,7 +182,10 @@ class ProductsListFragment : Fragment() {
         }
         //Else if there is a selected category, only load the products from that category
         else if (selectedCategory != null) {
-            inventoryManager.getProductsByCategory(currentUser.uid, selectedCategory!!) { categoryProducts ->
+            inventoryManager.getProductsByCategory(
+                currentUser.uid,
+                selectedCategory!!
+            ) { categoryProducts ->
                 productsList.clear()
                 // Inserts all products according to the selected category into the list
                 // All products come from the inventoryManager class from the getProductsByCategory action
@@ -204,11 +215,12 @@ class ProductsListFragment : Fragment() {
         }
     }
 
+    /////////////////////////////////////////////////////////////////////////////////////////////////////
     //Update user interface with the details of the selected category or search results
     private fun updateUI() {
         //If coming from a search
         if (fromSearch && !searchQuery.isNullOrEmpty()) {
-            productsListTvCategoryName.text = "תוצאות חיפוש: $searchQuery"
+            productsListTvCategoryName.text = getString(R.string.search_result, searchQuery)
             productsListImgCategory.visibility = View.GONE
         }
         //If coming from a category selection
@@ -223,6 +235,7 @@ class ProductsListFragment : Fragment() {
         }
     }
 
+    /////////////////////////////////////////////////////////////////////////////////////////////////////
     //Perform a search
     private fun executeSearch() {
         val searchQuery = productsListEtSearch.text.toString().trim()
@@ -252,14 +265,15 @@ class ProductsListFragment : Fragment() {
         }
     }
 
+    /////////////////////////////////////////////////////////////////////////////////////////////////////
     //Loading user details
     private fun loadUserProfile() {
-        if (userHandler.isUserLoggedIn()) {
-            userHandler.getCurrentUserData()?.let { userData ->
+        if (userHandlerManager.isUserLoggedIn()) {
+            userHandlerManager.getCurrentUserData()?.let { userData ->
                 updateUIWithUserData(userData)
             }
-            //Load/refresh data from Firestore
-            userHandler.loadUserProfile { result ->
+            //Load/refresh data from firestore
+            userHandlerManager.loadUserProfile { result ->
                 result.onSuccess { userData ->
                     activity?.runOnUiThread {
                         updateUIWithUserData(userData)
@@ -276,8 +290,9 @@ class ProductsListFragment : Fragment() {
         }
     }
 
+    /////////////////////////////////////////////////////////////////////////////////////////////////////
     //Update UI with user information
-    private fun updateUIWithUserData(userData: UserHandler.UserData) {
+    private fun updateUIWithUserData(userData: UserHandlerManager.UserData) {
         productsListTvName.text = userData.firstName
 
         //Load the profile picture
@@ -290,6 +305,7 @@ class ProductsListFragment : Fragment() {
         }
     }
 
+    /////////////////////////////////////////////////////////////////////////////////////////////////////
     override fun onResume() {
         super.onResume()
         loadUserProfile()
@@ -300,4 +316,5 @@ class ProductsListFragment : Fragment() {
             updateUI()
         }
     }
+    /////////////////////////////////////////////////////////////////////////////////////////////////////
 }

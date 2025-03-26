@@ -41,6 +41,7 @@ class CreateShoppingListFragment : Fragment() {
     private val productRepositoryService = ProductRepositoryService()
     private val shoppingListManager = ShoppingListManager()
 
+    //////////////////////////////////////////////////////////////////////////////////////////////////////
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -49,6 +50,7 @@ class CreateShoppingListFragment : Fragment() {
         return inflater.inflate(R.layout.fragment_create_shopping_list, container, false)
     }
 
+    //////////////////////////////////////////////////////////////////////////////////////////////////////
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         findViews(view)
@@ -57,6 +59,7 @@ class CreateShoppingListFragment : Fragment() {
         loadProducts()
     }
 
+    //////////////////////////////////////////////////////////////////////////////////////////////////////
     private fun findViews(view: View) {
         shoppingListRvProducts = view.findViewById(R.id.shopping_list_RV_products)
         shoppingListBtnViewCart = view.findViewById(R.id.shopping_list_BTN_viewCart)
@@ -64,6 +67,7 @@ class CreateShoppingListFragment : Fragment() {
         shoppingListEtSearch = view.findViewById(R.id.shopping_list_ET_search)
     }
 
+    //////////////////////////////////////////////////////////////////////////////////////////////////////
     private fun setupRecyclerView() {
         // Initialize the adapter with an empty list
         shoppingProductAdapter = ShoppingProductAdapter(
@@ -108,6 +112,7 @@ class CreateShoppingListFragment : Fragment() {
         }
     }
 
+    //////////////////////////////////////////////////////////////////////////////////////////////////////
     private fun setupClickListeners() {
         // View shopping list button
         shoppingListBtnViewCart.setOnClickListener {
@@ -120,9 +125,8 @@ class CreateShoppingListFragment : Fragment() {
         }
     }
 
-    /**
-     * Load all products from repository
-     */
+    //////////////////////////////////////////////////////////////////////////////////////////////////////
+    // Load all products from repository
     private fun loadProducts() {
         productRepositoryService.getAllProductsFromRepository { products ->
             productsList.clear()
@@ -133,13 +137,14 @@ class CreateShoppingListFragment : Fragment() {
         }
     }
 
+    //////////////////////////////////////////////////////////////////////////////////////////////////////
     private fun executeSearch() {
         val searchQuery = shoppingListEtSearch.text.toString().trim()
 
         if (searchQuery.isEmpty()) {
             Toast.makeText(
                 requireContext(),
-                "נא להזין מילת חיפוש",
+                getString(R.string.enter_query_search),
                 Toast.LENGTH_SHORT
             ).show()
             return
@@ -148,11 +153,10 @@ class CreateShoppingListFragment : Fragment() {
         val filteredProducts = productsList.filter {
             it.name.contains(searchQuery, ignoreCase = true)
         }
-
         if (filteredProducts.isEmpty()) {
             Toast.makeText(
                 requireContext(),
-                "לא נמצאו מוצרים התואמים לחיפוש",
+                getString(R.string.no_products_found_matching_your_search),
                 Toast.LENGTH_SHORT
             ).show()
         } else {
@@ -161,4 +165,5 @@ class CreateShoppingListFragment : Fragment() {
             shoppingProductAdapter.notifyDataSetChanged()
         }
     }
+    //////////////////////////////////////////////////////////////////////////////////////////////////////
 }
