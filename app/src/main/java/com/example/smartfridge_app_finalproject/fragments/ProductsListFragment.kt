@@ -39,7 +39,7 @@ class ProductsListFragment : Fragment() {
     private lateinit var productsListImgCategory: ShapeableImageView
     private lateinit var productsListImgProfile: ShapeableImageView
     private lateinit var productsListTvName: MaterialTextView
-    private lateinit var productsListIvLocation: AppCompatImageButton
+    private lateinit var productsListTvEmpty: MaterialTextView
     private lateinit var productsListRvProducts: RecyclerView
     private var selectedCategory: String? = null
     private var selectedCategoryImage: Int? = null
@@ -86,7 +86,7 @@ class ProductsListFragment : Fragment() {
         productsListEtSearch = view.findViewById(R.id.products_list_ET_search)
         productsListImgProfile = view.findViewById(R.id.products_list_IMG_profile)
         productsListTvName = view.findViewById(R.id.products_list_TV_name)
-        productsListIvLocation = view.findViewById(R.id.products_list_IV_location)
+        productsListTvEmpty = view.findViewById(R.id.products_list_TV_empty)
         productsListRvProducts = view.findViewById(R.id.products_list_RV_products)
         //If coming from a search, I will fill the edit text in the search field
         if (fromSearch && !searchQuery.isNullOrEmpty()) {
@@ -102,10 +102,6 @@ class ProductsListFragment : Fragment() {
         //Search button
         productsListBtnSearch.setOnClickListener {
             executeSearch()
-        }
-        //Map button
-        productsListIvLocation.setOnClickListener {
-            (activity as? MainActivity)?.transactionToAnotherFragment(Constants.Fragment.SUPERMARKET)
         }
     }
 
@@ -178,14 +174,21 @@ class ProductsListFragment : Fragment() {
         }
         //Else if there is a selected category, only load the products from that category
         else if (selectedCategory != null) {
-            inventoryManager.getProductsByCategory(
-                currentUser.uid,
-                selectedCategory!!
-            ) { categoryProducts ->
+            inventoryManager.getProductsByCategory(currentUser.uid, selectedCategory!!) { categoryProducts ->
                 productsList.clear()
+                // Inserts all products according to the selected category into the list
+                // All products come from the inventoryManager class from the getProductsByCategory action
                 productsList.addAll(categoryProducts)
                 activity?.runOnUiThread {
                     productsListAdapter.notifyDataSetChanged()
+                    // Check if category is empty and update UI
+                    if (categoryProducts.isEmpty()) {
+                        productsListTvEmpty.visibility = View.VISIBLE
+                        productsListRvProducts.visibility = View.GONE
+                    } else {
+                        productsListTvEmpty.visibility = View.GONE
+                        productsListRvProducts.visibility = View.VISIBLE
+                    }
                 }
             }
         }

@@ -18,33 +18,6 @@
             app:cardBackgroundColor="@color/blue"
             app:layout_constraintTop_toTopOf="parent">
 
-            <androidx.appcompat.widget.LinearLayoutCompat
-                android:id="@+id/products_list_ll_location"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="end"
-                android:orientation="vertical">
-
-                <com.google.android.material.textview.MaterialTextView
-                    android:id="@+id/products_list__TV_location"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_margin="@dimen/default_margin_16"
-                    android:text="@string/take_me_to_super_market"
-                    android:textColor="@color/black"
-                    android:textSize="@dimen/homePage_super_txt_size" />
-
-                <androidx.appcompat.widget.AppCompatImageButton
-                    android:id="@+id/products_list_IV_location"
-                    android:layout_width="48dp"
-                    android:layout_height="48dp"
-                    android:layout_gravity="center"
-                    android:background="?attr/selectableItemBackgroundBorderless"
-                    android:scaleType="fitCenter"
-                    android:src="@drawable/supermarket_location_icon" />
-
-            </androidx.appcompat.widget.LinearLayoutCompat>
-
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent">
@@ -87,6 +60,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             tools:text="@string/first_name"
+                            android:textSize="20sp"
                             android:textColor="@color/black" />
                     </androidx.appcompat.widget.LinearLayoutCompat>
                 </androidx.appcompat.widget.LinearLayoutCompat>
@@ -202,6 +176,19 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintTop_toBottomOf="@id/products_list_list_LLC_filters"
             tools:listitem="@layout/item_product" />
+
+        <com.google.android.material.textview.MaterialTextView
+            android:id="@+id/products_list_TV_empty"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/there_are_no_products_from_this_category"
+            android:textSize="18sp"
+            android:textColor="@color/black"
+            android:visibility="gone"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/products_list_list_LLC_filters" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </FrameLayout>

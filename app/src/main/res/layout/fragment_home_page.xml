@@ -18,33 +18,6 @@
             app:cardBackgroundColor="@color/blue"
             app:layout_constraintTop_toTopOf="parent">
 
-            <androidx.appcompat.widget.LinearLayoutCompat
-                android:id="@+id/products_list_ll_location"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="end"
-                android:orientation="vertical">
-
-                <com.google.android.material.textview.MaterialTextView
-                    android:id="@+id/homepage_TV_location"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_margin="@dimen/default_margin_16"
-                    android:text="@string/take_me_to_super_market"
-                    android:textColor="@color/black"
-                    android:textSize="@dimen/homePage_super_txt_size" />
-
-                <androidx.appcompat.widget.AppCompatImageButton
-                    android:id="@+id/homepage_IV_location"
-                    android:layout_width="48dp"
-                    android:layout_height="48dp"
-                    android:layout_gravity="center"
-                    android:background="?attr/selectableItemBackgroundBorderless"
-                    android:scaleType="fitCenter"
-                    android:src="@drawable/supermarket_location_icon" />
-
-            </androidx.appcompat.widget.LinearLayoutCompat>
-
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent">
@@ -87,6 +60,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:textColor="@color/black"
+                            android:textSize="20sp"
                             tools:text="@string/first_name" />
                     </androidx.appcompat.widget.LinearLayoutCompat>
                 </androidx.appcompat.widget.LinearLayoutCompat>

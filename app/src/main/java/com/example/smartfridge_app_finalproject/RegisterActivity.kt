@@ -44,6 +44,8 @@ class RegisterActivity : AppCompatActivity() {
     private lateinit var register_BTN_camera: MaterialButton
     private lateinit var register_BTN_gallery: MaterialButton
     private lateinit var register_BTN_submit: MaterialButton
+    private lateinit var register_BTN_back: MaterialButton
+
 
     private var selectedImageUri: Uri? = null
     private var cameraImageUri: Uri? = null
@@ -91,6 +93,7 @@ class RegisterActivity : AppCompatActivity() {
         }
     }
 
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_register)
@@ -123,6 +126,8 @@ class RegisterActivity : AppCompatActivity() {
         register_BTN_camera = findViewById(R.id.register_BTN_camera)
         register_BTN_gallery = findViewById(R.id.register_BTN_gallery)
         register_BTN_submit = findViewById(R.id.register_BTN_submit)
+        register_BTN_back = findViewById(R.id.register_BTN_back)
+
     }
 
     private fun initViews() {
@@ -141,6 +146,17 @@ class RegisterActivity : AppCompatActivity() {
         register_BTN_gallery.setOnClickListener {
             handleGalleryButtonClick()
         }
+
+        register_BTN_back.setOnClickListener {
+            navigateToStartingPage()
+        }
+    }
+
+    // Navigate back to StartingPageActivity
+    private fun navigateToStartingPage() {
+        val intent = Intent(this, StartingPageActivity::class.java)
+        startActivity(intent)
+        finish() // Close current activity
     }
 
     private fun setupTextChangeListeners() {
@@ -152,7 +168,7 @@ class RegisterActivity : AppCompatActivity() {
             register_ET_confirmpassword to register_TIL_confirmpassword
         )
 
-        fieldPairs.forEach { (editText, inputLayout) ->
+        for ((editText, inputLayout) in fieldPairs) {
             editText.setOnFocusChangeListener { _, hasFocus ->
                 if (hasFocus) inputLayout.error = null
             }
@@ -231,7 +247,6 @@ class RegisterActivity : AppCompatActivity() {
         }
     }
 
-    // Launch camera using the new approach
     // Launch camera using a direct ContentResolver approach
     private fun launchCamera() {
         try {

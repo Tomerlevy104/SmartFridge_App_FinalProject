@@ -73,23 +73,4 @@ class CategoryRepository {
             categoryImage = R.drawable.category_others
         )
     )
-
-    companion object {
-        //Mapping between category code to category image
-        val CATEGORY_IMAGE_MAP = mapOf(
-            Constants.Category.FRUITS_AND_VEGETABLES to R.drawable.category_fruits_veg,
-            Constants.Category.DRINKS to R.drawable.category__wine_drinks,
-            Constants.Category.MEAT to R.drawable.category_meat,
-            Constants.Category.ORGANICANDHEALTH to R.drawable.category_oregany,
-            Constants.Category.SNACKS to R.drawable.category_snacks,
-            Constants.Category.BREADS to R.drawable.category_bread,
-            Constants.Category.CLEANING to R.drawable.category_clean,
-            Constants.Category.COOKINGBAKING to R.drawable.category_cooking_baking,
-            Constants.Category.ANIMALS to R.drawable.category_animals,
-            Constants.Category.DAIRY to R.drawable.category_milk_eggs,
-            Constants.Category.BABYS to R.drawable.category_babys,
-            Constants.Category.FROZEN to R.drawable.category_freez,
-            Constants.Category.OTHER to R.drawable.category_others
-        )
-    }
 }

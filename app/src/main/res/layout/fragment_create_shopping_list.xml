@@ -29,7 +29,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/default_margin_16"
-                    android:text="יצירת רשימת קניות"
+                    android:text="@string/create_shopping_list"
                     android:textColor="@color/black"
                     android:textSize="24sp"
                     android:textStyle="bold"
@@ -103,15 +103,16 @@
             app:layout_constraintTop_toBottomOf="@+id/shopping_list_CV_headerCard">
 
             <!-- View Shopping Cart Button -->
-            <com.google.android.material.button.MaterialButton
+            <androidx.appcompat.widget.AppCompatButton
                 android:id="@+id/shopping_list_BTN_viewCart"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:gravity="center"
+                android:padding="@dimen/default_padding_8"
                 android:text="@string/show_shopping_list"
-                android:textColor="@color/white"
-                android:backgroundTint="@color/simple_blue"
-                app:icon="@drawable/add_manually"
-                app:iconTint="@color/white" />
+                android:textColor="@color/black"
+                android:textSize="@dimen/btn_txt_size" />
 
         </androidx.appcompat.widget.LinearLayoutCompat>
 

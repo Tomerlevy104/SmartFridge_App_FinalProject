@@ -3,10 +3,10 @@ package com.example.smartfridge_app_finalproject.interfaces
 import com.example.smartfridge_app_finalproject.data.model.Category
 
 interface ICategoryManager {
-    fun getAllCategories(): List<Category>
-    fun getCategoryById(id: String): Category?
-//    fun insertCategory(category: Category)
-//    fun updateCategory(category: Category)
-//    fun deleteCategory(id: String)
 
+    /**
+     * Retrieves all available product categories
+     * @return A list of all Category objects in the system
+     */
+    fun getAllCategories(): List<Category>
 }

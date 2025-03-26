@@ -17,14 +17,15 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import com.bumptech.glide.Glide
+import com.example.smartfridge_app_finalproject.MainActivity
 import com.example.smartfridge_app_finalproject.R
 import com.example.smartfridge_app_finalproject.data.model.Product
 import com.example.smartfridge_app_finalproject.data.repository.CategoryRepository
 import com.example.smartfridge_app_finalproject.managers.InventoryManager
-import com.example.smartfridge_app_finalproject.managers.ProductManager
 import com.example.smartfridge_app_finalproject.managers.ValidInputManager
 import com.example.smartfridge_app_finalproject.utilities.PermissionType
 import com.example.smartfridge_app_finalproject.data.repository.ProductRepositoryService
+import com.example.smartfridge_app_finalproject.utilities.Constants
 import com.google.android.material.button.MaterialButton
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.imageview.ShapeableImageView
@@ -35,6 +36,10 @@ import com.google.firebase.auth.FirebaseAuth
 import java.text.SimpleDateFormat
 import java.util.*
 
+/**
+ * Fragment for manually adding products to the user's inventory.
+ * This fragment provides a user interface for adding product details manually
+ */
 class AddProductManualFragment : Fragment() {
 
     private val TAG = "AddProductManualFragment"
@@ -53,10 +58,9 @@ class AddProductManualFragment : Fragment() {
     private lateinit var titleTextView: MaterialTextView
 
     // Managers
-    private var inventory = InventoryManager()
+    private var inventoryManager = InventoryManager()
     private val validInputManager = ValidInputManager.getInstance()
     private val categoryRepository = CategoryRepository()
-    private val productManager = ProductManager.getInstance()
     private val productRepositoryService = ProductRepositoryService()
 
     // Date handling
@@ -76,8 +80,8 @@ class AddProductManualFragment : Fragment() {
     private var prefillProductName = ""
     private var prefillCategory = ""
     private var prefillImageUrl = ""
-//    private var contributeToRepository = false
 
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         // Get product details for prefilling
@@ -88,7 +92,7 @@ class AddProductManualFragment : Fragment() {
             prefillImageUrl = args.getString("IMAGE_URL", "")
         }
     }
-
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         setupViews(view)
@@ -127,8 +131,11 @@ class AddProductManualFragment : Fragment() {
                 Log.e(TAG, "Error loading image from URL: ${e.message}")
             }
         }
-    }
 
+        // Clear the expiry date field to force the user to select a date
+        expiryDateEdit.text?.clear()
+    }
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -136,8 +143,7 @@ class AddProductManualFragment : Fragment() {
     ): View? {
         return inflater.inflate(R.layout.fragment_add_product_manual, container, false)
     }
-
-
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////
     private fun setupViews(view: View) {
         categoryDropdown = view.findViewById(R.id.add_product_manual_ACTV_category)
         categoryLayout = view.findViewById(R.id.add_product_manual_TIL_category)
@@ -153,7 +159,7 @@ class AddProductManualFragment : Fragment() {
         cameraButton = view.findViewById(R.id.add_product_manual_BTN_camera)
         galleryButton = view.findViewById(R.id.add_product_manual_BTN_gallery)
     }
-
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////
     private fun initViews() {
         addButton.setOnClickListener {
             handleAddProduct()
@@ -176,7 +182,7 @@ class AddProductManualFragment : Fragment() {
             handleGalleryRequest()
         }
     }
-
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////
     // Permission and result launchers
     private val cameraPermissionLauncher = registerForActivityResult(
         ActivityResultContracts.RequestPermission()
@@ -187,7 +193,7 @@ class AddProductManualFragment : Fragment() {
             showToast(getString(R.string.camera_access_permission_is_required_to_select_a_product_image))
         }
     }
-
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////
     private val galleryPermissionLauncher = registerForActivityResult(
         ActivityResultContracts.RequestPermission()
     ) { isGranted ->
@@ -197,7 +203,7 @@ class AddProductManualFragment : Fragment() {
             showToast(getString(R.string.gallery_access_permission_is_required_to_select_a_product_image))
         }
     }
-
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////
     private val cameraLauncher = registerForActivityResult(
         ActivityResultContracts.TakePicture()
     ) { success ->
@@ -208,7 +214,7 @@ class AddProductManualFragment : Fragment() {
             }
         }
     }
-
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////
     private val galleryLauncher = registerForActivityResult(
         ActivityResultContracts.GetContent()
     ) { uri: Uri? ->
@@ -217,7 +223,7 @@ class AddProductManualFragment : Fragment() {
             loadImageIntoView(it)
         }
     }
-
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////
     private fun handleCameraRequest() {
         when {
             ContextCompat.checkSelfPermission(
@@ -236,7 +242,7 @@ class AddProductManualFragment : Fragment() {
             }
         }
     }
-
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////
     private fun handleGalleryRequest() {
         val permission =
             if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.TIRAMISU) {
@@ -262,7 +268,7 @@ class AddProductManualFragment : Fragment() {
             }
         }
     }
-
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////
     private fun openCamera() {
         try {
             val contentValues = ContentValues().apply {
@@ -285,7 +291,7 @@ class AddProductManualFragment : Fragment() {
             showToast(getString(R.string.error_opening_the_camera))
         }
     }
-
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////
     private fun openGallery() {
         try {
             galleryLauncher.launch("image/*")
@@ -294,7 +300,7 @@ class AddProductManualFragment : Fragment() {
             showToast(getString(R.string.error_opening_the_gallery))
         }
     }
-
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////
     private fun loadImageIntoView(uri: Uri) {
         Glide.with(requireContext())
             .load(uri)
@@ -303,7 +309,7 @@ class AddProductManualFragment : Fragment() {
             .into(productImageView)
     }
 
-    //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////
     private fun showPermissionExplanationDialog(permissionType: PermissionType) {
         val message = when (permissionType) {
             PermissionType.CAMERA -> "אנחנו צריכים גישה למצלמה כדי לצלם תמונת מוצר"
@@ -387,19 +393,15 @@ class AddProductManualFragment : Fragment() {
         val expiryDate = expiryDateEdit.text.toString()
         val imageUri = selectedImageUri ?: Uri.EMPTY
 
+        val product = Product(barCode = barCode, name = name, category = category, quantity = quantity,
+            expiryDate = expiryDate, imageUrl = imageUri)
+
         // Add to inventory
-        addProductToUserInventory(barCode, name, category, quantity, expiryDate, imageUri)
+        addProductToUserInventory(product)
     }
 
     //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    private fun addProductToUserInventory(
-        barCode: String,
-        name: String,
-        category: String,
-        quantity: Int,
-        expiryDate: String,
-        imageUri: Uri
-    ) {
+    private fun addProductToUserInventory(product: Product) {
         // Show loading state
         setLoadingState(true)
 
@@ -408,14 +410,16 @@ class AddProductManualFragment : Fragment() {
             setLoadingState(false)
             return
         }
-        val product = Product(barCode = barCode, name = name, category = category, quantity = quantity,
-                              expiryDate = expiryDate, imageUrl = imageUri)
 
-        inventory.handleAddProduct(product) { result ->
+        inventoryManager.handleAddProduct(product) { result ->
             requireActivity().runOnUiThread {
                 result.onSuccess {
-                    showToast(getString(R.string.added_successfully, name))
+                    showToast(getString(R.string.added_successfully, product.name))
                     clearFields()
+
+                    // Navigate to products list
+                    (activity as? MainActivity)?.transactionToAnotherFragment(
+                        Constants.Fragment.PRODUCTSLIST)
                 }.onFailure { exception ->
                     showToast(exception.message ?: getString(R.string.product_not_added))
                 }

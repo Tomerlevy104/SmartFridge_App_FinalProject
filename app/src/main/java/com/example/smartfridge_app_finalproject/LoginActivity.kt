@@ -16,6 +16,8 @@ class LoginActivity : AppCompatActivity() {
     private lateinit var login_BTN_forgot_password: MaterialButton
     private lateinit var login_BTN_login: MaterialButton
     private lateinit var login_BTN_for_register_press_here: MaterialButton
+    private lateinit var login_BTN_back: MaterialButton
+
 
     private val auth = FirebaseAuth.getInstance()
 
@@ -33,6 +35,8 @@ class LoginActivity : AppCompatActivity() {
         login_BTN_forgot_password = findViewById(R.id.login_BTN_forgot_password)
         login_BTN_login = findViewById(R.id.login_BTN_login)
         login_BTN_for_register_press_here = findViewById(R.id.login_BTN_for_register_press_here)
+        login_BTN_back = findViewById(R.id.login_BTN_back)
+
     }
 
     private fun initViews() {
@@ -47,6 +51,17 @@ class LoginActivity : AppCompatActivity() {
         login_BTN_for_register_press_here.setOnClickListener {
             startActivity(Intent(this, RegisterActivity::class.java))
         }
+
+        login_BTN_back.setOnClickListener {
+            navigateToStartingPage()
+        }
+    }
+
+    // Navigate back to StartingPageActivity
+    private fun navigateToStartingPage() {
+        val intent = Intent(this, StartingPageActivity::class.java)
+        startActivity(intent)
+        finish() // Close current activity
     }
 
     private fun performLogin() {

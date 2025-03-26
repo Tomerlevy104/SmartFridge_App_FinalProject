@@ -6,6 +6,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.appcompat.widget.AppCompatButton
 import androidx.appcompat.widget.AppCompatEditText
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -20,14 +21,13 @@ import com.example.smartfridge_app_finalproject.utilities.Constants
 import com.google.android.material.button.MaterialButton
 
 /**
- * Fragment to display the list of products available in the repository
- * for adding to the shopping list
+ * Fragment to display the list of products for adding to the shopping list
  */
 class CreateShoppingListFragment : Fragment() {
 
     // UI Components
     private lateinit var shoppingListRvProducts: RecyclerView
-    private lateinit var shoppingListBtnViewCart: MaterialButton
+    private lateinit var shoppingListBtnViewCart: AppCompatButton
     private lateinit var shoppingListBtnSearch: MaterialButton
     private lateinit var shoppingListEtSearch: AppCompatEditText
 
@@ -75,12 +75,18 @@ class CreateShoppingListFragment : Fragment() {
                         if (success) {
                             Toast.makeText(
                                 requireContext(),
-                                "המוצר ${product.name} נוסף לרשימת הקניות",
+                                getString(
+                                    R.string.product_added_successfuly_to_shopping_list,
+                                    product.name
+                                ),
                                 Toast.LENGTH_SHORT
                             ).show()
                         } else {
                             // Show detailed error message
-                            val message = "שגיאה בהוספת המוצר: ${errorMsg ?: "סיבה לא ידועה"}"
+                            val message = getString(
+                                R.string.error_adding_product_to_shopping_list,
+                                errorMsg ?: getString(R.string.unknown_reason)
+                            )
                             Toast.makeText(
                                 requireContext(),
                                 message,
@@ -88,7 +94,7 @@ class CreateShoppingListFragment : Fragment() {
                             ).show()
 
                             // Log the error
-                            Log.e("CreateShoppingList", message)
+                            Log.d("CreateShoppingList", message)
                         }
                     }
                 }

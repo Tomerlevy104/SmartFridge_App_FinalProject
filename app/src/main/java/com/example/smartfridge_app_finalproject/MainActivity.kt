@@ -17,7 +17,6 @@ import com.example.smartfridge_app_finalproject.fragments.ProfileFragment
 import com.example.smartfridge_app_finalproject.fragments.ProductsListFragment
 import com.example.smartfridge_app_finalproject.fragments.CreateShoppingListFragment
 import com.example.smartfridge_app_finalproject.fragments.ShoppingListViewFragment
-import com.example.smartfridge_app_finalproject.fragments.SuperMarketFragment
 import com.example.smartfridge_app_finalproject.utilities.Constants
 import com.google.android.material.bottomnavigation.BottomNavigationView
 
@@ -96,12 +95,6 @@ class MainActivity : AppCompatActivity() {
 
             Constants.Fragment.SHOPPINGLIST -> {
                 val fragment = ShoppingListViewFragment()
-                args?.let { fragment.arguments = it }
-                fragment
-            }
-
-            Constants.Fragment.SUPERMARKET -> {
-                val fragment = SuperMarketFragment()
                 args?.let { fragment.arguments = it }
                 fragment
             }

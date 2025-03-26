@@ -128,6 +128,15 @@
     <string name="show_shopping_list">הצג רשימה</string>
     <string name="search_for_a_product_in_the_product_list">חיפוש מוצר ברשימת מוצרים</string>
     <string name="shopping_list_is_empty">רשימת הקניות ריקה</string>
+    <string name="product_added_successfuly_to_shopping_list">המוצר %1$s נוסף לרשימת הקניות</string>
+    <string name="error_adding_product_to_shopping_list">שגיאה בהוספת המוצר: %1$s</string>
+    <string name="unknown_reason">סיבה לא ידועה</string>
+    <string name="num_of_product_in_list">פריטים ברשימה: 0</string>
+    <string name="my_shopping_list">רשימת הקניות שלי</string>
+    <string name="create_shopping_list">יצירת רשימת קניות</string>
+    <string name="adding_by_barcode">הוספה עם ברקוד</string>
+    <string name="adding_manual">הוספה ידנית</string>
+    <string name="there_are_no_products_from_this_category">אין כרגע מוצרים מקטגוריה זו</string>
 
 
 </resources>

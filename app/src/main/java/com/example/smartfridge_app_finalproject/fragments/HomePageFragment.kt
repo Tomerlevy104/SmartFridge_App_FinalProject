@@ -36,7 +36,6 @@ class HomePageFragment : Fragment() {
     private lateinit var homepage_BTN_show_all: AppCompatButton
     private lateinit var homepage_ET_search: AppCompatEditText
     private lateinit var homepage_BTN_search: MaterialButton
-    private lateinit var homepage_IV_location: AppCompatImageButton
     private lateinit var homepage_IMG_profile: ShapeableImageView
     private lateinit var homepage_TV_name: MaterialTextView
 
@@ -67,7 +66,6 @@ class HomePageFragment : Fragment() {
         homepage_BTN_show_all = view.findViewById(R.id.homepage_BTN_show_all)
         homepage_ET_search = view.findViewById(R.id.products_list_ET_search)
         homepage_BTN_search = view.findViewById(R.id.homepage_BTN_search)
-        homepage_IV_location = view.findViewById(R.id.homepage_IV_location)
         homepage_IMG_profile = view.findViewById(R.id.homepage_IMG_profile)
         homepage_TV_name = view.findViewById(R.id.homepage_TV_name)
     }
@@ -80,10 +78,6 @@ class HomePageFragment : Fragment() {
         //Search button
         homepage_BTN_search.setOnClickListener {
             executeSearch()
-        }
-        //Map button
-        homepage_IV_location.setOnClickListener {
-            (activity as? MainActivity)?.transactionToAnotherFragment(Constants.Fragment.SUPERMARKET)
         }
     }
 

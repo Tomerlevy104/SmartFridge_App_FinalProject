@@ -26,7 +26,6 @@ class ProductsListAdapter(
 ) : RecyclerView.Adapter<ProductsListAdapter.ProductViewHolder>() {
 
     private val inventoryManager = InventoryManager()
-//    private val dateFormat = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault())
 
     inner class ProductViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         private val imageProduct: AppCompatImageView = itemView.findViewById(R.id.products_list_IMG_product)
@@ -42,7 +41,7 @@ class ProductsListAdapter(
         // This method will populate the views with data (name, quantity, date, image, etc.)
         fun bind(product: Product) {
             tvName.text = product.name
-            tvQuantity.text = product.quantity.toString()
+            tvQuantity.text = String.format(Locale.getDefault(), "%d", product.quantity)
             tvDate.text = product.expiryDate
             tvExpiry.text = itemView.context.getString(R.string.expiration_date)
 

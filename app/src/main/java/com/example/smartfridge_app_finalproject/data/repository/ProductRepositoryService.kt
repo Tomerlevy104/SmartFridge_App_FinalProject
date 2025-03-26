@@ -8,6 +8,13 @@ import com.google.firebase.firestore.FirebaseFirestore
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 
+/**
+ * Service class for managing the product repository in firestore
+ * * This service handles:
+ *  - Adding products to the repository collection
+ *  - Fetching all products from the repository
+ *  - Getting product details by barcode
+ */
 class ProductRepositoryService {
     private val productsRepositoryDB = FirebaseFirestore.getInstance()
 
@@ -133,7 +140,7 @@ class ProductRepositoryService {
         val productsCollection = db.collection("RepositoryOfProducts")
 
         val sampleProducts = listOf(
-            // פירות וירקות
+            // Fruits
             Product(
                 barCode = "7290012163933",
                 name = "תפוח עץ זהוב",
@@ -151,7 +158,7 @@ class ProductRepositoryService {
                 expiryDate = ""
             ),
 
-            // משקאות
+            // Drinks
             Product(
                 barCode = "7290008341387",
                 name = "קוקה קולה 1.5 ליטר",
@@ -169,7 +176,7 @@ class ProductRepositoryService {
                 expiryDate = ""
             ),
 
-            // בשר ודגים
+            // Meat and fish
             Product(
                 barCode = "7290102419701",
                 name = "חזה עוף טרי",
@@ -187,7 +194,7 @@ class ProductRepositoryService {
                 expiryDate = ""
             ),
 
-            // מוצרי חלב
+            // Milk
             Product(
                 barCode = "7290004131074",
                 name = "חלב תנובה 3%",
@@ -205,7 +212,7 @@ class ProductRepositoryService {
                 expiryDate = ""
             ),
 
-            // לחמים ומוצרי מאפה
+            // Breads and baked goods
             Product(
                 barCode = "7290110089888",
                 name = "לחם לבן של אנג'ל",
@@ -223,7 +230,7 @@ class ProductRepositoryService {
                 expiryDate = ""
             ),
 
-            // חטיפים ומתוקים
+            // Snacks and sweets
             Product(
                 barCode = "7290106578463",
                 name = "שוקולד פרה חלב",
@@ -241,7 +248,7 @@ class ProductRepositoryService {
                 expiryDate = ""
             ),
 
-            // קפואים
+            // Freeze
             Product(
                 barCode = "7290109805005",
                 name = "פיצה קפואה",
@@ -260,7 +267,7 @@ class ProductRepositoryService {
             )
         )
 
-        // הוספת המוצרים לאוסף ב-batch
+        // Adding products to the collection in batch
         val batch = db.batch()
 
         sampleProducts.forEach { product ->
@@ -268,7 +275,7 @@ class ProductRepositoryService {
             batch.set(docRef, product)
         }
 
-        // ביצוע ה-batch
+        // Execute the batch
         batch.commit()
             .addOnSuccessListener {
                 Log.d(

@@ -14,8 +14,7 @@ class Constants {
         const val ADDPRODUCTMANUAL = "ADDPRODUCTMANUAL"
         const val CREATESHOPINGLIST = "CREATESHOPINGLIST"
         const val SHOPPINGLIST = "SHOPPINGLIST"
-        const val PROFILE = "PROFILE"
-        const val SUPERMARKET = "SUPERMARKET"    }
+        const val PROFILE = "PROFILE" }
 
     object Category {
         const val FRUITS_AND_VEGETABLES = "פירות וירקות"

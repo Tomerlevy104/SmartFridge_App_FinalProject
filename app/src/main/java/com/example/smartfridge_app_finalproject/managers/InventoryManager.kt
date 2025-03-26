@@ -4,29 +4,28 @@ import android.content.Context
 import android.net.Uri
 import android.util.Log
 import android.widget.Toast
-import androidx.core.content.ContentProviderCompat.requireContext
 import com.example.smartfridge_app_finalproject.R
 import com.example.smartfridge_app_finalproject.data.model.Product
 import com.example.smartfridge_app_finalproject.data.repository.ProductRepositoryService
 import com.example.smartfridge_app_finalproject.interfaces.IInventoryManager
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.QuerySnapshot
-import java.time.LocalDate
-import java.time.format.DateTimeFormatter
 
-//Inventory Manager - Responsible for the logic of managing products in inventory
+/**
+ * Inventory Manager - Responsible for the logic of managing products in inventory
+ */
 class InventoryManager : IInventoryManager {
     private val userHandler = UserHandler.getInstance()
     private val currentUser = userHandler.getCurrentFirebaseUser()
     private val productRepositoryService = ProductRepositoryService()
+
     ////////////////////////////////////////////////////////////////////////////////////////////////////////
     //Loading all products in stock
-    fun loadAllProducts(callback: (List<Product>) -> Unit) {
+    override fun loadAllProducts(callback: (List<Product>) -> Unit) {
         if (currentUser == null) {
             callback(emptyList())
             return
         }
-
         FirebaseFirestore.getInstance()
             .collection("users")
             .document(currentUser.uid)
@@ -43,9 +42,8 @@ class InventoryManager : IInventoryManager {
     }
 
     ////////////////////////////////////////////////////////////////////////////////////////////////////////
-
     //Loading products by category
-    override fun getProductsByCategory(
+    fun getProductsByCategory(
         userId: String,
         category: String,
         callback: (List<Product>) -> Unit
@@ -67,16 +65,12 @@ class InventoryManager : IInventoryManager {
     }
 
     ////////////////////////////////////////////////////////////////////////////////////////////////////////
-    /**
-     * Checks if a product with the specified barcode exists in the user's inventory
-     */
-
-    fun productIsExistInUserInventory(barcode: String, onResult: (Product?) -> Unit) {
+    // Checks if a product with the specified barcode exists in the user's inventory
+    override fun productIsExistInUserInventory(barcode: String, onResult: (Product?) -> Unit) {
         if (currentUser == null) {
             onResult(null)
             return
         }
-
         FirebaseFirestore.getInstance()
             .collection("users")
             .document(currentUser.uid)
@@ -85,7 +79,6 @@ class InventoryManager : IInventoryManager {
             .get()
             .addOnSuccessListener { document ->
                 if (document.exists()) {
-                    // המר מסמך למוצר
                     try {
                         val product = Product(
                             barCode = document.getString("barCode") ?: "",
@@ -110,39 +103,9 @@ class InventoryManager : IInventoryManager {
                 onResult(null)
             }
     }
-    ////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    private fun getProductQuantity(barcode: String, onComplete: (Result<Int>) -> Unit) {
-        if (currentUser == null) {
-            onComplete(Result.failure(Exception("משתמש לא מחובר")))
-            return
-        }
-
-        FirebaseFirestore.getInstance()
-            .collection("users")
-            .document(currentUser.uid)
-            .collection("products")
-            .document(barcode)
-            .get()
-            .addOnSuccessListener { document ->
-                if (document.exists()) {
-                    val quantity = document.getLong("quantity")?.toInt() ?: 0
-                    onComplete(Result.success(quantity))
-                } else {
-                    onComplete(Result.failure(Exception("המוצר לא קיים במלאי")))
-                }
-            }
-            .addOnFailureListener { exception ->
-                Log.e(
-                    "InventoryManager",
-                    "Error fetching product quantity: ${exception.message}",
-                    exception
-                )
-                onComplete(Result.failure(exception))
-            }
-    }
 
     ////////////////////////////////////////////////////////////////////////////////////////////////////////
+    // Check if product is exist in firestore collection
     fun productIsExistInRepositoryOfProductCollection(barcode: String, isExist: (Boolean) -> Unit) {
         // Check if product exists in RepositoryOfProduct collection
         FirebaseFirestore.getInstance()
@@ -165,10 +128,8 @@ class InventoryManager : IInventoryManager {
     }
 
     ////////////////////////////////////////////////////////////////////////////////////////////////////////
-    /**
-     * Add a new product to user's inventory
-     */
-    private fun addProductNotFromRepository(product: Product, onComplete: (Result<Unit>) -> Unit) {
+    // Add a new product to user's inventory
+    override fun addNewProduct(product: Product, onComplete: (Result<Unit>) -> Unit) {
         if (currentUser == null) {
             onComplete(Result.failure(Exception("משתמש לא מחובר")))
             return
@@ -189,9 +150,7 @@ class InventoryManager : IInventoryManager {
     }
 
     ////////////////////////////////////////////////////////////////////////////////////////////////////////
-    /**
-     * Add a product to user's inventory using data from Repository Of Products Collection
-     */
+    // Add a product to user's inventory using data from Repository Of Products Collection
     private fun addProductFromRepository(
         barcode: String,
         onComplete: (Result<Unit>) -> Unit
@@ -203,31 +162,17 @@ class InventoryManager : IInventoryManager {
         //Getting the product details from Repository Of Products Collection
         productRepositoryService.getProductByBarcode(barcode) { product ->
             if (product != null) {
-                // Add product to user's inventory
-                FirebaseFirestore.getInstance()
-                    .collection("users")
-                    .document(currentUser.uid)
-                    .collection("products")
-                    .document(product.barCode)
-                    .set(product)
-                    .addOnSuccessListener {
-                        onComplete(Result.success(Unit))
-                    }
-                    .addOnFailureListener { exception ->
-                        onComplete(Result.failure(exception))
-                    }
-
+                // Add product to user's inventory using existing function
+                addNewProduct(product, onComplete)
             } else {
                 onComplete(Result.failure(Exception("מוצר לא נמצא במאגר")))
             }
         }
     }
-    ////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    /**
-     * Updates the quantity of a product in the user's inventory
-     */
-    fun updateProductQuantity(
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////
+    // Updates the quantity of a product in the user's inventory
+    override fun updateProductQuantity(
         barcode: String,
         newQuantity: Int,
         onComplete: (Result<Unit>) -> Unit
@@ -252,19 +197,15 @@ class InventoryManager : IInventoryManager {
     }
 
     ////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    /**
-     * Handle the process of adding a product to inventory
-     * This function checks if the product exists in the user's inventory or repository of products collection
-     * and takes appropriate action
-     */
+    //Handle the process of adding a product to inventory
+    //his function checks if the product exists in the user's inventory or repository of products collection
+    //and takes appropriate action
     fun handleAddProduct(product: Product, onComplete: (Result<Unit>) -> Unit) {
         // Check if user is logged in
         if (currentUser == null) {
             onComplete(Result.failure(Exception("משתמש לא מחובר")))
             return
         }
-
         // First - check if product exists in user's inventory
         productIsExistInUserInventory(product.barCode) { existingProduct ->
             if (existingProduct != null) {
@@ -278,10 +219,10 @@ class InventoryManager : IInventoryManager {
                 productIsExistInRepositoryOfProductCollection(product.barCode) { existsInRepository ->
                     if (existsInRepository) {
                         // Product exists in repository, add it from there
-                        addProductFromRepository(product.barCode, onComplete)
+                        addNewProduct(product, onComplete)
                     } else {
                         // Product doesn't exist in repository, add it as new
-                        addProductNotFromRepository(product, onComplete)
+                        addNewProduct(product, onComplete)
                     }
                 }
             }
@@ -290,12 +231,11 @@ class InventoryManager : IInventoryManager {
 
     ////////////////////////////////////////////////////////////////////////////////////////////////////////
     //Deleting a product from the database
-    fun removeProduct(product: Product, onComplete: ((Result<Unit>) -> Unit)? = null) {
+    override fun removeProduct(product: Product, onComplete: ((Result<Unit>) -> Unit)) {
         if (currentUser == null) {
-            onComplete?.invoke(Result.failure(Exception("משתמש לא מחובר")))
+            onComplete.invoke(Result.failure(Exception("משתמש לא מחובר")))
             return
         }
-
         FirebaseFirestore.getInstance()
             .collection("users")
             .document(currentUser.uid)
@@ -303,10 +243,10 @@ class InventoryManager : IInventoryManager {
             .document(product.barCode)
             .delete()
             .addOnSuccessListener {
-                onComplete?.invoke(Result.success(Unit))
+                onComplete.invoke(Result.success(Unit))
             }
             .addOnFailureListener { exception ->
-                onComplete?.invoke(Result.failure(exception))
+                onComplete.invoke(Result.failure(exception))
             }
     }
 
@@ -323,34 +263,28 @@ class InventoryManager : IInventoryManager {
             callback(emptyList())
             return
         }
-
-        //val currentUser = userHandler.getCurrentFirebaseUser()
         if (currentUser == null) {
             Toast.makeText(context, R.string.no_user_loged_in, Toast.LENGTH_SHORT).show()
             callback(emptyList())
             return
         }
-
         val lowerCaseSearchString = searchQuery.lowercase()
         //Preparing the query - if there is a filter category, add it to the query later
         val query = FirebaseFirestore.getInstance()
             .collection("users")
             .document(currentUser.uid)
             .collection("products")
-
         //If there is a filter category, we will search only within the category
         val filteredQuery = if (categoryFilter != null) {
             query.whereEqualTo("category", categoryFilter)
         } else {
             query
         }
-
         filteredQuery.get().addOnSuccessListener { products ->
             val matchingProducts = mutableListOf<Product>()
             for (document in products) {
                 try {
                     val productNameFromDoc = document.getString("name") ?: continue
-
                     if (productNameFromDoc.lowercase().contains(lowerCaseSearchString)) {
                         val product = Product(
                             barCode = document.getString("barCode") ?: continue,
@@ -367,7 +301,6 @@ class InventoryManager : IInventoryManager {
                     Log.e("Inventory", "Error converting document to Product", e)
                 }
             }
-
             if (matchingProducts.isNotEmpty()) {
                 if (matchingProducts.size == 1) {
                     Toast.makeText(context, R.string.product_found, Toast.LENGTH_SHORT).show()
@@ -391,7 +324,6 @@ class InventoryManager : IInventoryManager {
                         .show()
                 }
             }
-
             callback(matchingProducts)
         }
             .addOnFailureListener { exception ->
@@ -410,7 +342,6 @@ class InventoryManager : IInventoryManager {
     //Converting query results from document to products
     private fun parseProductsFromDocuments(documents: QuerySnapshot): List<Product> {
         val productsList = mutableListOf<Product>()
-
         for (document in documents) {
             try {
                 val product = Product(
@@ -429,4 +360,5 @@ class InventoryManager : IInventoryManager {
         }
         return productsList
     }
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////
 }
