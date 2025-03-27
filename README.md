@@ -52,15 +52,15 @@ This app is built with Kotlin and uses Firebase services (Authentication, Firest
 
 ### 👋 Welcome Screen
 <p align="center">
-  <img src="Screenshots/welcomePage.png" alt="Welcome Screen" width="150">
+  <img src="Screenshots/welcomePage.jpg" alt="Welcome Screen" width="250">
 </p>
 
 ### 🔑 Login & Register Screens
 <p align="center">
-  <img src="Screenshots/registerPage.png" alt="Register Screen" width="250">
+  <img src="Screenshots/registerPage.jpg" alt="Register Screen" width="250">
 </p>
 <p align="center">
-  <img src="Screenshots/loginPage.png" alt="Login Screen" width="250">
+  <img src="Screenshots/loginPage.jpg" alt="Login Screen" width="250">
 </p>
 ### 🏠 Home Screen
 <table>
@@ -73,7 +73,7 @@ This app is built with Kotlin and uses Firebase services (Authentication, Firest
     </td>
     <td style="text-align: right; width: 40%;">
       <p align="center">
-  <img src="Screenshots/homePage.png" alt="Home Page Screen" width="250">
+  <img src="Screenshots/homePage.jpg" alt="Home Page Screen" width="250">
 </p>
     </td>
   </tr>
@@ -90,7 +90,7 @@ This app is built with Kotlin and uses Firebase services (Authentication, Firest
     </td>
     <td style="text-align: right; width: 40%;">
       <p align="center">
-  <img src="Screenshots/productListPage1.png" alt="Product List Screen" width="250">
+  <img src="Screenshots/productListPage1.jpg" alt="Product List Screen" width="250">
 </p>
 
     </td>
@@ -108,10 +108,10 @@ This app is built with Kotlin and uses Firebase services (Authentication, Firest
     </td>
     <td style="text-align: right; width: 40%;">
      <p align="center">
-  <img src="Screenshots/addManualPage.png" alt="Add Product Manual Screen" width="250">
+  <img src="Screenshots/addManualPage.jpg" alt="Add Product Manual Screen" width="250">
 </p>
 <p align="center">
-  <img src="Screenshots/addBarcodPage.png" alt="Add Product By Barcod Screen" width="250">
+  <img src="Screenshots/addBarcodPage.jpg" alt="Add Product By Barcod Screen" width="250">
 </p>
 
     </td>
@@ -129,10 +129,10 @@ This app is built with Kotlin and uses Firebase services (Authentication, Firest
     </td>
     <td style="text-align: right; width: 40%;">
       <p align="center">
-  <img src="Screenshots/createShoppingListPage.png" alt="Create Shopping List Screen" width="250">
+  <img src="Screenshots/createShoppingListPage.jpg" alt="Create Shopping List Screen" width="250">
 </p>
 <p align="center">
-  <img src="Screenshots/shoppingListPage.png" alt="Shopping List Screen" width="250">
+  <img src="Screenshots/shoppingListPage.jpg" alt="Shopping List Screen" width="250">
 </p>
 
 
@@ -152,7 +152,7 @@ This app is built with Kotlin and uses Firebase services (Authentication, Firest
     </td>
     <td style="text-align: right; width: 40%;">
       <p align="center">
-  <img src="Screenshots/profilePage.png" alt="Profile Screen" width="250">
+  <img src="Screenshots/profilePage.jpg" alt="Profile Screen" width="250">
 </p>
     </td>
   </tr>
