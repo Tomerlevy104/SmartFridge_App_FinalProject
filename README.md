@@ -1,6 +1,6 @@
 # SmartFridge App
 
-<p align="center">
+<p align="left">
   <img src="Screenshots/appLogo.png" alt="Smart Fridge Logo" width="150">
 </p>
 
