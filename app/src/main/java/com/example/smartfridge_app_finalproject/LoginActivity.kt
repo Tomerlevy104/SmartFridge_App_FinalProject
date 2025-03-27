@@ -8,8 +8,6 @@ import androidx.appcompat.widget.AppCompatEditText
 import com.example.smartfridge_app_finalproject.managers.UserHandlerManager
 import com.example.smartfridge_app_finalproject.managers.ValidInputManager
 import com.google.android.material.button.MaterialButton
-import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.firestore.FirebaseFirestore
 
 /**
  * Login page
@@ -23,8 +21,7 @@ class LoginActivity : AppCompatActivity() {
     private lateinit var login_BTN_for_register_press_here: MaterialButton
     private lateinit var login_BTN_back: MaterialButton
     private val userHandlerManager = UserHandlerManager.getInstance()
-
-    private val auth = FirebaseAuth.getInstance()
+    private val validInputManager = ValidInputManager.getInstance()
 
     ///////////////////////////////////////////////////////////////////////////////////////////////////////
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -43,7 +40,6 @@ class LoginActivity : AppCompatActivity() {
         login_BTN_login = findViewById(R.id.login_BTN_login)
         login_BTN_for_register_press_here = findViewById(R.id.login_BTN_for_register_press_here)
         login_BTN_back = findViewById(R.id.login_BTN_back)
-
     }
 
     ///////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -75,7 +71,6 @@ class LoginActivity : AppCompatActivity() {
 
     ///////////////////////////////////////////////////////////////////////////////////////////////////////
     private fun performLogin() {
-        val validInputManager = ValidInputManager.getInstance()
         val email = login_ET_username.text.toString().trim()
         val password = login_ET_password.text.toString()
 
