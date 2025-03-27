@@ -61,96 +61,30 @@ This app is built with Kotlin and uses Firebase services (Authentication, Firest
 </p>
 
 ### 🏠 Home Screen
-<table>
-  <tr>
-    <td style="text-align: left; vertical-align: top; width: 60%;">
-      <b>The Home Screen displays categories of products in your inventory.</b><br><br>
-      🔹 Browse <b>all product categories</b> in a grid layout<br>
-      🔹 Use the <b>search bar</b> to find specific items<br>
-      🔹 View your profile information at a glance
-    </td>
-    <td style="text-align: right; width: 40%;">
-      <p align="left">
+<p align="left">
   <img src="Screenshots/homePage.jpg" alt="Home Page Screen" width="250">
 </p>
-    </td>
-  </tr>
-</table>
 
 ### 📦 Products List Screen
-<table>
-  <tr>
-    <td style="text-align: left; vertical-align: top; width: 60%;">
-      <b>The Products List Screen shows all items in your inventory or filtered by category.</b><br><br>
-      🔹 View <b>all products</b> with their quantities and expiration dates<br>
-      🔹 Easily <b>update quantities</b> with plus and minus buttons<br>
-      🔹 See <b>visual indicators</b> for expired products
-    </td>
-    <td style="text-align: right; width: 40%;">
-      <p align="center">
+<p align="left">
   <img src="Screenshots/productListPage1.jpg" alt="Product List Screen" width="250">
 </p>
-  </tr>
-</table>
 
 ### ➕ Add Product Screens
-<table>
-  <tr>
-    <td style="text-align: left; vertical-align: top; width: 60%;">
-      <b>The Add Product Screens allow manual addition or barcode scanning.</b><br><br>
-      🔹 <b>Scan barcodes</b> for quick product addition<br>
-      🔹 <b>Manually enter</b> product details when needed<br>
-      🔹 Set <b>expiration dates</b> and <b>quantities</b>
-    </td>
-    <td style="text-align: right; width: 40%;">
-     <p align="center">
+
+<p align="left">
   <img src="Screenshots/addManualPage.jpg" alt="Add Product Manual Screen" width="250"> <img src="Screenshots/addBarcodPage.jpg" alt="Add Product By Barcod Screen" width="250">
 </p>
-<p align="center">
-  
-</p>
-  </tr>
-</table>
 
 ### 🛒 Shopping List Screens
-<table>
-  <tr>
-    <td style="text-align: left; vertical-align: top; width: 60%;">
-      <b>The Shopping List Screens help you manage your shopping needs.</b><br><br>
-      🔹 <b>Create and view</b> shopping lists<br>
-      🔹 <b>Add products</b> from the repository<br>
-      🔹 <b>Check off items</b> as you shop
-    </td>
-    <td style="text-align: right; width: 40%;">
-      <p align="center">
-  <img src="Screenshots/createShoppingListPage.jpg" alt="Create Shopping List Screen" width="250">
+<p align="left">
+  <img src="Screenshots/createShoppingListPage.jpg" alt="Create Shopping List Screen" width="250"> <img src="Screenshots/shoppingListPage.jpg" alt="Shopping List Screen" width="250">
 </p>
-<p align="center">
-  <img src="Screenshots/shoppingListPage.jpg" alt="Shopping List Screen" width="250">
-</p>
-
-
-    
-  </tr>
-</table>
 
 ### 👤 Profile Screen
-<table>
-  <tr>
-    <td style="text-align: left; vertical-align: top; width: 60%;">
-      <b>The Profile Screen lets you manage your account settings.</b><br><br>
-      🔹 <b>Update your profile</b> picture and personal information<br>
-      🔹 <b>Change your name</b> or other account details<br>
-      🔹 <b>Reset your password</b> when needed<br>
-      🔹 <b>Log out</b> of your account
-    </td>
-    <td style="text-align: right; width: 40%;">
-      <p align="center">
+<p align="left">
   <img src="Screenshots/profilePage.jpg" alt="Profile Screen" width="250">
 </p>
-    </td>
-  </tr>
-</table>
 
 ---
 
