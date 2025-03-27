@@ -52,7 +52,7 @@ This app is built with Kotlin and uses Firebase services (Authentication, Firest
 
 ### 👋 Welcome Screen
 <p align="center">
-  <img src="Screenshots/welcomePage.png" alt="Welcome Screen" width="250">
+  <img src="Screenshots/welcomePage.png" alt="Welcome Screen" width="150">
 </p>
 
 ### 🔑 Login & Register Screens
