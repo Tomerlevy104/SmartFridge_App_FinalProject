@@ -51,16 +51,16 @@ This app is built with Kotlin and uses Firebase services (Authentication, Firest
 ## 📱 Screens
 
 ### 👋 Welcome Screen
-<p align="center">
+<p align="left">
   <img src="Screenshots/welcomePage.jpg" alt="Welcome Screen" width="250">
 </p>
 
 ### 🔑 Login & Register Screens
-<p align="center">
-  <img src="Screenshots/registerPage.jpg" alt="Register Screen" width="250">
+<p align="left">
+  <img src="Screenshots/registerPage.jpg" alt="Register Screen" width="250"> <img src="Screenshots/loginPage.jpg" alt="Login Screen" width="250">
 </p>
-<p align="center">
-  <img src="Screenshots/loginPage.jpg" alt="Login Screen" width="250">
+<p align="left">
+  
 </p>
 ### 🏠 Home Screen
 <table>
@@ -92,8 +92,6 @@ This app is built with Kotlin and uses Firebase services (Authentication, Firest
       <p align="center">
   <img src="Screenshots/productListPage1.jpg" alt="Product List Screen" width="250">
 </p>
-
-    </td>
   </tr>
 </table>
 
@@ -113,8 +111,6 @@ This app is built with Kotlin and uses Firebase services (Authentication, Firest
 <p align="center">
   <img src="Screenshots/addBarcodPage.jpg" alt="Add Product By Barcod Screen" width="250">
 </p>
-
-    </td>
   </tr>
 </table>
 
@@ -136,7 +132,7 @@ This app is built with Kotlin and uses Firebase services (Authentication, Firest
 </p>
 
 
-    </td>
+    
   </tr>
 </table>
 
