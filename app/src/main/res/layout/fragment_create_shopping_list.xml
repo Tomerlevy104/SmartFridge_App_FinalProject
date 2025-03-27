@@ -11,7 +11,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <!-- Header Card with blue background -->
+        <!-- Header Card -->
         <com.google.android.material.card.MaterialCardView
             android:id="@+id/shopping_list_CV_headerCard"
             android:layout_width="match_parent"

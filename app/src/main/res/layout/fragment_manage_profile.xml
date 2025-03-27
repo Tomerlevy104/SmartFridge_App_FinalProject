@@ -106,7 +106,7 @@
                             <com.google.android.material.textview.MaterialTextView
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:text="תמונת פרופיל"
+                                android:text="@string/image_profile"
                                 android:textSize="16sp"
                                 android:textStyle="bold"
                                 android:textColor="@color/black" />
@@ -114,7 +114,7 @@
                             <com.google.android.material.textview.MaterialTextView
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:text="שנה את תמונת הפרופיל שלך"
+                                android:text="@string/change_your_image_profile"
                                 android:textSize="14sp"
                                 android:textColor="@android:color/darker_gray" />
 
@@ -125,7 +125,7 @@
                             style="@style/Widget.Material3.Button.TextButton"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="ערוך"
+                            android:text="@string/edit"
                             android:textColor="@color/simple_blue" />
 
                     </LinearLayout>
@@ -160,7 +160,7 @@
                                 <com.google.android.material.textview.MaterialTextView
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
-                                    android:text="שם פרטי"
+                                    android:text="@string/first_name"
                                     android:textSize="16sp"
                                     android:textStyle="bold"
                                     android:textColor="@color/black" />
@@ -169,7 +169,7 @@
                                     android:id="@+id/profile_TV_firstName"
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
-                                    android:text="שם פרטי"
+                                    android:text="@string/first_name"
                                     android:textSize="14sp"
                                     android:textColor="@android:color/darker_gray" />
 
@@ -180,7 +180,7 @@
                                 style="@style/Widget.Material3.Button.TextButton"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:text="ערוך"
+                                android:text="@string/edit"
                                 android:textColor="@color/simple_blue" />
 
                         </LinearLayout>
@@ -197,7 +197,7 @@
                                 android:id="@+id/profile_ET_firstName"
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
-                                android:hint="שם פרטי"
+                                android:hint="@string/first_name"
                                 android:inputType="textPersonName" />
 
                         </com.google.android.material.textfield.TextInputLayout>
@@ -216,14 +216,14 @@
                                 style="@style/Widget.Material3.Button.TextButton"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:text="בטל"
+                                android:text="@string/cancel"
                                 android:textColor="@color/black" />
 
                             <com.google.android.material.button.MaterialButton
                                 android:id="@+id/profile_BTN_save_firstName"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:text="שמור"
+                                android:text="@string/save"
                                 android:backgroundTint="@color/simple_blue"
                                 android:textColor="@color/white" />
 
@@ -260,7 +260,7 @@
                                 <com.google.android.material.textview.MaterialTextView
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
-                                    android:text="שם משפחה"
+                                    android:text="@string/last_name"
                                     android:textSize="16sp"
                                     android:textStyle="bold"
                                     android:textColor="@color/black" />
@@ -269,7 +269,7 @@
                                     android:id="@+id/profile_TV_lastName"
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
-                                    android:text="שם משפחה"
+                                    android:text="@string/last_name"
                                     android:textSize="14sp"
                                     android:textColor="@android:color/darker_gray" />
 
@@ -280,7 +280,7 @@
                                 style="@style/Widget.Material3.Button.TextButton"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:text="ערוך"
+                                android:text="@string/edit"
                                 android:textColor="@color/simple_blue" />
 
                         </LinearLayout>
@@ -297,7 +297,7 @@
                                 android:id="@+id/profile_ET_lastName"
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
-                                android:hint="שם משפחה"
+                                android:hint="@string/last_name"
                                 android:inputType="textPersonName" />
 
                         </com.google.android.material.textfield.TextInputLayout>
@@ -316,14 +316,14 @@
                                 style="@style/Widget.Material3.Button.TextButton"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:text="בטל"
+                                android:text="@string/cancel"
                                 android:textColor="@color/black" />
 
                             <com.google.android.material.button.MaterialButton
                                 android:id="@+id/profile_BTN_save_lastName"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:text="שמור"
+                                android:text="@string/save"
                                 android:backgroundTint="@color/simple_blue"
                                 android:textColor="@color/white" />
 
@@ -348,7 +348,7 @@
                         <com.google.android.material.textview.MaterialTextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="אימייל"
+                            android:text="@string/email"
                             android:textSize="16sp"
                             android:textStyle="bold"
                             android:textColor="@color/black" />
@@ -357,7 +357,7 @@
                             android:id="@+id/profile_TV_email"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="user@example.com"
+                            android:text="@string/user_example_com"
                             android:layout_marginTop="4dp"
                             android:textSize="14sp"
                             android:textColor="@android:color/darker_gray" />
@@ -389,7 +389,7 @@
                             <com.google.android.material.textview.MaterialTextView
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:text="סיסמה"
+                                android:text="@string/password"
                                 android:textSize="16sp"
                                 android:textStyle="bold"
                                 android:textColor="@color/black" />
@@ -397,7 +397,7 @@
                             <com.google.android.material.textview.MaterialTextView
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:text="לחץ כדי לאפס את הסיסמה שלך"
+                                android:text="@string/press_for_reset_your_password"
                                 android:textSize="14sp"
                                 android:textColor="@android:color/darker_gray" />
 
@@ -408,7 +408,7 @@
                             style="@style/Widget.Material3.Button.TextButton"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="אפס סיסמה"
+                            android:text="@string/reset_password"
                             android:textColor="@color/simple_blue" />
 
                     </LinearLayout>

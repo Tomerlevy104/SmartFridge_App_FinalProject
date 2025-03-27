@@ -14,6 +14,9 @@ import com.example.smartfridge_app_finalproject.managers.ShoppingListManager
 import com.google.android.material.checkbox.MaterialCheckBox
 import com.google.android.material.textview.MaterialTextView
 
+/**
+ * Fragment for displaying a shopping list
+ */
 class ShoppingListViewFragment : Fragment() {
 
     // UI components
@@ -27,6 +30,7 @@ class ShoppingListViewFragment : Fragment() {
     // Data
     private var shoppingItems = mutableListOf<Product>()
 
+    //////////////////////////////////////////////////////////////////////////////////////////////////////
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -35,19 +39,21 @@ class ShoppingListViewFragment : Fragment() {
         return inflater.inflate(R.layout.fragment_shopping_list_view, container, false)
     }
 
+    //////////////////////////////////////////////////////////////////////////////////////////////////////
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
         findViews(view)
         loadShoppingList()
     }
 
+    //////////////////////////////////////////////////////////////////////////////////////////////////////
     private fun findViews(view: View) {
         scrollViewItems = view.findViewById(R.id.shopping_list_view_LL_items)
         statusTextView = view.findViewById(R.id.shopping_list_view_TV_status)
         emptyStateTextView = view.findViewById(R.id.shopping_list_view_TV_empty)
     }
 
+    //////////////////////////////////////////////////////////////////////////////////////////////////////
     private fun loadShoppingList() {
         shoppingListManager.getAllItems { items ->
             activity?.runOnUiThread {
@@ -58,6 +64,8 @@ class ShoppingListViewFragment : Fragment() {
         }
     }
 
+    //////////////////////////////////////////////////////////////////////////////////////////////////////
+    // Responsible for updating the UI display to display the shopping list
     private fun renderItems() {
         // Clear existing items
         scrollViewItems.removeAllViews()
@@ -75,6 +83,7 @@ class ShoppingListViewFragment : Fragment() {
         }
     }
 
+    //////////////////////////////////////////////////////////////////////////////////////////////////////
     private fun createItemView(product: Product): View {
         val itemView = layoutInflater.inflate(R.layout.item_shopping_list_view, null)
 
@@ -115,7 +124,10 @@ class ShoppingListViewFragment : Fragment() {
 
                             Toast.makeText(
                                 requireContext(),
-                                "המוצר ${product.name} הוסר מהרשימה",
+                                getString(
+                                    R.string.the_product_deleted_successfuly_from_list,
+                                    product.name
+                                ),
                                 Toast.LENGTH_SHORT
                             ).show()
                         }
@@ -126,7 +138,7 @@ class ShoppingListViewFragment : Fragment() {
 
                             Toast.makeText(
                                 requireContext(),
-                                "שגיאה בהסרת המוצר",
+                                getString(R.string.error_deleting_product),
                                 Toast.LENGTH_SHORT
                             ).show()
                         }
@@ -138,14 +150,17 @@ class ShoppingListViewFragment : Fragment() {
         return itemView
     }
 
+    //////////////////////////////////////////////////////////////////////////////////////////////////////
     private fun updateStatusText() {
         val totalItems = shoppingItems.size
-        statusTextView.text = "פריטים ברשימת הקניות: $totalItems"
+        statusTextView.text = getString(R.string.shopping_list_items_count, totalItems)
     }
 
+    //////////////////////////////////////////////////////////////////////////////////////////////////////
     override fun onResume() {
         super.onResume()
         // Refresh the list when returning to this fragment
         loadShoppingList()
     }
+    //////////////////////////////////////////////////////////////////////////////////////////////////////
 }

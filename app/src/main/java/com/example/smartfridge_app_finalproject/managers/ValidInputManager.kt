@@ -2,6 +2,9 @@ package com.example.smartfridge_app_finalproject.managers
 
 import com.example.smartfridge_app_finalproject.utilities.Constants
 
+/**
+ * Input validation class
+ */
 class ValidInputManager private constructor() {
 
     companion object {
@@ -14,18 +17,21 @@ class ValidInputManager private constructor() {
             }
     }
 
+    /////////////////////////////////////////////////////////////////////////////////////////////////////
     //First name
     fun isValidFirstName(firstName: String): Boolean {
         if (firstName.length < 2) return false
         return firstName.all { it.isLetter() }
     }
 
+    /////////////////////////////////////////////////////////////////////////////////////////////////////
     //Last name
     fun isValidLastName(lastName: String): Boolean {
         if (lastName.length < 2) return false
         return lastName.all { it.isLetter() }
     }
 
+    /////////////////////////////////////////////////////////////////////////////////////////////////////
     //Barcode
     fun isValidBarcode(barcode: String): Boolean {
         //Check if barcode is empty or not numeric
@@ -35,6 +41,7 @@ class ValidInputManager private constructor() {
         return true
     }
 
+    /////////////////////////////////////////////////////////////////////////////////////////////////////
     //Password
     fun isValidPassword(password: String): Boolean {
         if (password.length < Constants.ValidInput.MIN_PASSWORD_LENGTH) return false
@@ -44,6 +51,7 @@ class ValidInputManager private constructor() {
         return hasLetter && hasDigit
     }
 
+    /////////////////////////////////////////////////////////////////////////////////////////////////////
     //Product name
     fun isValidProductName(productName: String): Boolean {
         //Check that the name is not empty and does not exceed the maximum length
@@ -57,17 +65,20 @@ class ValidInputManager private constructor() {
         return productName.matches(validCharPattern)
     }
 
+    /////////////////////////////////////////////////////////////////////////////////////////////////////
     //Quantity
     fun isValidQuantity(quantity: Int): Boolean {
         return quantity in 1..(Constants.ValidInput.MAX_QUANTITY)
     }
 
+    /////////////////////////////////////////////////////////////////////////////////////////////////////
     //Email
     fun isValidEmail(email: String): Boolean {
         val emailPattern = Regex("[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}")
         return email.matches(emailPattern)
     }
 
+    /////////////////////////////////////////////////////////////////////////////////////////////////////
     //Username
     fun isValidUsername(username: String): Boolean {
         if (username.length < 3 || username.length > 20) return false
@@ -77,6 +88,7 @@ class ValidInputManager private constructor() {
         return username.matches(validCharPattern)
     }
 
+    /////////////////////////////////////////////////////////////////////////////////////////////////////
     //Category
     fun isValidCategory(category: String): Boolean {
         val validCategories = listOf(
@@ -97,8 +109,10 @@ class ValidInputManager private constructor() {
         return category.isNotBlank() && validCategories.contains(category)
     }
 
+    /////////////////////////////////////////////////////////////////////////////////////////////////////
     //Expiration date
     fun isValidExpiryDate(expiryDate: String?): Boolean {
         return !expiryDate.isNullOrBlank()
     }
+    /////////////////////////////////////////////////////////////////////////////////////////////////////
 }

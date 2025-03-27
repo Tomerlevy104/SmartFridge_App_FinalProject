@@ -23,6 +23,7 @@ import com.google.android.material.textview.MaterialTextView
 import com.bumptech.glide.Glide
 import android.util.Log
 import android.widget.Toast
+import com.example.smartfridge_app_finalproject.managers.UserHandlerManager
 
 class HomePageFragment : Fragment() {
 

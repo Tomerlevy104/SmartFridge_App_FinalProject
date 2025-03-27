@@ -262,10 +262,10 @@ class InventoryManager : IInventoryManager {
     }
 
     ////////////////////////////////////////////////////////////////////////////////////////////////////////
-    //Deleting a product from the database
+    //Deleting a product from user inventory
     override fun removeProduct(product: Product, onComplete: ((Result<Unit>) -> Unit)) {
         if (currentUser == null) {
-            onComplete.invoke(Result.failure(Exception("משתמש לא מחובר")))
+            onComplete.invoke(Result.failure(Exception("user not logged in")))
             return
         }
         FirebaseFirestore.getInstance()
@@ -360,10 +360,11 @@ class InventoryManager : IInventoryManager {
             callback(matchingProducts)
         }
             .addOnFailureListener { exception ->
-                Log.e("InventoryManager", "שגיאה בחיפוש מוצרים", exception)
-                Toast.makeText(
+                Log.e("InventoryManager",
+                    context.getString(R.string.error_searching_products), exception)
+                Toast.makeText( 
                     context,
-                    "שגיאה בחיפוש: ${exception.message}",
+                    context.getString(R.string.error_searching, exception.message),
                     Toast.LENGTH_SHORT
                 )
                     .show()

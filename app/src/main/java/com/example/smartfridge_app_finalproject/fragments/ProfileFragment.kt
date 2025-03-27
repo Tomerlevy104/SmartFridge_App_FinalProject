@@ -1,6 +1,6 @@
 package com.example.smartfridge_app_finalproject.fragments
 
-import UserHandlerManager
+import com.example.smartfridge_app_finalproject.managers.UserHandlerManager
 import android.Manifest
 import android.content.ContentValues
 import android.content.Intent
@@ -39,6 +39,7 @@ class ProfileFragment : Fragment() {
     // Uri to store temporary camera image
     private var tempCameraUri: Uri? = null
 
+    /////////////////////////////////////////////////////////////////////////////////////////////////////
     // ActivityResultLaunchers for permissions and image operations
     private val cameraPermissionLauncher = registerForActivityResult(
         ActivityResultContracts.RequestPermission()
@@ -50,6 +51,7 @@ class ProfileFragment : Fragment() {
         }
     }
 
+    /////////////////////////////////////////////////////////////////////////////////////////////////////
     private val galleryPermissionLauncher = registerForActivityResult(
         ActivityResultContracts.RequestPermission()
     ) { isGranted ->
@@ -60,12 +62,14 @@ class ProfileFragment : Fragment() {
         }
     }
 
+    /////////////////////////////////////////////////////////////////////////////////////////////////////
     private val galleryLauncher = registerForActivityResult(
         ActivityResultContracts.GetContent()
     ) { uri: Uri? ->
         uri?.let { handleSelectedImage(it) }
     }
 
+    /////////////////////////////////////////////////////////////////////////////////////////////////////
     private val cameraLauncher = registerForActivityResult(
         ActivityResultContracts.TakePicture()
     ) { success ->
@@ -74,6 +78,7 @@ class ProfileFragment : Fragment() {
         }
     }
 
+    /////////////////////////////////////////////////////////////////////////////////////////////////////
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -85,6 +90,7 @@ class ProfileFragment : Fragment() {
         return binding.root
     }
 
+    /////////////////////////////////////////////////////////////////////////////////////////////////////
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         setupClickListeners()
@@ -93,6 +99,7 @@ class ProfileFragment : Fragment() {
         loadUserProfile()
     }
 
+    /////////////////////////////////////////////////////////////////////////////////////////////////////
     private fun setupClickListeners() {
         // Profile image change
         binding.profileBTNChangeImage.setOnClickListener {
@@ -104,12 +111,14 @@ class ProfileFragment : Fragment() {
         }
     }
 
+    /////////////////////////////////////////////////////////////////////////////////////////////////////
     private fun setupLogoutButton() {
         binding.profileManagementBTNLogout.setOnClickListener {
             showLogoutConfirmationDialog()
         }
     }
 
+    /////////////////////////////////////////////////////////////////////////////////////////////////////
     private fun setupEditButtons() {
         // First name edit
         binding.profileBTNEditFirstName.setOnClickListener {
@@ -146,7 +155,7 @@ class ProfileFragment : Fragment() {
                     binding.profileETFirstName.error = getString(R.string.invalid_first_name)
                 }
             } else {
-                binding.profileETFirstName.error = "השם אינו יכול להיות ריק"
+                binding.profileETFirstName.error = getString(R.string.name_can_not_be_null)
             }
         }
 
@@ -167,7 +176,7 @@ class ProfileFragment : Fragment() {
                     binding.profileETLastName.error = getString(R.string.invalid_last_name)
                 }
             } else {
-                binding.profileETLastName.error = "שם המשפחה אינו יכול להיות ריק"
+                binding.profileETLastName.error = getString(R.string.last_name_can_not_be_null)
             }
         }
 
@@ -192,6 +201,7 @@ class ProfileFragment : Fragment() {
         }
     }
 
+    /////////////////////////////////////////////////////////////////////////////////////////////////////
     private fun showEditField(inputLayout: View, buttonsLayout: View, currentValue: String) {
         // Show the edit field and set current value
         inputLayout.visibility = View.VISIBLE
@@ -204,11 +214,13 @@ class ProfileFragment : Fragment() {
         }
     }
 
+    /////////////////////////////////////////////////////////////////////////////////////////////////////
     private fun hideEditField(inputLayout: View, buttonsLayout: View) {
         inputLayout.visibility = View.GONE
         buttonsLayout.visibility = View.GONE
     }
 
+    /////////////////////////////////////////////////////////////////////////////////////////////////////
     private fun updateUserField(fieldName: String, value: String) {
         // Validate the input using ValidInputManager
         val validInputManager = ValidInputManager.getInstance()
@@ -252,40 +264,42 @@ class ProfileFragment : Fragment() {
         }
     }
 
+    /////////////////////////////////////////////////////////////////////////////////////////////////////
     private fun resetPassword() {
         userHandlerManager.getCurrentUserData()?.let { userData ->
             userData.email?.let { email ->
-                FirebaseAuth.getInstance().sendPasswordResetEmail(email)
-                    .addOnSuccessListener {
+                userHandlerManager.sendPasswordResetEmail(email) { result ->
+                    result.onSuccess {
                         showToast(getString(R.string.password_reset_instructions_have_been_sent_to_your_email_address))
-                    }
-                    .addOnFailureListener { exception ->
+                    }.onFailure { exception ->
                         showToast(
                             getString(
                                 R.string.error_sending_reset_instructions,
                                 exception.message
                             ))
                     }
+                }
             } ?: showToast(getString(R.string.no_email_address_found))
         }
     }
 
+    /////////////////////////////////////////////////////////////////////////////////////////////////////
     private fun showLogoutConfirmationDialog() {
         MaterialAlertDialogBuilder(requireContext())
-            .setTitle("התנתקות")
-            .setMessage("האם אתה בטוח שברצונך להתנתק?")
-            .setNegativeButton("לא") { dialog, _ ->
+            .setTitle(getString(R.string.logout))
+            .setMessage(getString(R.string.are_you_sure_you_want_to_logout))
+            .setNegativeButton(getString(R.string.no)) { dialog, _ ->
                 dialog.dismiss()
             }
-            .setPositiveButton("כן") { _, _ ->
+            .setPositiveButton(getString(R.string.yes)) { _, _ ->
                 signOut()
             }
             .show()
     }
 
+    /////////////////////////////////////////////////////////////////////////////////////////////////////
     private fun signOut() {
         userHandlerManager.clearUserData() // Clear cached user data
-
         AuthUI.getInstance()
             .signOut(requireContext())
             .addOnCompleteListener {
@@ -296,10 +310,11 @@ class ProfileFragment : Fragment() {
             }
     }
 
+    /////////////////////////////////////////////////////////////////////////////////////////////////////
     private fun showImagePickerDialog() {
         MaterialAlertDialogBuilder(requireContext())
-            .setTitle("בחר תמונת פרופיל")
-            .setItems(arrayOf("מצלמה", "גלריה")) { _, which ->
+            .setTitle(getString(R.string.choose_image_profile))
+            .setItems(arrayOf(getString(R.string.camera), getString(R.string.gallery))) { _, which ->
                 when (which) {
                     0 -> handleCameraRequest()
                     1 -> handleGalleryRequest()
@@ -308,6 +323,7 @@ class ProfileFragment : Fragment() {
             .show()
     }
 
+    /////////////////////////////////////////////////////////////////////////////////////////////////////
     private fun handleCameraRequest() {
         if (uploadImageManager.checkCameraPermission(requireContext())) {
             launchCamera()
@@ -320,6 +336,7 @@ class ProfileFragment : Fragment() {
         }
     }
 
+    /////////////////////////////////////////////////////////////////////////////////////////////////////
     private fun handleGalleryRequest() {
         if (uploadImageManager.checkGalleryPermission(requireContext())) {
             launchGallery()
@@ -337,16 +354,17 @@ class ProfileFragment : Fragment() {
         }
     }
 
+    /////////////////////////////////////////////////////////////////////////////////////////////////////
     private fun showPermissionExplanationDialog(permissionType: PermissionType) {
         val message = when (permissionType) {
-            PermissionType.CAMERA -> "אנחנו צריכים גישה למצלמה כדי לצלם תמונת פרופיל"
-            PermissionType.GALLERY -> "אנחנו צריכים גישה לגלריה כדי לבחור תמונת פרופיל"
+            PermissionType.CAMERA -> getString(R.string.we_need_pemission_for_camera)
+            PermissionType.GALLERY -> getString(R.string.we_need_permission_for_gallery)
         }
 
         MaterialAlertDialogBuilder(requireContext())
-            .setTitle("נדרשת הרשאה")
+            .setTitle(getString(R.string.permission_required))
             .setMessage(message)
-            .setPositiveButton("אישור") { _, _ ->
+            .setPositiveButton(getString(R.string.accept)) { _, _ ->
                 when (permissionType) {
                     PermissionType.CAMERA -> cameraPermissionLauncher.launch(Manifest.permission.CAMERA)
                     PermissionType.GALLERY -> {
@@ -359,10 +377,11 @@ class ProfileFragment : Fragment() {
                     }
                 }
             }
-            .setNegativeButton("ביטול", null)
+            .setNegativeButton(getString(R.string.cancel), null)
             .show()
     }
 
+    /////////////////////////////////////////////////////////////////////////////////////////////////////
     private fun launchCamera() {
         try {
             // Create the content values for a temporary image file
@@ -370,38 +389,37 @@ class ProfileFragment : Fragment() {
                 put(MediaStore.Images.Media.TITLE, "Profile Image")
                 put(MediaStore.Images.Media.DESCRIPTION, "Captured with SmartFridge")
             }
-
             // Get URI from content resolver
             tempCameraUri = requireActivity().contentResolver.insert(
                 MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
                 values
             )
-
             // Check if URI was created successfully
             if (tempCameraUri == null) {
                 Log.e(TAG, "Failed to create camera image URI")
-                showToast("לא ניתן ליצור URI לתמונת מצלמה")
+                showToast(getString(R.string.unable_to_create_a_camera_image_URI))
                 return
             }
-
             // Launch camera with the URI
             cameraLauncher.launch(tempCameraUri)
 
         } catch (e: Exception) {
             Log.e(TAG, "Error opening camera: ${e.message}", e)
-            showToast("שגיאה בפתיחת המצלמה: ${e.message}")
+            showToast(getString(R.string.error_opening_camera, e.message))
         }
     }
 
+    /////////////////////////////////////////////////////////////////////////////////////////////////////
     private fun launchGallery() {
         try {
             galleryLauncher.launch("image/*")
         } catch (e: Exception) {
             Log.e(TAG, "Error opening gallery: ${e.message}", e)
-            showToast("שגיאה בפתיחת הגלריה")
+            showToast(getString(R.string.error_opening_gallery))
         }
     }
 
+    /////////////////////////////////////////////////////////////////////////////////////////////////////
     private fun handleSelectedImage(uri: Uri) {
         lifecycleScope.launch {
             try {
@@ -439,14 +457,14 @@ class ProfileFragment : Fragment() {
         }
     }
 
+    /////////////////////////////////////////////////////////////////////////////////////////////////////
     private fun loadUserProfile() {
         showLoading(true)
-
         userHandlerManager.getCurrentUserData()?.let { userData ->
             updateProfileUI(userData)
         }
 
-        // Then load/refresh from Firestore
+        // Then load/refresh from firestore
         userHandlerManager.loadUserProfile { result ->
             activity?.runOnUiThread {
                 result.onSuccess { userData ->
@@ -460,6 +478,7 @@ class ProfileFragment : Fragment() {
         }
     }
 
+    /////////////////////////////////////////////////////////////////////////////////////////////////////
     private fun updateProfileUI(userData: UserHandlerManager.UserData) {
         try {
             // Update profile image if available
@@ -480,10 +499,12 @@ class ProfileFragment : Fragment() {
         }
     }
 
+    /////////////////////////////////////////////////////////////////////////////////////////////////////
     private fun showToast(message: String) {
         Toast.makeText(requireContext(), message, Toast.LENGTH_SHORT).show()
     }
 
+    /////////////////////////////////////////////////////////////////////////////////////////////////////
     private fun showLoading(show: Boolean) {
         try {
             binding.profileProgressBar.visibility = if (show) View.VISIBLE else View.GONE
@@ -492,9 +513,11 @@ class ProfileFragment : Fragment() {
         }
     }
 
+    /////////////////////////////////////////////////////////////////////////////////////////////////////
     override fun onResume() {
         super.onResume()
         // Refresh user data every time the fragment is resumed
         loadUserProfile()
     }
+    /////////////////////////////////////////////////////////////////////////////////////////////////////
 }

@@ -79,7 +79,7 @@
             android:orientation="vertical"
             android:padding="16dp">
 
-            <!-- Profile Image Selection - MOVED TO TOP OF FORM -->
+            <!-- Profile Image Selection -->
             <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/register_TIL_profileImage"
                 android:layout_width="match_parent"
@@ -90,7 +90,7 @@
                     android:id="@+id/register_TV_profile_hint"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="בחר תמונת פרופיל"
+                    android:text="@string/choose_profile_image"
                     android:textColor="@color/black"
                     android:layout_marginStart="4dp"
                     android:layout_marginBottom="4dp" />
@@ -126,7 +126,7 @@
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
                             android:layout_marginEnd="4dp"
-                            android:text="מצלמה"
+                            android:text="@string/camera"
                             android:textSize="12sp"
                             app:iconSize="18dp"
                             style="@style/Widget.MaterialComponents.Button.OutlinedButton" />
@@ -138,7 +138,7 @@
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
                             android:layout_marginStart="4dp"
-                            android:text="גלריה"
+                            android:text="@string/gallery"
                             android:textSize="12sp"
                             style="@style/Widget.MaterialComponents.Button.OutlinedButton" />
                     </LinearLayout>

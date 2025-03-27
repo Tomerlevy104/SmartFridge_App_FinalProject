@@ -17,6 +17,7 @@ import com.example.smartfridge_app_finalproject.R
 import com.example.smartfridge_app_finalproject.adapters.ProductsListAdapter
 import com.example.smartfridge_app_finalproject.data.model.Product
 import com.example.smartfridge_app_finalproject.managers.InventoryManager
+import com.example.smartfridge_app_finalproject.managers.UserHandlerManager
 import com.example.smartfridge_app_finalproject.utilities.Constants
 import com.google.android.material.button.MaterialButton
 import com.google.android.material.imageview.ShapeableImageView

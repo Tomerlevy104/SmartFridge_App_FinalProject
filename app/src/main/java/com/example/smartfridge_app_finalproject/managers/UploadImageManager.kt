@@ -33,7 +33,7 @@ import java.util.Locale
  * - Permission handling for camera and gallery
  * - Taking pictures or selecting from gallery
  * - Uploading images to Firebase Storage
- * - Linking uploaded images to appropriate collections in Firestore
+ * - Linking uploaded images to appropriate collections in firestore
  */
 class UploadImageManager private constructor() : IImageManager {
 
@@ -53,13 +53,8 @@ class UploadImageManager private constructor() : IImageManager {
         }
     }
 
-    // ===================================================================================================
-    // PERMISSION HANDLING
-    // ===================================================================================================
     //////////////////////////////////////////////////////////////////////////////////////////////////////
-    /**
-     * Checks if camera permission is granted
-     */
+    // Checks if camera permission is granted
     fun checkCameraPermission(context: Context): Boolean {
         return ContextCompat.checkSelfPermission(
             context,
@@ -67,9 +62,8 @@ class UploadImageManager private constructor() : IImageManager {
         ) == PackageManager.PERMISSION_GRANTED
     }
 
-    /**
-     * Requests camera permission
-     */
+    //////////////////////////////////////////////////////////////////////////////////////////////////////
+    // Requests camera permission
     fun requestCameraPermission(activity: Activity) {
         ActivityCompat.requestPermissions(
             activity,
@@ -78,9 +72,8 @@ class UploadImageManager private constructor() : IImageManager {
         )
     }
 
-    /**
-     * Checks if gallery permission is granted
-     */
+    //////////////////////////////////////////////////////////////////////////////////////////////////////
+    // Checks if gallery permission is granted
     fun checkGalleryPermission(context: Context): Boolean {
         // Use the appropriate permission based on Android version
         val permission = getRequiredGalleryPermission()
@@ -91,9 +84,8 @@ class UploadImageManager private constructor() : IImageManager {
         ) == PackageManager.PERMISSION_GRANTED
     }
 
-    /**
-     * Returns the appropriate gallery permission based on Android version
-     */
+    //////////////////////////////////////////////////////////////////////////////////////////////////////
+    // Returns the appropriate gallery permission based on Android version
     fun getRequiredGalleryPermission(): String {
         return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
             Manifest.permission.READ_MEDIA_IMAGES
@@ -102,9 +94,8 @@ class UploadImageManager private constructor() : IImageManager {
         }
     }
 
-    /**
-     * Requests gallery permission
-     */
+    //////////////////////////////////////////////////////////////////////////////////////////////////////
+    // Requests gallery permission
     fun requestGalleryPermission(activity: Activity) {
         val permissions = arrayOf(getRequiredGalleryPermission())
 
@@ -115,10 +106,12 @@ class UploadImageManager private constructor() : IImageManager {
         )
     }
 
-    /**
-     * Checks if rationale should be shown for a specific permission type
-     */
-    fun shouldShowRequestPermissionRationale(activity: Activity, permissionType: PermissionType): Boolean {
+    //////////////////////////////////////////////////////////////////////////////////////////////////////
+    // Checks if rationale should be shown for a specific permission type
+    fun shouldShowRequestPermissionRationale(
+        activity: Activity,
+        permissionType: PermissionType
+    ): Boolean {
         return when (permissionType) {
             PermissionType.CAMERA -> {
                 ActivityCompat.shouldShowRequestPermissionRationale(
@@ -126,6 +119,7 @@ class UploadImageManager private constructor() : IImageManager {
                     Manifest.permission.CAMERA
                 )
             }
+
             PermissionType.GALLERY -> {
                 ActivityCompat.shouldShowRequestPermissionRationale(
                     activity,
@@ -135,14 +129,9 @@ class UploadImageManager private constructor() : IImageManager {
         }
     }
 
-    // ===================================================================================================
-    // IMAGE CAPTURE AND SELECTION METHODS
-    // ===================================================================================================
-
-    /**
-     * Creates a URI for storing a captured image
-     * @return URI where the image will be saved
-     */
+    //////////////////////////////////////////////////////////////////////////////////////////////////////
+    // Creates a URI for storing a captured image
+    // return URI where the image will be saved
     fun createImageCaptureUri(context: Context): Uri? {
         try {
             // Create a unique file name
@@ -168,10 +157,9 @@ class UploadImageManager private constructor() : IImageManager {
         }
     }
 
-    /**
-     * Creates and configures an intent to take a picture using the camera
-     * @return Pair containing the Intent and the Uri where the image will be saved
-     */
+    //////////////////////////////////////////////////////////////////////////////////////////////////////
+    // Creates and configures an intent to take a picture using the camera
+    // return Pair containing the Intent and the Uri where the image will be saved
     fun createCameraIntent(context: Context): Pair<Intent, Uri?> {
         val intent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
 
@@ -195,13 +183,13 @@ class UploadImageManager private constructor() : IImageManager {
         return Pair(intent, photoUri)
     }
 
-    /**
-     * Creates an intent to select an image from gallery
-     */
+    //////////////////////////////////////////////////////////////////////////////////////////////////////
+    // Creates an intent to select an image from gallery
     fun createGalleryIntent(): Intent {
         return Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI)
     }
 
+    //////////////////////////////////////////////////////////////////////////////////////////////////////
     // Implementation of interface methods
     override fun takePicture(activity: Activity, callback: ActivityResultLauncher<Intent>) {
         try {
@@ -212,6 +200,7 @@ class UploadImageManager private constructor() : IImageManager {
         }
     }
 
+    //////////////////////////////////////////////////////////////////////////////////////////////////////
     override fun pickFromGallery(activity: Activity, callback: ActivityResultLauncher<Intent>) {
         try {
             val intent = createGalleryIntent()
@@ -221,26 +210,29 @@ class UploadImageManager private constructor() : IImageManager {
         }
     }
 
-    override fun checkAndRequestCameraPermission(activity: Activity, callback: ActivityResultLauncher<String>) {
+    //////////////////////////////////////////////////////////////////////////////////////////////////////
+    override fun checkAndRequestCameraPermission(
+        activity: Activity,
+        callback: ActivityResultLauncher<String>
+    ) {
         if (!checkCameraPermission(activity)) {
             callback.launch(Manifest.permission.CAMERA)
         }
     }
 
-    override fun checkAndRequestGalleryPermission(activity: Activity, callback: ActivityResultLauncher<String>) {
+    //////////////////////////////////////////////////////////////////////////////////////////////////////
+    override fun checkAndRequestGalleryPermission(
+        activity: Activity,
+        callback: ActivityResultLauncher<String>
+    ) {
         if (!checkGalleryPermission(activity)) {
             callback.launch(getRequiredGalleryPermission())
         }
     }
 
-    // ===================================================================================================
-    // FIREBASE STORAGE AND FIRESTORE OPERATIONS
-    // ===================================================================================================
-
-    /**
-     * Uploads a profile image to Firebase Storage and updates user profile
-     * @return Result with the image URL on success, or an exception on failure
-     */
+    //////////////////////////////////////////////////////////////////////////////////////////////////////
+    // Uploads a profile image to Firebase Storage and updates user profile
+    // return Result with the image URL on success, or an exception on failure
     override suspend fun uploadProfileImage(
         context: Context,
         imageUri: Uri,
@@ -263,7 +255,7 @@ class UploadImageManager private constructor() : IImageManager {
                 storageRef.downloadUrl
             }.await().toString()
 
-            // Update user profile in Firestore
+            // Update user profile in firestore
             firestore.collection("users")
                 .document(userId)
                 .update("profileImageUrl", downloadUrl)
@@ -276,10 +268,9 @@ class UploadImageManager private constructor() : IImageManager {
         }
     }
 
-    /**
-     * Uploads a product image to Firebase Storage and updates product document
-     * @return Result with the image URL on success, or an exception on failure
-     */
+    //////////////////////////////////////////////////////////////////////////////////////////////////////
+    // Uploads a product image to Firebase Storage and updates product document
+    // return Result with the image URL on success, or an exception on failure
     override suspend fun uploadProductImage(
         context: Context,
         imageUri: Uri,
@@ -307,7 +298,7 @@ class UploadImageManager private constructor() : IImageManager {
             }.await().toString()
 
             // Note: Actual implementation would update the specific product document
-            // with the new image URL in Firestore
+            // with the new image URL in firestore
             callback(true, downloadUrl)
         } catch (e: Exception) {
             Log.e(TAG, "Error uploading product image", e)
@@ -315,6 +306,7 @@ class UploadImageManager private constructor() : IImageManager {
         }
     }
 
+    //////////////////////////////////////////////////////////////////////////////////////////////////////
     /**
      * Uploads an image to Firebase Storage
      * @param path The storage path where the image should be stored
@@ -322,45 +314,45 @@ class UploadImageManager private constructor() : IImageManager {
      * @param imageUri The Uri of the image to upload
      * @return The download URL of the uploaded image
      */
-    suspend fun uploadImageToStorage(path: String, fileName: String, imageUri: Uri): String = withContext(Dispatchers.IO) {
-        val storageRef = storage.reference
-            .child(path)
-            .child(fileName)
+    suspend fun uploadImageToStorage(path: String, fileName: String, imageUri: Uri): String =
+        withContext(Dispatchers.IO) {
+            val storageRef = storage.reference
+                .child(path)
+                .child(fileName)
 
-        val uploadTask = storageRef.putFile(imageUri)
-        return@withContext uploadTask.continueWithTask { task ->
-            if (!task.isSuccessful) {
-                task.exception?.let { throw it }
-            }
-            storageRef.downloadUrl
-        }.await().toString()
-    }
+            val uploadTask = storageRef.putFile(imageUri)
+            return@withContext uploadTask.continueWithTask { task ->
+                if (!task.isSuccessful) {
+                    task.exception?.let { throw it }
+                }
+                storageRef.downloadUrl
+            }.await().toString()
+        }
 
-    /**
-     * Updates a user's profile image URL in Firestore
-     */
-    suspend fun updateUserProfileImage(userId: String, imageUrl: String) = withContext(Dispatchers.IO) {
-        firestore.collection("users")
-            .document(userId)
-            .update("profileImageUrl", imageUrl)
-            .await()
-    }
+    //////////////////////////////////////////////////////////////////////////////////////////////////////
+    // Updates a user's profile image URL in firestore
+    suspend fun updateUserProfileImage(userId: String, imageUrl: String) =
+        withContext(Dispatchers.IO) {
+            firestore.collection("users")
+                .document(userId)
+                .update("profileImageUrl", imageUrl)
+                .await()
+        }
 
-    /**
-     * Updates a product's image URL in Firestore
-     */
-    suspend fun updateProductImage(userId: String, productId: String, imageUrl: String) = withContext(Dispatchers.IO) {
-        firestore.collection("users")
-            .document(userId)
-            .collection("products")
-            .document(productId)
-            .update("imageUrl", imageUrl)
-            .await()
-    }
+    //////////////////////////////////////////////////////////////////////////////////////////////////////
+    // Updates a product's image URL in firestore
+    suspend fun updateProductImage(userId: String, productId: String, imageUrl: String) =
+        withContext(Dispatchers.IO) {
+            firestore.collection("users")
+                .document(userId)
+                .collection("products")
+                .document(productId)
+                .update("imageUrl", imageUrl)
+                .await()
+        }
 
-    /**
-     * Deletes an old profile image from Firebase Storage
-     */
+    //////////////////////////////////////////////////////////////////////////////////////////////////////
+    // Deletes an old profile image from Firebase Storage
     suspend fun deleteOldProfileImage(userId: String) = withContext(Dispatchers.IO) {
         try {
             val userDoc = firestore.collection("users")
@@ -383,30 +375,31 @@ class UploadImageManager private constructor() : IImageManager {
         }
     }
 
-    /**
-     * Deletes an old product image from Firebase Storage
-     */
-    suspend fun deleteOldProductImage(userId: String, productId: String) = withContext(Dispatchers.IO) {
-        try {
-            val productDoc = firestore.collection("users")
-                .document(userId)
-                .collection("products")
-                .document(productId)
-                .get()
-                .await()
+    //////////////////////////////////////////////////////////////////////////////////////////////////////
+    // Deletes an old product image from Firebase Storage
+    suspend fun deleteOldProductImage(userId: String, productId: String) =
+        withContext(Dispatchers.IO) {
+            try {
+                val productDoc = firestore.collection("users")
+                    .document(userId)
+                    .collection("products")
+                    .document(productId)
+                    .get()
+                    .await()
 
-            val imageUrl = productDoc.getString("imageUrl")
+                val imageUrl = productDoc.getString("imageUrl")
 
-            if (!imageUrl.isNullOrEmpty()) {
-                // Extract the path from the URL and delete the file
-                val httpsReference = storage.getReferenceFromUrl(imageUrl)
-                httpsReference.delete().await()
-            } else {
+                if (!imageUrl.isNullOrEmpty()) {
+                    // Extract the path from the URL and delete the file
+                    val httpsReference = storage.getReferenceFromUrl(imageUrl)
+                    httpsReference.delete().await()
+                } else {
 
+                }
+            } catch (e: Exception) {
+                Log.e(TAG, "Error deleting old product image", e)
+                // Continue without throwing, since this is a cleanup operation
             }
-        } catch (e: Exception) {
-            Log.e(TAG, "Error deleting old product image", e)
-            // Continue without throwing, since this is a cleanup operation
         }
-    }
+    //////////////////////////////////////////////////////////////////////////////////////////////////////
 }

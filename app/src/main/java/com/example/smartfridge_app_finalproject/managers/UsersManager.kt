@@ -10,16 +10,27 @@ import com.example.smartfridge_app_finalproject.data.model.User
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 
+/**
+* Class for managing users registered for the application
+*/
 class UsersManager(private val context: Context) {
     private val auth: FirebaseAuth = FirebaseAuth.getInstance()
     private val firestore: FirebaseFirestore = FirebaseFirestore.getInstance()
 
-    fun addNewUser(firstName: String, lastName: String, email: String, password: String, profileImageUri: Uri? = null) {
-        auth.createUserWithEmailAndPassword(email, password)
+    ////////////////////////////////////////////////////////////////////////////////////////////////////
+    fun addNewUser(
+        firstName: String,
+        lastName: String,
+        email: String,
+        password: String,
+        profileImageUri: Uri? = null
+    ) {
+        auth.createUserWithEmailAndPassword(email, password) // Here the user is created
             .addOnCompleteListener { task ->
                 if (task.isSuccessful) {
                     val firebaseUser = FirebaseAuth.getInstance().currentUser
-                    val userProfileImageUri = profileImageUri ?: Uri.parse("android.resource://${context.packageName}/${R.drawable.profile_man}")
+                    val userProfileImageUri = profileImageUri
+                        ?: Uri.parse("android.resource://${context.packageName}/${R.drawable.profile_man}")
 
                     val user = User(
                         firstName = firstName,
@@ -30,7 +41,7 @@ class UsersManager(private val context: Context) {
                         uid = firebaseUser?.uid ?: ""
                     )
 
-                    //Add user to Firestore
+                    //Add user to firestore
                     firestore.collection("users")
                         .document(firebaseUser?.uid ?: "")
                         .set(user.toMap())
@@ -39,7 +50,8 @@ class UsersManager(private val context: Context) {
                             //Navigate to main activity
                             val intent = Intent(context, MainActivity::class.java)
                             //Clear all the previous activities
-                            intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+                            intent.flags =
+                                Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
                             context.startActivity(intent)
                         }
                         .addOnFailureListener {
@@ -51,6 +63,7 @@ class UsersManager(private val context: Context) {
             }
     }
 
+    ////////////////////////////////////////////////////////////////////////////////////////////////////
     private fun showToast(message: String) {
         Toast.makeText(context, message, Toast.LENGTH_LONG).show()
     }

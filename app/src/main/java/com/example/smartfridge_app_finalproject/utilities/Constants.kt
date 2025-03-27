@@ -41,12 +41,5 @@ class Constants {
     object ImageUploadRequest {
         const val CAMERA_PERMISSION_REQUEST = 100
         const val GALLERY_PERMISSION_REQUEST = 101
-        const val CAMERA_REQUEST_CODE = 102
-        const val GALLERY_REQUEST_CODE = 103
     }
-
-    object PermissionRequest {
-        const val LOCATION_PERMISSION_REQUEST = 1
-    }
-
 }

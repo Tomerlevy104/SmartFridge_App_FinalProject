@@ -108,7 +108,7 @@
 
     </com.google.android.material.textfield.TextInputLayout>
 
-    <!-- שכחתי סיסמא -->
+    <!-- Forgot password -->
     <com.google.android.material.button.MaterialButton
         android:id="@+id/login_BTN_forgot_password"
         style="@style/Widget.MaterialComponents.Button.TextButton"
@@ -121,7 +121,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@id/login_TIL_password" />
 
-    <!-- כפתור התחבר -->
+    <!-- Login button -->
     <com.google.android.material.button.MaterialButton
         android:id="@+id/login_BTN_login"
         android:layout_width="@dimen/BTN_width"

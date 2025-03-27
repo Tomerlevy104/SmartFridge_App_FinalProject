@@ -37,7 +37,7 @@
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@id/shopping_item_view_CHKB_completed"
-            tools:text="שם המוצר" />
+            tools:text="@string/product_name" />
 
         <!-- Completion Checkbox -->
         <com.google.android.material.checkbox.MaterialCheckBox

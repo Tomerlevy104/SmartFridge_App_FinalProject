@@ -162,6 +162,40 @@
     <string name="search_result">תוצאות חיפוש: %1$s</string>
     <string name="camera_permission_is_required_to_take_a_profile_picture">נדרשת הרשאת מצלמה לצילום תמונת פרופיל</string>
     <string name="gallery_permission_is_required_to_choose_a_profile_picture">נדרשת הרשאת גלריה לבחירת תמונת פרופיל</string>
+    <string name="name_can_not_be_null">השם אינו יכול להיות ריק</string>
+    <string name="last_name_can_not_be_null">שם המשפחה אינו יכול להיות ריק</string>
+    <string name="are_you_sure_you_want_to_logout">האם אתה בטוח שברצונך להתנתק?</string>
+    <string name="choose_image_profile">בחר תמונת פרופיל</string>
+    <string name="camera">מצלמה</string>
+    <string name="gallery">גלריה</string>
+    <string name="unable_to_create_a_camera_image_URI">לא ניתן ליצור URI לתמונת מצלמה</string>
+    <string name="error_opening_camera">שגיאה בפתיחת המצלמה: %1$s</string>
+    <string name="error_opening_gallery">שגיאה בפתיחת הגלריה</string>
+    <string name="shopping_list_items_count">פריטים ברשימת הקניות: %d</string>
+    <string name="error_deleting_product">שגיאה בהסרת המוצר</string>
+    <string name="the_product_deleted_successfuly_from_list">המוצר %1$s הוסר מהרשימה</string>
+    <string name="error_searching_products">שגיאה בחיפוש מוצרים</string>
+    <string name="error_searching">שגיאה בחיפוש: %1$s</string>
+    <string name="an_error_occurred_while_opening_the_menu">אירעה שגיאה בפתיחת התפריט</string>
+    <string name="camera_permission_is_required_to_take_a_profile_pictur">הרשאת מצלמה נדרשת לצילום תמונת פרופיל</string>
+    <string name="error_processing_image_from_gallery">שגיאה בעיבוד תמונה מהגלריה</string>
+    <string name="no_chosen_picture_from_gallery">לא נבחרה תמונה מהגלריה</string>
+    <string name="error_registration">שגיאה ברישום: %1$s</string>
+    <string name="no_image_received_from_the_camera">לא התקבלה תמונה מהמצלמה</string>
+    <string name="error_processing_camera_image">שגיאה בעיבוד תמונת המצלמה</string>
+    <string name="error_open_camera">שגיאה בפתיחת המצלמה: %1$s</string>
+    <string name="no_avilable_camera_app">אין אפליקציית מצלמה זמינה במכשיר</string>
+    <string name="can_not_create_uri">לא ניתן ליצור URI לתמונת מצלמה</string>
+    <string name="choose_profile_image">בחר תמונת פרופיל</string>
+    <string name="scan_product">סרוק מוצר</string>
+    <string name="scan_result">תוצאת סריקה:</string>
+    <string name="image_profile">תמונת פרופיל</string>
+    <string name="change_your_image_profile">שנה את תמונת הפרופיל שלך</string>
+    <string name="edit">ערוך</string>
+    <string name="save">שמור</string>
+    <string name="user_example_com">user@example.com</string>
+    <string name="press_for_reset_your_password">לחץ כדי לאפס את הסיסמה שלך</string>
+    <string name="reset_password">אפס סיסמה</string>
 
 
 </resources>

@@ -4,7 +4,6 @@ import android.app.Activity
 import android.app.AlertDialog
 import android.content.ContentValues
 import android.content.Intent
-import android.content.pm.PackageManager
 import android.graphics.Bitmap
 import android.net.Uri
 import android.os.Bundle
@@ -18,7 +17,6 @@ import androidx.core.content.FileProvider
 import com.example.smartfridge_app_finalproject.managers.UploadImageManager
 import com.example.smartfridge_app_finalproject.managers.UsersManager
 import com.example.smartfridge_app_finalproject.managers.ValidInputManager
-import com.example.smartfridge_app_finalproject.utilities.Constants
 import com.example.smartfridge_app_finalproject.utilities.PermissionType
 import com.google.android.material.button.MaterialButton
 import com.google.android.material.imageview.ShapeableImageView
@@ -26,7 +24,12 @@ import com.google.android.material.textfield.TextInputLayout
 import java.io.File
 import java.io.FileOutputStream
 
+/**
+ * Registration page
+ */
 class RegisterActivity : AppCompatActivity() {
+
+    private val TAG = "RegisterActivity"
 
     private lateinit var register_TIL_firstname: TextInputLayout
     private lateinit var register_TIL_lastname: TextInputLayout
@@ -46,7 +49,6 @@ class RegisterActivity : AppCompatActivity() {
     private lateinit var register_BTN_submit: MaterialButton
     private lateinit var register_BTN_back: MaterialButton
 
-
     private var selectedImageUri: Uri? = null
     private var cameraImageUri: Uri? = null
 
@@ -54,8 +56,7 @@ class RegisterActivity : AppCompatActivity() {
     private var validInputManager = ValidInputManager.getInstance()
     private lateinit var usersManager: UsersManager
 
-    private val TAG = "RegisterActivity"
-
+    /////////////////////////////////////////////////////////////////////////////////////////////////////
     // ActivityResultLaunchers for permissions and image selection
     private val cameraPermissionLauncher = registerForActivityResult(
         ActivityResultContracts.RequestPermission()
@@ -63,20 +64,23 @@ class RegisterActivity : AppCompatActivity() {
         if (isGranted) {
             launchCamera()
         } else {
-            Toast.makeText(this, "הרשאת מצלמה נדרשת לצילום תמונת פרופיל", Toast.LENGTH_SHORT).show()
+            Toast.makeText(this,
+                getString(R.string.camera_permission_is_required_to_take_a_profile_picture), Toast.LENGTH_SHORT).show()
         }
     }
 
+    /////////////////////////////////////////////////////////////////////////////////////////////////////
     private val galleryPermissionLauncher = registerForActivityResult(
         ActivityResultContracts.RequestPermission()
     ) { isGranted ->
         if (isGranted) {
             launchGallery()
         } else {
-            Toast.makeText(this, "הרשאת גלריה נדרשת לבחירת תמונת פרופיל", Toast.LENGTH_SHORT).show()
+            Toast.makeText(this, getString(R.string.gallery_permission_is_required_to_choose_a_profile_picture), Toast.LENGTH_SHORT).show()
         }
     }
 
+    /////////////////////////////////////////////////////////////////////////////////////////////////////
     private val cameraLauncher = registerForActivityResult(
         ActivityResultContracts.StartActivityForResult()
     ) { result ->
@@ -85,6 +89,7 @@ class RegisterActivity : AppCompatActivity() {
         }
     }
 
+    /////////////////////////////////////////////////////////////////////////////////////////////////////
     private val galleryLauncher = registerForActivityResult(
         ActivityResultContracts.StartActivityForResult()
     ) { result ->
@@ -94,6 +99,7 @@ class RegisterActivity : AppCompatActivity() {
     }
 
 
+    /////////////////////////////////////////////////////////////////////////////////////////////////////
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_register)
@@ -106,6 +112,7 @@ class RegisterActivity : AppCompatActivity() {
         initViews()
     }
 
+    /////////////////////////////////////////////////////////////////////////////////////////////////////
     private fun findViews() {
         // TextInputLayouts
         register_TIL_firstname = findViewById(R.id.register_TIL_firstname)
@@ -130,6 +137,7 @@ class RegisterActivity : AppCompatActivity() {
 
     }
 
+    /////////////////////////////////////////////////////////////////////////////////////////////////////
     private fun initViews() {
         setupTextChangeListeners()
 
@@ -138,20 +146,18 @@ class RegisterActivity : AppCompatActivity() {
                 handleRegistration()
             }
         }
-
         register_BTN_camera.setOnClickListener {
             handleCameraButtonClick()
         }
-
         register_BTN_gallery.setOnClickListener {
             handleGalleryButtonClick()
         }
-
         register_BTN_back.setOnClickListener {
             navigateToStartingPage()
         }
     }
 
+    /////////////////////////////////////////////////////////////////////////////////////////////////////
     // Navigate back to StartingPageActivity
     private fun navigateToStartingPage() {
         val intent = Intent(this, StartingPageActivity::class.java)
@@ -159,6 +165,7 @@ class RegisterActivity : AppCompatActivity() {
         finish() // Close current activity
     }
 
+    /////////////////////////////////////////////////////////////////////////////////////////////////////
     private fun setupTextChangeListeners() {
         val fieldPairs = mapOf(
             register_ET_firstname to register_TIL_firstname,
@@ -175,6 +182,7 @@ class RegisterActivity : AppCompatActivity() {
         }
     }
 
+    /////////////////////////////////////////////////////////////////////////////////////////////////////
     private fun validateForm(): Boolean {
         var isValid = true
         val firstName = register_ET_firstname.text.toString().trim()
@@ -216,6 +224,7 @@ class RegisterActivity : AppCompatActivity() {
         return isValid
     }
 
+    /////////////////////////////////////////////////////////////////////////////////////////////////////
     // Handle camera button click
     private fun handleCameraButtonClick() {
         if (uploadImageManager.checkCameraPermission(this)) {
@@ -229,6 +238,7 @@ class RegisterActivity : AppCompatActivity() {
         }
     }
 
+    /////////////////////////////////////////////////////////////////////////////////////////////////////
     // Handle gallery button click
     private fun handleGalleryButtonClick() {
         if (uploadImageManager.checkGalleryPermission(this)) {
@@ -247,6 +257,7 @@ class RegisterActivity : AppCompatActivity() {
         }
     }
 
+    /////////////////////////////////////////////////////////////////////////////////////////////////////
     // Launch camera using a direct ContentResolver approach
     private fun launchCamera() {
         try {
@@ -265,7 +276,7 @@ class RegisterActivity : AppCompatActivity() {
             // Check if URI was created successfully
             if (cameraImageUri == null) {
                 Log.e(TAG, "Failed to create camera image URI")
-                Toast.makeText(this, "לא ניתן ליצור URI לתמונת מצלמה", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this, getString(R.string.can_not_create_uri), Toast.LENGTH_SHORT).show()
                 return
             }
 
@@ -279,15 +290,17 @@ class RegisterActivity : AppCompatActivity() {
             if (takePictureIntent.resolveActivity(packageManager) != null) {
                 cameraLauncher.launch(takePictureIntent)
             } else {
-                Toast.makeText(this, "אין אפליקציית מצלמה זמינה במכשיר", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this, getString(R.string.no_avilable_camera_app), Toast.LENGTH_SHORT).show()
             }
 
         } catch (e: Exception) {
             Log.e(TAG, "Error opening camera: ${e.message}", e)
-            Toast.makeText(this, "שגיאה בפתיחת המצלמה: ${e.message}", Toast.LENGTH_SHORT).show()
+            Toast.makeText(this,
+                getString(R.string.error_open_camera, e.message), Toast.LENGTH_SHORT).show()
         }
     }
 
+    /////////////////////////////////////////////////////////////////////////////////////////////////////
     // Launch gallery using the new approach
     private fun launchGallery() {
         try {
@@ -295,10 +308,11 @@ class RegisterActivity : AppCompatActivity() {
             galleryLauncher.launch(intent)
         } catch (e: Exception) {
             Log.e(TAG, "Error opening gallery: ${e.message}", e)
-            Toast.makeText(this, "שגיאה בפתיחת הגלריה", Toast.LENGTH_SHORT).show()
+            Toast.makeText(this, getString(R.string.error_opening_gallery), Toast.LENGTH_SHORT).show()
         }
     }
 
+    /////////////////////////////////////////////////////////////////////////////////////////////////////
     // Handle camera result
     private fun handleCameraResult(data: Intent?) {
         try {
@@ -317,14 +331,17 @@ class RegisterActivity : AppCompatActivity() {
                 Log.d(TAG, "Camera thumbnail URI: $uri")
             } else {
                 Log.e(TAG, "No camera data received")
-                Toast.makeText(this, "לא התקבלה תמונה מהמצלמה", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this,
+                    getString(R.string.no_image_received_from_the_camera), Toast.LENGTH_SHORT).show()
             }
         } catch (e: Exception) {
             Log.e(TAG, "Error processing camera image: ${e.message}", e)
-            Toast.makeText(this, "שגיאה בעיבוד תמונת המצלמה", Toast.LENGTH_SHORT).show()
+            Toast.makeText(this,
+                getString(R.string.error_processing_camera_image), Toast.LENGTH_SHORT).show()
         }
     }
 
+    /////////////////////////////////////////////////////////////////////////////////////////////////////
     // Handle gallery result
     private fun handleGalleryResult(data: Intent?) {
         val uri = data?.data
@@ -335,31 +352,34 @@ class RegisterActivity : AppCompatActivity() {
                 Log.d(TAG, "Gallery image URI: $uri")
             } catch (e: Exception) {
                 Log.e(TAG, "Error processing gallery image: ${e.message}", e)
-                Toast.makeText(this, "שגיאה בעיבוד תמונה מהגלריה", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this,
+                    getString(R.string.error_processing_image_from_gallery), Toast.LENGTH_SHORT).show()
             }
         } else {
             Log.e(TAG, "Gallery returned null URI")
-            Toast.makeText(this, "לא נבחרה תמונה מהגלריה", Toast.LENGTH_SHORT).show()
+            Toast.makeText(this,
+                getString(R.string.no_chosen_picture_from_gallery), Toast.LENGTH_SHORT).show()
         }
     }
 
+    /////////////////////////////////////////////////////////////////////////////////////////////////////
     // Show rationale dialog for permissions
     private fun showPermissionRationale(permissionType: PermissionType) {
         val title: String
         val message: String
 
         if (permissionType == PermissionType.CAMERA) {
-            title = "דרושה הרשאה למצלמה"
-            message = "כדי לצלם תמונת פרופיל, האפליקציה צריכה הרשאה לגשת למצלמה."
+            title = getString(R.string.we_need_pemission_for_camera)
+            message = getString(R.string.camera_permission_is_required_to_take_a_profile_picture)
         } else {
-            title = "דרושה הרשאה לגלריה"
-            message = "כדי לבחור תמונת פרופיל, האפליקציה צריכה הרשאה לגשת לגלריה."
+            title = getString(R.string.we_need_permission_for_gallery)
+            message = getString(R.string.gallery_permission_is_required_to_choose_a_profile_picture)
         }
 
         AlertDialog.Builder(this)
             .setTitle(title)
             .setMessage(message)
-            .setPositiveButton("אישור") { _, _ ->
+            .setPositiveButton(getString(R.string.accept)) { _, _ ->
                 if (permissionType == PermissionType.CAMERA) {
                     cameraPermissionLauncher.launch(android.Manifest.permission.CAMERA)
                 } else {
@@ -371,10 +391,11 @@ class RegisterActivity : AppCompatActivity() {
                     galleryPermissionLauncher.launch(permission)
                 }
             }
-            .setNegativeButton("ביטול", null)
+            .setNegativeButton(getString(R.string.cancel), null)
             .show()
     }
 
+    /////////////////////////////////////////////////////////////////////////////////////////////////////
     // Convert bitmap to URI
     private fun getImageUriFromBitmap(bitmap: Bitmap): Uri {
         try {
@@ -406,6 +427,7 @@ class RegisterActivity : AppCompatActivity() {
         }
     }
 
+    /////////////////////////////////////////////////////////////////////////////////////////////////////
     // Register the user
     private fun handleRegistration() {
         val firstName = register_ET_firstname.text.toString().trim()
@@ -417,7 +439,9 @@ class RegisterActivity : AppCompatActivity() {
             usersManager.addNewUser(firstName, lastName, email, password, selectedImageUri)
         } catch (e: Exception) {
             Log.e(TAG, "Error in registration: ${e.message}", e)
-            Toast.makeText(this, "שגיאה ברישום: ${e.message}", Toast.LENGTH_LONG).show()
+            Toast.makeText(this,
+                getString(R.string.error_registration, e.message), Toast.LENGTH_LONG).show()
         }
     }
+    /////////////////////////////////////////////////////////////////////////////////////////////////////
 }

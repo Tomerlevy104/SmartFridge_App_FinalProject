@@ -38,7 +38,7 @@
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@id/shopping_item_IMG_addToCart"
-            tools:text="שם המוצר" />
+            tools:text="@string/product_name" />
 
         <!-- Add to Cart Button -->
         <androidx.appcompat.widget.AppCompatImageView

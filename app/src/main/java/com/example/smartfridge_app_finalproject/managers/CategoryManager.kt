@@ -7,6 +7,9 @@ import com.example.smartfridge_app_finalproject.data.repository.CategoryReposito
 import com.example.smartfridge_app_finalproject.interfaces.ICategoryManager
 import com.example.smartfridge_app_finalproject.utilities.Constants
 
+/**
+ * Manager class responsible for category-related operations and navigation.
+ */
 class CategoryManager(private val activity: MainActivity) : ICategoryManager {
     private val categoryRepository = CategoryRepository()
 

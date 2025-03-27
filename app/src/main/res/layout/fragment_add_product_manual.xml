@@ -109,9 +109,6 @@
                                 android:layout_weight="1"
                                 android:text="@string/photograph"
                                 android:textSize="12sp"
-                                app:icon="@drawable/add_barcode"
-                                app:iconSize="18dp"
-                                app:iconGravity="textStart"
                                 android:layout_marginEnd="4dp"/>
 
                             <!-- Gallery Button -->
@@ -121,11 +118,8 @@
                                 android:layout_width="0dp"
                                 android:layout_height="wrap_content"
                                 android:layout_weight="1"
-                                android:text="גלריה"
-                                android:textSize="12sp"
-                                app:icon="@drawable/add_manually"
-                                app:iconSize="18dp"
-                                app:iconGravity="textStart"/>
+                                android:text="@string/gallery"
+                                android:textSize="12sp"/>
                         </LinearLayout>
                     </LinearLayout>
                 </com.google.android.material.textfield.TextInputLayout>

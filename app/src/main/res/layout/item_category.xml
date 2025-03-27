@@ -26,6 +26,6 @@
         android:textSize="@dimen/product_txt_size"
         android:maxLines="2"
         android:ellipsize="end"
-        tools:text="שם קטגוריה"/>
+        tools:text="@string/category_name"/>
 
 </LinearLayout>

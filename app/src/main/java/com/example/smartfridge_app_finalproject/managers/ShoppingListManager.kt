@@ -31,7 +31,7 @@ class ShoppingListManager : IShoppingListManager {
 
         firestore.collection("users")
             .document(userId)
-            .collection("shoppingList")
+            .collection("shoppingList") // Get all the products in shopping list
             .get()
             .addOnSuccessListener { documents ->
                 val items = documents.mapNotNull { doc ->
@@ -65,7 +65,7 @@ class ShoppingListManager : IShoppingListManager {
         val userId = currentUserId
         if (userId == null) {
             Log.e(TAG, "Error adding shopping list item: currentUserId is null")
-            onComplete(false, "המשתמש אינו מחובר")
+            onComplete(false, "User is not logged in")
             return
         }
         Log.d(TAG, "Adding item to shopping list for user: $userId")

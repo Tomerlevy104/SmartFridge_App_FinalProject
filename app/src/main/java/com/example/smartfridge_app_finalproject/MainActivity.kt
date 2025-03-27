@@ -24,13 +24,13 @@ class MainActivity : AppCompatActivity() {
 
     private lateinit var bottomNavigation: BottomNavigationView
 
+    //////////////////////////////////////////////////////////////////////////////////////////////////////
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         findViews()
         initViews()
         transactionToAnotherFragment(Constants.Fragment.HOMEPAGE)
-        //window.setFlags(WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS,WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS)
 
         //If no active fragment, move to "StartingPage"
         if (savedInstanceState == null) {
@@ -38,6 +38,7 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+    //////////////////////////////////////////////////////////////////////////////////////////////////////
     private fun initViews() {
         bottomNavigation.setOnItemSelectedListener { item ->
             when (item.itemId) {
@@ -46,6 +47,7 @@ class MainActivity : AppCompatActivity() {
                 R.id.nav_add_product -> {
                     showAddProductPopup(bottomNavigation.findViewById(R.id.nav_add_product))
                 }
+
                 R.id.nav_shopping_list -> transactionToAnotherFragment(Constants.Fragment.CREATESHOPINGLIST)
                 R.id.nav_profile -> transactionToAnotherFragment(Constants.Fragment.PROFILE)
                 else -> false
@@ -54,6 +56,7 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+    //////////////////////////////////////////////////////////////////////////////////////////////////////
     fun transactionToAnotherFragment(fragmentName: String, args: Bundle? = null) {
         val targetFragment = when (fragmentName) {
             Constants.Fragment.HOMEPAGE -> {
@@ -69,16 +72,15 @@ class MainActivity : AppCompatActivity() {
             }
 
             Constants.Fragment.ADDPRODUCTMANUAL -> {
-                 val fragment = AddProductManualFragment()
-                 args?.let { fragment.arguments = it }
-                 fragment
-
+                val fragment = AddProductManualFragment()
+                args?.let { fragment.arguments = it }
+                fragment
             }
 
             Constants.Fragment.ADDPRODUCTSCANBARCODE -> {
-                 val fragment = AddProductBarCodeFragment()
-                 args?.let { fragment.arguments = it }
-                 fragment
+                val fragment = AddProductBarCodeFragment()
+                args?.let { fragment.arguments = it }
+                fragment
             }
 
             Constants.Fragment.CREATESHOPINGLIST -> {
@@ -88,9 +90,9 @@ class MainActivity : AppCompatActivity() {
             }
 
             Constants.Fragment.PROFILE -> {
-                 val fragment = ProfileFragment()
-                 args?.let { fragment.arguments = it }
-                 fragment
+                val fragment = ProfileFragment()
+                args?.let { fragment.arguments = it }
+                fragment
             }
 
             Constants.Fragment.SHOPPINGLIST -> {
@@ -106,15 +108,17 @@ class MainActivity : AppCompatActivity() {
             supportFragmentManager
                 .beginTransaction()
                 .replace(R.id.contentContainer, it)
-                .addToBackStack(null)  // מאפשר חזרה לפרגמנט הקודם
+                .addToBackStack(null)  // Allows returning to the previous fragment
                 .commit()
         }
     }
 
+    //////////////////////////////////////////////////////////////////////////////////////////////////////
     private fun findViews() {
         bottomNavigation = findViewById(R.id.main_activity_bottomNavigation)
     }
 
+    //////////////////////////////////////////////////////////////////////////////////////////////////////
     private fun showAddProductPopup(view: View) {
         try {
             val inflater = LayoutInflater.from(this)
@@ -159,7 +163,11 @@ class MainActivity : AppCompatActivity() {
 
         } catch (e: Exception) {
             Log.e("PopupError", "Error showing popup: ${e.message}", e)
-            Toast.makeText(this, "אירעה שגיאה בפתיחת התפריט", Toast.LENGTH_SHORT).show()
+            Toast.makeText(
+                this,
+                getString(R.string.an_error_occurred_while_opening_the_menu), Toast.LENGTH_SHORT
+            ).show()
         }
     }
+    //////////////////////////////////////////////////////////////////////////////////////////////////////
 }
